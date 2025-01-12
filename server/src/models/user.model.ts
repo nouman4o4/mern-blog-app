@@ -5,7 +5,7 @@ interface IUser {
   lastname: string;
   email: string;
   password: string;
-  posts: Types.ObjectId;
+  posts?: Types.ObjectId;
 }
 
 const userSchema = new Schema(
