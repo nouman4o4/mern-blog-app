@@ -6,6 +6,7 @@ interface IUser {
   email: string;
   password: string;
   posts?: Types.ObjectId;
+  comparePassword: (password: string) => Promise<boolean>;
 }
 
 const userSchema = new Schema(
