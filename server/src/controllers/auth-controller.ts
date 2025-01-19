@@ -1,9 +1,17 @@
-import express, { Request, Response, response } from "express";
+import express, {
+  Request,
+  RequestHandler,
+  Response,
+  response,
+} from "express";
 import { User, IUser } from "../models/user.model";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const { firstname, lastname, email, password }: Partial<IUser> =
     req.body;
 
