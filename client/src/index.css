@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+body {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@layer utilities {
+  .link-hover:hover {
+    @apply text-black;
+  }
+
+  .textCenter {
+    @apply leading-10 text-center;
+  }
+  .flexCenter {
+    @apply flex justify-center items-center;
+  }
+}
