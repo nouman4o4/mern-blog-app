@@ -1,11 +1,13 @@
 import { Search } from "lucide-react";
-import React from "react";
+
 import { NavLink } from "react-router";
+import useGlobalStore from "../store/globalStore";
 
 export default function Navbar() {
+  const turnOnSearch = useGlobalStore((state) => state.turnSeachOn);
   return (
     <div>
-      <div className="w-full flex justify-between items-center bg-gray-100 h-[100px]">
+      <div className="flex flex-wrap w-full  justify-between items-center bg-gray-100 h-[100px]">
         <div className="logo h-full">
           <button className="text-3xl font-extrabold px-4 text-black h-full ">
             V.blog
@@ -29,13 +31,10 @@ export default function Navbar() {
           </NavLink>
         </div>
 
-        <button className="nav-right bg-red-400 text-white h-full w-[100px] text-center">
-          <NavLink
-            to="/"
-            style={{ textAlign: "-webkit-center" }}
-            className="text-center  w-full h-full">
-            <Search />
-          </NavLink>
+        <button
+          onClick={turnOnSearch}
+          className="nav-righ bg-red-400 text-white h-full w-[100px] cursor-pointer">
+          <Search className="inline" />
         </button>
       </div>
     </div>

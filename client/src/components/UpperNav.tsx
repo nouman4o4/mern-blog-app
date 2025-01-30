@@ -9,12 +9,12 @@ export default function UpperNav() {
             English <ChevronDown />
           </div>
           <div className="textCenter flexCenter gap-3 border-r-1 border-r-gray-300">
-            <Cloud className="text-red-40" /> 17
+            <Cloud className="text-red-400" /> 17
           </div>
         </div>
-        <div className="rihgt  gap-5 flexCenter">
+        <div className="rihgt  gap-3 flexCenter">
           <BatteryCharging className="textCenter" />{" "}
-          <p className="text-gray-500">
+          <p className="text-gray-500 text-nowrap pr-3 overflow-x-clip">
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
             Ea, fuga?
           </p>
