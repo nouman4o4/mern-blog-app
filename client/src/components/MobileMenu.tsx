@@ -1,9 +1,3 @@
-import React from 'react'
-
 export default function MobileMenu() {
-  return (
-    <div>
-      mobile Menu
-    </div>
-  )
+  return <div>mobile Menu</div>;
 }

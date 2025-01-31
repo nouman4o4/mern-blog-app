@@ -2,7 +2,7 @@ import { BatteryCharging, ChevronDown, Cloud } from "lucide-react";
 
 export default function UpperNav() {
   return (
-    <div>
+    <div className="md:block hidden">
       <div className="w-full flex justify-between ">
         <div className="left grid grid-cols-2 w-[20%] grid-rows-[50px]">
           <div className="bg-red-400 text-white textCenter flex items-center justify-around">
