@@ -3,20 +3,20 @@ import { NavLink } from "react-router";
 export default function LargeMenu() {
   return (
     <div className="md:block hidden">
-      <div className="nav flex flex-center gap-16 text-gray-500 font-semibold">
-        <NavLink className="link-hover" to="/">
+      <div className="nav flex flex-center gap-16 text-gray-50 font-semibold">
+        <NavLink className="largeMenulink" to="/">
           Home
         </NavLink>
-        <NavLink className="link-hover" to="/">
+        <NavLink className="largeMenulink" to="/">
           About
         </NavLink>
-        <NavLink className="link-hover" to="/">
+        <NavLink className="largeMenulink" to="/">
           Contact
         </NavLink>
-        <NavLink className="link-hover" to="/">
+        <NavLink className="largeMenulink" to="/">
           Settings
         </NavLink>
-        <NavLink className="link-hover" to="/">
+        <NavLink className="largeMenulink" to="/">
           Author
         </NavLink>
       </div>

@@ -6,8 +6,8 @@ body {
 }
 
 @layer utilities {
-  .link-hover:hover {
-    @apply text-black;
+  .largeMenulink {
+    @apply hover:text-white duration-150 border-b-2 border-b-transparent hover:border-b-white font-semibold text-gray-300;
   }
 
   .textCenter {

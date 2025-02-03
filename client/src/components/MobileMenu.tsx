@@ -6,6 +6,7 @@ import { NavLink } from "react-router";
 export default function MobileMenu() {
   const { isMobileMenu, turnMobileMenuOff, turnSeachOn } =
     useGlobalStore((state) => state);
+
   return (
     <>
       <div
@@ -31,12 +32,12 @@ export default function MobileMenu() {
                   turnMobileMenuOff();
                   turnSeachOn();
                 }}
-                className="ease duration-200 hover:bg-red-400 hover:text-white p-1 rounded-full">
+                className="ease duration-200 hover:bg-red-500 hover:text-white p-2 rounded-full">
                 <Search className="" />
               </button>
               <button
                 onClick={turnMobileMenuOff}
-                className="ease duration-200 hover:bg-red-400 hover:text-white p-1 rounded-full">
+                className="ease duration-200 hover:bg-red-500 hover:text-white p-2 rounded-full">
                 <X />
               </button>
             </nav>
@@ -75,8 +76,11 @@ export default function MobileMenu() {
               </ul>
             </div>
             <div className="logo w-full p-4 my-4 text-center">
-              <button className="text-3xl font-extrabold px-4 text-black text-center ">
-                <span className="text-red-400">V.</span> blog
+              <button className="text-3xl font-extrabold px-4 text-black h-full">
+                <span className="p-1 bg-red-500 text-white px-3">
+                  V
+                </span>{" "}
+                blog
               </button>
             </div>
             <div className="footer w-full absolute left-0 bottom-0 bg-gray-100 p-3 text-center">
