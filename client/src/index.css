@@ -16,4 +16,7 @@ body {
   .flexCenter {
     @apply flex justify-center items-center;
   }
+  .mblMenuLink {
+    @apply font-semibold text-sm cursor-pointer border-b border-gray-300 pl-2 text-gray-600 hover:text-gray-900 hover:underline py-2;
+  }
 }
