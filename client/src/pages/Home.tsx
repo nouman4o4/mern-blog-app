@@ -37,7 +37,7 @@ const Home: React.FC = () => {
             <SwiperSlide key={item.id}>
               <div
                 key={item.id}
-                className="w-full shrink-0 h-[80vh] md:h-full flex items-end bg-cover bg-center relative rounded-3xl overflow-hidden"
+                className="w-full shrink-0 h-[80vh] md:h-full flex items-end bg-cover bg-center relative rounded-xl md:rounded-3xl overflow-hidden"
                 style={{
                   backgroundImage: `url(${item.imageUrl})`,
                 }} // Replace with your actual image URL
@@ -81,13 +81,13 @@ const Home: React.FC = () => {
         </h3>
         <div className="blog-container pt-6 flex items-center justify-center gap-5 flex-wrap">
           {Array.from({ length: 6 }).map(() => (
-            <div className="card w-[30%] shadow-xl p-1 rounded-xl">
+            <div className="card md:w-[30%] lg:max-w-[300px] shadow-xl p-1 rounded-xl">
               <div className="w-full ">
                 <div className="photo w-full overflow-hidden rounded-xl">
                   <img
                     src="https://images.unsplash.com/photo-1587620962725-abab7fe55159"
                     alt="photo"
-                    className="w-full"
+                    className="w-full hover:scale-105 duration-200"
                   />
                 </div>
 
