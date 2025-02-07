@@ -3,8 +3,8 @@ import { Blog, About, Home, UserSetting } from "./pages";
 import Navbar from "./components/Navbar";
 import Breadcrumbs from "./components/Breadcrumbs";
 import Search from "./components/Search";
-import UpperNav from "./components/UpperNav";
 import MobileMenu from "./components/MobileMenu";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/useSetting" element={<UserSetting />} />
       </Routes>
-      <div className="w-full h-screen bg-white-100"></div>
+      <Footer />
     </>
   );
 }
