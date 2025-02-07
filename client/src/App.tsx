@@ -19,7 +19,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/useSetting" element={<UserSetting />} />
       </Routes>
-      <div className="w-full h-screen bg-red-100"></div>
+      <div className="w-full h-screen bg-white-100"></div>
     </>
   );
 }
