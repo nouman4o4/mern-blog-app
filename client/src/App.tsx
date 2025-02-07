@@ -5,21 +5,26 @@ import Breadcrumbs from "./components/Breadcrumbs";
 import Search from "./components/Search";
 import MobileMenu from "./components/MobileMenu";
 import Footer from "./components/Footer";
+import MainLayout from "./layouts/mainLayout";
+import AuthLayout from "./layouts/authLayout";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
     <>
-      <Navbar />
-      <Breadcrumbs />
-      <Search />
-      <MobileMenu />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/useSetting" element={<UserSetting />} />
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/setting" element={<UserSetting />} />
+        </Route>
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Route>
       </Routes>
-      <Footer />
     </>
   );
 }
