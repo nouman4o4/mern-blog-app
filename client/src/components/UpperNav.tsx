@@ -9,7 +9,6 @@ export default function UpperNav() {
   const dropdonwRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      console.log("hello");
       if (
         dropdonwRef.current &&
         !dropdonwRef.current.contains(event.target as Node)

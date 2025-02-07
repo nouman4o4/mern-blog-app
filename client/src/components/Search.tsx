@@ -7,7 +7,7 @@ export default function Search() {
   const isSearch = useGlobalStore((state) => state.isSearch);
   return (
     <div
-      className={`absolute left-0 w-screen bg-black/90 text-white transition-all ease h-screen duration-500 ${
+      className={`absolute z-50 left-0 w-screen bg-black/90 text-white transition-all ease h-screen duration-500 ${
         isSearch ? "bottom-0" : "bottom-[100%]"
       }`}>
       <div className="max-w-[1400px] h-full mx-auto">

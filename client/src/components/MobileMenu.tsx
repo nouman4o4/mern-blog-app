@@ -23,7 +23,7 @@ export default function MobileMenu() {
             className="empty grow-1 z-20"></div>
           {/* devide */}
           <div
-            className={`relative z-20 duration-600 ease ${cn(
+            className={`relative z-50 duration-600 ease ${cn(
               isMobileMenu ? "translate-x-[0]" : "translate-x-[100%]"
             )} menu grow-1 sm:grow-2 sm:max-w-[350px] bg-white py-3 px-2`}>
             <nav className="w-full flex justify-between px-6 mb-8 border-b border-gray-100 pb-2">
