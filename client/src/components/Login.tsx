@@ -1,12 +1,15 @@
-import { Contact, Eye, Mail } from "lucide-react";
+import { Contact, Eye, EyeOff, Mail } from "lucide-react";
+import { useState } from "react";
 import { NavLink } from "react-router";
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
   return (
     <div className="absolute top-0 left-0 w-full flex itemscenter justify-start text-white">
       <div className="container w-full md:w-[700px] px-4 md:p-8">
         <h1 className="text-2xl md:text-4xl font-bold my-3">
-          Create new account
+          Login to your account
           <span className="text-red-500">.</span>
         </h1>{" "}
         <div className="text-gray-300 my-2">
@@ -31,7 +34,7 @@ const Login = () => {
                     type="text"
                     name="email"
                     placeholder="user@example.com"
-                    className="w-full  md:text-lg text-white p-1 font-semibold ring-0 outline-none"
+                    className="w-full tracking-wider md:text-lg text-white p-1 font-semibold ring-0 outline-none"
                   />
                 </div>
                 <div>
@@ -53,36 +56,17 @@ const Login = () => {
                     type="text"
                     name="email"
                     placeholder="•••••••"
-                    className="w-full  md:text-lg text-white p-1 font-semibold ring-0 outline-none"
+                    className="w-full tracking-wider md:text-lg text-white p-1 font-semibold ring-0 outline-none"
                   />
                 </div>
-                <div>
-                  <Eye />
+                <div
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="cursor-pointer">
+                  {showPassword ? <Eye /> : <EyeOff />}
                 </div>
               </div>
             </div>
 
-            {/* password */}
-            <div className="name-inputs w-full flex gap-4 mt-3">
-              <div className="input px-3 md:px-4 p-1 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3">
-                <div className="grow ">
-                  <label
-                    htmlFor="email"
-                    className="text-[12px] font-semibold block text-gray-300 my-1">
-                    Confirmt Password
-                  </label>
-                  <input
-                    type="text"
-                    name="email"
-                    placeholder="•••••••"
-                    className="w-full  md:text-lg text-white p-1 font-semibold ring-0 outline-none"
-                  />
-                </div>
-                <div>
-                  <Eye />
-                </div>
-              </div>
-            </div>
             <button
               type="submit"
               className="w-full text-white bg-blue-500 rounded-3xl py-2 md:py-3 text-lg md:text-xl font-semibold mt-3">

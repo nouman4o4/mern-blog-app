@@ -1,7 +1,9 @@
-import { Contact, Eye, Mail } from "lucide-react";
+import { Contact, Eye, EyeClosed, EyeOff, Mail } from "lucide-react";
+import { useState } from "react";
 import { NavLink } from "react-router";
 
 export default function Signup() {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   return (
     <div className="absolute top-0 left-0 w-full flex itemscenter justify-start text-white">
       <div className="container w-full md:w-[700px] px-4 md:p-8">
@@ -31,7 +33,7 @@ export default function Signup() {
                     type="text"
                     name="firstname"
                     placeholder="Jhon"
-                    className=" md:text-lg text-white p-1 font-bold ring-0 outline-none"
+                    className="md:text-lg tracking-wider text-white p-1 font-semibold ring-0 outline-none"
                   />
                 </div>
                 <div>
@@ -49,7 +51,7 @@ export default function Signup() {
                     type="text"
                     name="lastname"
                     placeholder="Doe"
-                    className=" md:text-lg text-white p-1 font-semibold ring-0 outline-none"
+                    className=" md:text-lg text-white p-1 font-semibold tracking-wider ring-0 outline-none"
                   />
                 </div>
                 <div>
@@ -70,7 +72,7 @@ export default function Signup() {
                     type="text"
                     name="email"
                     placeholder="user@example.com"
-                    className="w-full  md:text-lg text-white p-1 font-semibold ring-0 outline-none"
+                    className="w-full tracking-wider md:text-lg text-white p-1 font-semibold ring-0 outline-none"
                   />
                 </div>
                 <div>
@@ -84,41 +86,43 @@ export default function Signup() {
               <div className="input px-3 md:px-4 p-1 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3">
                 <div className="grow ">
                   <label
-                    htmlFor="email"
+                    htmlFor="password"
                     className="text-[12px] font-semibold block text-gray-300 my-1">
                     Password
                   </label>
                   <input
-                    type="text"
-                    name="email"
+                    type={showPassword ? "text" : "password"}
+                    name="password"
                     placeholder="•••••••"
-                    className="w-full  md:text-lg text-white p-1 font-semibold ring-0 outline-none"
+                    className="w-full tracking-wider md:text-lg text-white p-1 font-semibold ring-0 outline-none"
                   />
                 </div>
-                <div>
-                  <Eye />
+                <div
+                  className="text-gray-200 py-3 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? <Eye /> : <EyeOff />}
                 </div>
               </div>
             </div>
 
-            {/* password */}
+            {/* confirm password */}
             <div className="name-inputs w-full flex gap-4 mt-3">
               <div className="input px-3 md:px-4 p-1 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3">
                 <div className="grow ">
                   <label
-                    htmlFor="email"
+                    htmlFor="confrimPassword"
                     className="text-[12px] font-semibold block text-gray-300 my-1">
                     Confirmt Password
                   </label>
                   <input
-                    type="text"
-                    name="email"
+                    type="password"
+                    name="confirmPassword"
                     placeholder="•••••••"
                     className="w-full  md:text-lg text-white p-1 font-semibold ring-0 outline-none"
                   />
                 </div>
                 <div>
-                  <Eye />
+                  <EyeOff className="text-gray-400" />
                 </div>
               </div>
             </div>
