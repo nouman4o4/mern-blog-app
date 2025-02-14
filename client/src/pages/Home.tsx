@@ -81,8 +81,8 @@ const Home: React.FC = () => {
         </h3>
         <div className="blog-container pt-6 flex items-center justify-center gap-5 flex-wrap">
           {Array.from({ length: 6 }).map(() => (
-            <div className="card md:w-[30%] lg:max-w-[300px] shadow-xl p-1 rounded-xl">
-              <div className="w-full ">
+            <div className="card grow basis-[300px] shadow-xl p-1 rounded-xl">
+              <div className="w-full">
                 <div className="photo w-full overflow-hidden rounded-xl">
                   <img
                     src="https://images.unsplash.com/photo-1587620962725-abab7fe55159"
