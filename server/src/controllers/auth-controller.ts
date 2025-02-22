@@ -9,8 +9,6 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
 export const register = async (req: Request, res: Response) => {
-  console.log("api hit, the body:", req.body);
-
   const {
     firstname,
     lastname,
@@ -78,7 +76,6 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   const { email, password }: Partial<IUser> = req.body;
-  console.log("api hits");
   if (!email || !password) {
     return res
       .status(400)
@@ -99,13 +96,13 @@ export const login = async (req: Request, res: Response) => {
     // generate token
     const token = jwt.sign(
       { userId: user._id },
-      process.env.SECRETE_KEY as string,
+      process.env.SECRET_KEY as string,
       { expiresIn: "15d" }
     );
     res.cookie("token", token, {
       httpOnly: true,
-      maxAge: 15 * 24 * 60 * 10000,
-      secure: process.env.NODE_ENY !== "development",
+      maxAge: 15 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV !== "development",
       sameSite: "strict",
     });
     return res.status(200).json({
@@ -143,9 +140,10 @@ export const logout = (req: Request, res: Response) => {
 
 // updating a user
 export const updateUser = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const userId = req.userId;
   const { firstname, lastname }: Partial<IUser> = req.body;
-  if (!firstname || !lastname) {
+
+  if (!firstname && !lastname) {
     return res.status(400).json({ message: "No updates provided" });
   }
   try {
@@ -153,9 +151,8 @@ export const updateUser = async (req: Request, res: Response) => {
 
     if (firstname) updateFields.firstname = firstname;
     if (lastname) updateFields.lastname = lastname;
-
     const updatedUser = await User.findOneAndUpdate(
-      { _id: id },
+      { _id: userId },
       { $set: updateFields },
       { new: true }
     );
@@ -198,6 +195,21 @@ export const removeUser = async (req: Request, res: Response) => {
   } catch (error) {
     return res.status(400).json({
       message: "Unexpected error occurred while deleting user",
+      error,
+    });
+  }
+};
+
+// get all the users
+export const getUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find();
+    return res
+      .status(200)
+      .json({ message: "Operation successfull!", data: users });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Unexpected error occurred while fetching users",
       error,
     });
   }
