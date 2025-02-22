@@ -8,28 +8,45 @@ import { User, IUser } from "../models/user.model";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
-export const register = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
-  const { firstname, lastname, email, password }: Partial<IUser> =
-    req.body;
+export const register = async (req: Request, res: Response) => {
+  console.log("api hit, the body:", req.body);
 
-  console.log("api hits");
+  const {
+    firstname,
+    lastname,
+    email,
+    password,
+
+    gender,
+  }: Partial<IUser> = await req.body;
+  const confirmPassword = await req.body.confirmPassword;
+
   if (
-    [firstname, lastname, email, password].some(
-      (elem) => elem?.trim() === ""
-    )
+    [
+      firstname,
+      lastname,
+      email,
+      password,
+      confirmPassword,
+      gender,
+    ].some((elem) => elem?.trim() === "")
   ) {
     return res
       .status(400)
       .json({ message: "Please fill in all fields" });
   }
+  if (password !== confirmPassword) {
+    return res
+      .status(400)
+      .json({ message: "Passwords do not match" });
+  }
   // find existting user in the db
   try {
     const existtingUser = await User.findOne({ email });
     if (existtingUser) {
-      return res.status(404).json("Email is in already in use");
+      return res
+        .status(404)
+        .json({ message: "Email is in already in use" });
     }
 
     // create  a new user
@@ -38,6 +55,7 @@ export const register = async (
       lastname,
       email,
       password,
+      gender,
     });
     if (!newUser) {
       throw Error;
@@ -51,6 +69,7 @@ export const register = async (
       },
     });
   } catch (error) {
+    console.log(error);
     return res
       .status(400)
       .json({ message: "unexpected error occured: ", error });
