@@ -35,7 +35,8 @@ const Home: React.FC = () => {
           modules={[Autoplay]}>
           {dummyData.map((item) => (
             <SwiperSlide key={item.id}>
-              <div
+              <NavLink
+                to={"/blog/12"}
                 key={item.id}
                 className="w-full shrink-0 h-[80vh] md:h-full flex items-end bg-cover bg-center relative rounded-xl md:rounded-3xl overflow-hidden"
                 style={{
@@ -69,7 +70,7 @@ const Home: React.FC = () => {
                 {/* <div className="absolute bottom-10 right-10 bg-white size-8">
           hi
         </div> */}
-              </div>
+              </NavLink>
             </SwiperSlide>
           ))}
         </Swiper>

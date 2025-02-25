@@ -6,6 +6,7 @@ import {
   ThumbsDown,
   ThumbsUp,
 } from "lucide-react";
+import AuthorDetailsCard from "../components/AuthorDetailsCard";
 export default function Blog() {
   return (
     <div className="w-full my-11">
@@ -15,7 +16,7 @@ export default function Blog() {
           <div className="image bg-amber-400 w-full h-auto">
             <img
               className="w-full h-auto"
-              src="https://html.quomodosoft.com/binduz/assets/images/user-2.jpg.jpg"
+              src="https://html.quomodosoft.com/binduz/assets/images/author-item-1.jpg"
               alt=""
             />
           </div>
@@ -151,7 +152,7 @@ export default function Blog() {
         </div>
 
         {/* Author Details */}
-        <div className="bg-gray-200 grow">Author Details</div>
+        <AuthorDetailsCard />
       </div>
     </div>
   );
