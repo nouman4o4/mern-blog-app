@@ -1,9 +1,66 @@
-import { Contact, Eye, EyeClosed, EyeOff, Mail } from "lucide-react";
-import { useState } from "react";
+import { Contact, Eye, EyeOff, Mail } from "lucide-react";
+import { useActionState, useState } from "react";
 import { NavLink } from "react-router";
+
+type FormState = {
+  email: string;
+  password: string;
+  error?: string;
+};
+interface FieldErrorsI {
+  email: string;
+  password: string;
+}
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrorsI>({
+    email: "",
+    password: "",
+  });
+  const submitForm = async (_: FormState, formData: FormData) => {
+    // Form submission logic here
+
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    try {
+      const zodResult = loginSchema.safeParse({ email, password });
+      const validatonError = zodResult.error?.format();
+
+      if (!zodResult.success) {
+        setFieldErrors({
+          email: validatonError?.email?._errors[0] as string,
+          password: validatonError?.password?._errors[0] as string,
+        });
+
+        return {
+          email,
+          password,
+          error: "Validaton Error",
+        };
+      }
+      // api call
+      const url = "http://localhost:3000/api/users";
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      console.log(response.json());
+      console.log("Form submitted");
+    } catch (error: any) {
+      console.log(error.message);
+    }
+    return { email, password };
+  };
+
+  const [state, formAction, isPending] = useActionState(submitForm, {
+    email: "",
+    password: "",
+    error: undefined,
+  });
   return (
     <div className="absolute top-0 left-0 w-full flex itemscenter justify-start text-white">
       <div className="container w-full md:w-[700px] px-4 md:p-8">
@@ -22,7 +79,7 @@ export default function Signup() {
           <form className="w-full b-gray-700 mt-6 flex flex-col justify-center gap-1 md:gap-3">
             {/* nameInputs */}
             <div className="name-inputs w-full flex gap-4 flex-wrap">
-              <div className="input px-3 md:px-4 pr-4 p-1 md:p-2 bg-gray-600 rounded-xl grow flex items-center justify-between">
+              <div className="input group focus-within:ring-2 focus-within:ring-blue-400 px-3 md:px-4 pr-4 p-1 md:p-2 bg-gray-600 rounded-xl grow flex items-center justify-between">
                 <div>
                   <label
                     htmlFor="firstname"
@@ -40,7 +97,7 @@ export default function Signup() {
                   <Contact />
                 </div>
               </div>
-              <div className="input px-3 md:px-4 pr-4 p-1 md:p-2 bg-gray-600 rounded-xl grow flex items-center justify-between">
+              <div className="input group focus-within:ring-2 focus-within:ring-blue-400 px-3 md:px-4 pr-4 p-1 md:p-2 bg-gray-600 rounded-xl grow flex items-center justify-between">
                 <div>
                   <label
                     htmlFor="lastname"
@@ -61,7 +118,7 @@ export default function Signup() {
             </div>
             {/* email */}
             <div className="name-inputs w-full flex gap-4 mt-3">
-              <div className="input px-3 md:px-4 p-1 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3">
+              <div className="input group focus-within:ring-2 focus-within:ring-blue-400 px-3 md:px-4 p-1 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3">
                 <div className="grow ">
                   <label
                     htmlFor="email"
@@ -83,7 +140,7 @@ export default function Signup() {
 
             {/* password */}
             <div className="name-inputs w-full flex gap-4 mt-3">
-              <div className="input px-3 md:px-4 p-1 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3">
+              <div className="input group focus-within:ring-2 focus-within:ring-blue-400 px-3 md:px-4 p-1 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3">
                 <div className="grow ">
                   <label
                     htmlFor="password"
@@ -107,7 +164,7 @@ export default function Signup() {
 
             {/* confirm password */}
             <div className="name-inputs w-full flex gap-4 mt-3">
-              <div className="input px-3 md:px-4 p-1 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3">
+              <div className="input group focus-within:ring-2 focus-within:ring-blue-400 px-3 md:px-4 p-1 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3">
                 <div className="grow ">
                   <label
                     htmlFor="confrimPassword"
