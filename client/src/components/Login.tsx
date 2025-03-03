@@ -1,7 +1,8 @@
 import { Contact, Eye, EyeOff, Mail } from "lucide-react";
 import { useActionState, useState } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { loginSchema } from "../schemas/loginSchema";
+import toast from "react-hot-toast";
 
 type FormState = {
   email: string;
@@ -19,19 +20,25 @@ const Login = () => {
     password: "",
   });
 
+  const navigate = useNavigate();
+
+  // clear field error
+  const clearFieldError = (field: keyof FieldErrorsI) => {
+    setFieldErrors((prev) => ({ ...prev, [field]: "" }));
+  };
+
   const submitForm = async (_: FormState, formData: FormData) => {
     // Form submission logic here
-
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     try {
       const zodResult = loginSchema.safeParse({ email, password });
-      const validatonError = zodResult.error?.format();
+      const validatonErrors = zodResult.error?.format();
 
       if (!zodResult.success) {
         setFieldErrors({
-          email: validatonError?.email?._errors[0] as string,
-          password: validatonError?.password?._errors[0] as string,
+          email: validatonErrors?.email?._errors[0] || "",
+          password: validatonErrors?.password?._errors[0] || "",
         });
 
         return {
@@ -40,8 +47,32 @@ const Login = () => {
           error: "Validaton Error",
         };
       }
+      // api call
+      const url = "http://localhost:3000/api/users/login";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+        credentials: "include",
+      });
+      const jsonData = await response.json();
+      if (jsonData.success) {
+        // login success
+
+        toast.success("Loged in successfully! ");
+        navigate("/");
+        return {
+          email,
+          password,
+        };
+      } else if (!jsonData.success) {
+        toast.error("Wrong Email or password");
+      }
     } catch (error: any) {
       console.log(error.message);
+      toast.error("Couldn't Login. Please try again.");
     }
     return { email, password };
   };
@@ -87,13 +118,7 @@ const Login = () => {
                     Email
                   </label>
                   <input
-                    onInput={(e) =>
-                      console.log(e.currentTarget.value)
-                    }
-                    onChange={() => {
-                      setFieldErrors({ ...fieldErrors, email: "" });
-                      console.log(fieldErrors);
-                    }}
+                    onChange={() => clearFieldError("email")}
                     type="email"
                     name="email"
                     defaultValue={state.email}
@@ -128,12 +153,10 @@ const Login = () => {
                     Password
                   </label>
                   <input
-                    type="text"
+                    type={showPassword ? "text" : "password"}
                     id="password"
                     defaultValue={state.password}
-                    onChange={() =>
-                      setFieldErrors({ ...fieldErrors, password: "" })
-                    }
+                    onChange={() => clearFieldError("password")}
                     name="password"
                     placeholder="•••••••"
                     className="w-full tracking-wider md:text-lg text-white p-1 font-semibold ring-0 outline-none"
