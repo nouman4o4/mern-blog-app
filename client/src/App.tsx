@@ -1,30 +1,58 @@
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import { Blog, About, Home, UserSetting } from "./pages";
-import Navbar from "./components/Navbar";
-import Breadcrumbs from "./components/Breadcrumbs";
-import Search from "./components/Search";
-import MobileMenu from "./components/MobileMenu";
-import Footer from "./components/Footer";
+
 import MainLayout from "./layouts/mainLayout";
 import AuthLayout from "./layouts/authLayout";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import { Toaster } from "react-hot-toast";
+import useUserStore from "./store/userStore";
 
 function App() {
+  const authUser =
+    JSON.parse(localStorage.getItem("blog-app-user")!) ||
+    useUserStore((state) => state.authUser);
+  console.log(authUser);
   return (
     <>
       <Toaster />
       <Routes>
         <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/blog/:blogId" element={<Blog />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/setting" element={<UserSetting />} />
+          <Route
+            path="/"
+            element={
+              !authUser ? <Navigate to={"/login"} /> : <Home />
+            }
+          />
+          <Route
+            path="/blog/:blogId"
+            element={
+              !authUser ? <Navigate to={"/login"} /> : <Blog />
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              !authUser ? <Navigate to={"/login"} /> : <About />
+            }
+          />
+          <Route
+            path="/setting"
+            element={
+              !authUser ? <Navigate to={"/login"} /> : <UserSetting />
+            }
+          />
         </Route>
+
         <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/login"
+            element={authUser ? <Navigate to="/" /> : <Login />}
+          />
+          <Route
+            path="/signup"
+            element={authUser ? <Navigate to="/" /> : <Signup />}
+          />
         </Route>
       </Routes>
     </>

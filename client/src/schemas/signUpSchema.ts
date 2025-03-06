@@ -19,11 +19,14 @@ export const signUpSchema = z
       .string({ required_error: "Password is required!" })
       .min(8, "Password is too short!")
       .max(12, "Password too long!"),
-    confirmPassword: z.string({
-      required_error: "Confirm password is required",
-    }),
+    confirmPassword: z
+      .string({
+        required_error: "Please confirm your password",
+      })
+      .min(1, "Please confirm your password"),
     gender: z.string({ required_error: "Please select your gender" }),
   })
+
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
