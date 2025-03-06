@@ -1,6 +1,6 @@
 import { Menu, Search } from "lucide-react";
 
-import useGlobalStore from "../store/globalStore";
+import useGlobalStore from "../store/globalStore.ts";
 import LargeMenu from "./LargeMenu";
 import UpperNav from "./UpperNav";
 

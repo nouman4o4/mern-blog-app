@@ -1,5 +1,5 @@
 import { Search, X } from "lucide-react";
-import useGlobalStore from "../store/globalStore";
+import useGlobalStore from "../store/globalStore.ts";
 import { cn } from "../utils/clsx";
 import { NavLink } from "react-router";
 

@@ -1,5 +1,5 @@
 import { SearchIcon, X } from "lucide-react";
-import useGlobalStore from "../store/globalStore";
+import useGlobalStore from "../store/globalStore.ts";
 import { Link } from "react-router";
 
 export default function Search() {
