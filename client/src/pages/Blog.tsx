@@ -9,10 +9,10 @@ import {
 import AuthorDetailsCard from "../components/AuthorDetailsCard";
 export default function Blog() {
   return (
-    <div className="w-full my-11">
+    <div className="w-full md:my-11">
       <div className="w-full flex">
         {/* blog details */}
-        <div className="blog-detail w-3/4">
+        <div className="blog-detail w-full md:w-3/4">
           <div className="image bg-amber-400 w-full h-auto">
             <img
               className="w-full h-auto"
@@ -21,7 +21,7 @@ export default function Blog() {
             />
           </div>
           {/* Blog content */}
-          <div className="Blog-content p-8">
+          <div className="Blog-content p-1 md:p-8">
             <div className="flex gap-4 items-center">
               <div className="category p-2 bg-red-400 text-white">
                 TECHNOLOGY
@@ -32,7 +32,7 @@ export default function Blog() {
               </div>
             </div>
             {/* blog Title */}
-            <h1 className="text-4xl font-bold py-3 my-4">
+            <h1 className="text-2xl md:text-4xl font-bold py-3 my-4">
               How to pot you web app to microsoft clone teams is
               really ready for take fight.
             </h1>
@@ -89,16 +89,16 @@ export default function Blog() {
 
           {/* comment-section */}
 
-          <div className="comment-section w-full mx-auto mt-10 p-6 bg-white ">
+          <div className="comment-section w-full mx-auto mt-10 p-3 md:p-6 bg-white ">
             <p className="text-center text-2xl font-semibold text-gray-800 mb-4">
               Leave a Comment
             </p>
             <div className="cmnt-input flex w-full border border-gray-300 rounded-lg overflow-hidden">
               <textarea
-                className="w-3/4 p-3 text-lg text-gray-600 outline-none resize-none"
+                className="w-3/4 p-3 md:text-lg text-gray-600 outline-none resize-none"
                 placeholder="Write your comment..."
               />
-              <button className="w-1/4 bg-black text-white text-lg font-medium transition-all duration-300 hover:bg-gray-800">
+              <button className="w-1/4 bg-black text-white md:text-lg font-medium transition-all duration-300 hover:bg-gray-800">
                 Post
               </button>
             </div>
