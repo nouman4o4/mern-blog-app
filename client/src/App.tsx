@@ -37,7 +37,7 @@ function App() {
             }
           />
           <Route
-            path="/setting"
+            path="/profile"
             element={
               !authUser ? <Navigate to={"/login"} /> : <UserSetting />
             }

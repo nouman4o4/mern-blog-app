@@ -13,12 +13,6 @@ export default function LargeMenu() {
         <NavLink className="largeMenulink" to="/">
           Contact
         </NavLink>
-        <NavLink className="largeMenulink" to="/">
-          Settings
-        </NavLink>
-        <NavLink className="largeMenulink" to="/">
-          Author
-        </NavLink>
       </div>
     </div>
   );
