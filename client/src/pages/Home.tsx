@@ -11,6 +11,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Swiper as SwiperClass } from "swiper";
 import PostCard from "../components/PostCard";
+import Categories from "../components/Category-section";
 
 const Home: React.FC = () => {
   const swiperRef = useRef<SwiperClass | null>(null);
@@ -76,6 +77,8 @@ const Home: React.FC = () => {
           ))}
         </Swiper>
       </div>
+
+      <Categories />
       {/* all blogs */}
       <div className="w-[90%] mx-auto py-6">
         <h3 className="text-xl font-bold my-1 text-black">
