@@ -1,7 +1,6 @@
 import Blog from "./Blog";
 import Home from "./Home";
-import About from "./about";
+import Profile from "./Profile";
+import About from "./About";
 
-import UserSetting from "./user-setting";
-
-export { About, Blog, Home, UserSetting };
+export { Profile, Blog, Home, About };
