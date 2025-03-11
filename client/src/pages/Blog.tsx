@@ -6,7 +6,7 @@ import {
   ThumbsDown,
   ThumbsUp,
 } from "lucide-react";
-import AuthorDetailsCard from "../components/AuthorDetailsCard";
+import RecentBlogs from "../components/RecentBlogs";
 export default function Blog() {
   return (
     <div className="w-full md:my-11">
@@ -151,8 +151,8 @@ export default function Blog() {
           </div>
         </div>
 
-        {/* Author Details */}
-        <AuthorDetailsCard />
+        {/* Recent blogs component */}
+        <RecentBlogs />
       </div>
     </div>
   );
