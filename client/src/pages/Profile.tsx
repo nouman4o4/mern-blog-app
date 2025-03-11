@@ -1,29 +1,32 @@
 import { useId } from "react";
 import PostCard from "../components/PostCard";
 
-export default function UserSetting() {
+export default function Profile() {
   const keyId = useId();
   return (
     <div>
-      <div className="min-h-screen w-full bg-gray-100 p-10">
-        <div className="h-[70vh] w-full bg-white rounded-2xl">
-          <div className="user-profile&details w-full h-1/2 rounded-2xl bg-center bg-cover bg-[url(https://images.unsplash.com/photo-1508780709619-79562169bc64?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]"></div>
-          <div className="w-full flex h-1/3 justify-between">
-            <div className="user-image w-50 h-full relative">
-              <div className="photo absolute left-6 top-[-45%] size-48 rounded-full bg-white border-4 border-white overflow-hidden">
-                <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnS1o3mO3S_Nkfw1WAGaRJ6KaOGgODpfoOsA&s"
-                  alt=""
-                  className="w-full h-full"
-                />
+      <div className="min-h-screen w-full bg-gray-100 p-1 sm:p-3 md:p-6 lg:p-10">
+        <div className="min-h-[70vh] w-full bg-white rounded-2xl">
+          <div className="user-profile&details w-full h-52 rounded-2xl bg-center bg-cover bg-[url(https://images.unsplash.com/photo-1508780709619-79562169bc64?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]"></div>
+
+          <div className="w-full flex flex-col sm:flex-row min-h-[30vh] justify-between">
+            <div className="user-image  bg-yellow-600">
+              <div className="photo w-32 h-32 sm:w-48 sm:h-48 absolute sm:relative">
+                <div className="absolute left-4 top-[-40%]">
+                  <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnS1o3mO3S_Nkfw1WAGaRJ6KaOGgODpfoOsA&s"
+                    alt=""
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                </div>
               </div>
             </div>
-            <div className="w-[calc(100%-210px)] p-6">
+            <div className="flex-grow p-6 pt-18 sm:pt-0">
               <h1 className="text-4xl font-bold text-gray-800 mb-3">
                 John Doe
               </h1>
               <div className="flex flex-wrap gap-5">
-                <div className="user-detail h-full relative">
+                <div className="user-detail w-full sm:w-1/2">
                   <p className="font-semibold text-gray-800 mb-4">
                     Email:{" "}
                     <span className="text-gray-500">
@@ -41,7 +44,7 @@ export default function UserSetting() {
                     <span className="text-gray-500">Female</span>
                   </p>
                 </div>
-                <div className="px-5 ">
+                <div className="w-full sm:w-1/2 px-5">
                   <p className="font-semibold text-gray-800 mb-4">
                     Posts: <span className="text-gray-500">15</span>
                   </p>
@@ -62,16 +65,15 @@ export default function UserSetting() {
             {/* post */}
             <div className="w-full bg-white rounded-3xl py-5 p-2">
               <div className="blog-container pt-6 flex items-center justify-center gap-5 flex-wrap">
-                {Array.from({ length: 6 }).map((post: any) => (
+                {Array.from({ length: 6 }).map((_, index) => (
                   <PostCard
-                    key={keyId}
+                    key={index}
                     userProfile="hello"
-                    id={"Date.now()"}
+                    id={Date.now().toString()} // Ensure unique ID
                     title="Migrating to linear 101"
-                    desc="Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Debitis, deserunt?"
-                    image={"post.image"}
-                    username="Jonathan WIlls"
+                    desc="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis, deserunt?"
+                    image={"post.image"} // Make sure this is replaced with a valid image source
+                    username="Jonathan Wills"
                     date={new Date()}
                     isAdmin={true}
                   />

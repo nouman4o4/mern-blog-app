@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router";
-import { Blog, About, Home, UserSetting } from "./pages";
+import { About, Blog, Home, Profile } from "./pages";
 
 import MainLayout from "./layouts/mainLayout";
 import AuthLayout from "./layouts/authLayout";
@@ -39,7 +39,7 @@ function App() {
           <Route
             path="/profile"
             element={
-              !authUser ? <Navigate to={"/login"} /> : <UserSetting />
+              !authUser ? <Navigate to={"/login"} /> : <Profile />
             }
           />
         </Route>
