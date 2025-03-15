@@ -1,9 +1,8 @@
-import { ArrowBigRight, ArrowRight } from "lucide-react";
 import React, { useRef } from "react";
 import { NavLink } from "react-router";
 import { dummyData } from "../utils/dummydata";
 
-import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 // Import Swiper styles
 import "swiper/css";
@@ -18,14 +17,14 @@ const Home: React.FC = () => {
   return (
     <div>
       <div
-        className="w-full h-[90vh] p-3 md:p-6 relative flex overflow-x-hidden
+        className="w-full h-[70vh] md:h-[90vh] p-1 md:p-6 relative flex overflow-hidden rounded-xl md:rounded-3xl
     ">
         {/* Next arrow button */}
-        <div
+        {/* <div
           onClick={() => swiperRef?.current?.slideNext()}
           className="navigater absolute top-[40%] lg:top-[50%] z-20 right-15 cursor-pointer bg-white/40 rounded-full hover:bg-white/40 duration-200 hover:scale-110">
           <ArrowRight className="text-black hover:text- size-12 lg:size-20" />
-        </div>
+        </div> */}
         <Swiper
           onSwiper={(swiper) => (swiperRef.current = swiper)}
           slidesPerView={1}
@@ -40,7 +39,7 @@ const Home: React.FC = () => {
               <NavLink
                 to={"/blog/12"}
                 key={item.id}
-                className="w-full shrink-0 h-[80vh] md:h-full flex items-end bg-cover bg-center relative rounded-xl md:rounded-3xl overflow-hidden"
+                className="w-full shrink-0 h-[65vh] md:h-[80vh] flex items-end bg-cover bg-center relative rounded-xl md:rounded-3xl overflow-hidden"
                 style={{
                   backgroundImage: `url(${item.imageUrl})`,
                 }} // Replace with your actual image URL
