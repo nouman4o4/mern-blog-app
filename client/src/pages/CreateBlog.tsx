@@ -40,9 +40,11 @@ export default function CreateBlog() {
   };
 
   return (
-    <div className="min-h-screen w-full p-2 md:p-4 mx-2 md:px-8">
-      <div className="h-full w-full bg-white p-4 md:p-2">
-        <h1 className="text-3xl font-bold my-4">Create New Blog</h1>
+    <div className="min-h-screen w-full p-2 md:p-4 md:px-8">
+      <div className="h-full w-full bg-white md:p-4">
+        <h1 className="text-2xl md:text-3xl font-bold my-2 md:my-4">
+          Create New Blog
+        </h1>
         {/* form */}
         <div className="w-full ">
           <form
@@ -61,7 +63,7 @@ export default function CreateBlog() {
                 name="title"
                 id="title"
                 placeholder="Enter a title for your blog"
-                className="w-full my-2 p-3 text-lg rounded-lg outline-0 ring-1 ring-gray-300 focus:ring-blue-500"
+                className="w-full my-2 p-2 md:p-3 text-lg rounded-lg outline-0 ring-1 ring-gray-300 focus:ring-blue-500"
               />
             </div>
             {/* category */}
@@ -72,7 +74,7 @@ export default function CreateBlog() {
                 Blog Category
               </label>
               <div
-                className={`w-full flex justify-between items-center my-2 p-3 text-lg rounded-lg ring-1 cursor-pointer hover:bg-gray-50  ${
+                className={`w-full flex justify-between items-center my-2 p-2 md:p-3 text-lg rounded-lg ring-1 cursor-pointer hover:bg-gray-50  ${
                   !isCategoryMenuOpen
                     ? "ring-gray-300"
                     : "ring-blue-400"
@@ -117,7 +119,7 @@ export default function CreateBlog() {
             {/* Featured image */}
             <div className="w-full min-h-40 rounded-lg border-dashed border-2 border-gray-300 mt-12">
               {imagePreview ? (
-                <div className="w-full relative h-64 flex items-center justify-center py-4">
+                <div className="w-full relative h-64 flex items-center justify-center py-4 p-2">
                   <img
                     src={
                       imagePreview ||
