@@ -2,20 +2,24 @@ import { Search, X } from "lucide-react";
 import useGlobalStore from "../store/globalStore.ts";
 import { cn } from "../utils/clsx";
 import { NavLink } from "react-router";
+import useUserStore from "../store/userStore.ts";
 
 export default function MobileMenu() {
   const { isMobileMenu, turnMobileMenuOff, turnSeachOn } =
     useGlobalStore((state) => state);
+  const authUser =
+    JSON.parse(localStorage.getItem("blog-app-user")!) ||
+    useUserStore((state) => state.authUser);
 
   return (
     <>
       <div
-        className={`md:hidden absolute inset-0 z-10 h-screen  bg-black/40 overflow-hidden transition-all duration-100 ${
+        className={`md:hidden absolute inset-0 z-10 h-screen bg-black/40 overflow-hidden transition-all duration-50 ${
           isMobileMenu ? "block" : "invisible"
         } `}></div>
       <div>
         <div
-          className={`md:hidden absolute inset-0 h-screen overflow-hidden transition-all duration-00 flex ${
+          className={`md:hidden absolute inset-0 h-screen overflow-hidden transition-all flex ${
             isMobileMenu ? "block" : "invisible"
           } `}>
           <div
@@ -26,7 +30,7 @@ export default function MobileMenu() {
             className={`relative z-50 duration-600 ease ${cn(
               isMobileMenu ? "translate-x-[0]" : "translate-x-[100%]"
             )} menu grow-1 sm:grow-2 sm:max-w-[350px] bg-white py-3 px-2`}>
-            <nav className="w-full flex justify-between px-6 mb-8 border-b border-gray-100 pb-2">
+            <nav className="w-full flex justify-between px-6 mb-5 border-b border-gray-100 pb-2">
               <button
                 onClick={() => {
                   turnMobileMenuOff();
@@ -41,6 +45,32 @@ export default function MobileMenu() {
                 <X />
               </button>
             </nav>
+            {/* Loged in user */}
+            {authUser ? (
+              <div className="border-b-1 border-gray-300">
+                <div className="h-full p-2 flex items-center gap-4">
+                  <div>
+                    <img
+                      src="https://avatar.iran.liara.run/public/15"
+                      className="size-14 bg-white rounded-full border-3 border-white"
+                    />
+                  </div>
+                  <NavLink
+                    to={"/profile"}
+                    onClick={turnMobileMenuOff}
+                    className={"text-left"}>
+                    <p className="Firstname font-semibold ">
+                      {authUser.email}
+                    </p>
+                    <p className="Firstname fontsemibold text-sm">
+                      {authUser.firstname} {authUser.lastname}
+                    </p>
+                  </NavLink>
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
             <div className="links w-full py-3">
               <ul className="flex flex-col gap-4 text-lg text-gray-700">
                 <NavLink
