@@ -7,7 +7,7 @@ export default function LargeMenu() {
         <NavLink className="largeMenulink" to="/">
           Home
         </NavLink>
-        <NavLink className="largeMenulink" to="/">
+        <NavLink className="largeMenulink" to="/about">
           About
         </NavLink>
         <NavLink className="largeMenulink" to="/">
