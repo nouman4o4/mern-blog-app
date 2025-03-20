@@ -197,12 +197,22 @@ export default function About() {
   return (
     <div className="w-full min-h-screen ">
       {/* About me section */}
-      <section className="about-me-section w-full md:h-[60vh]">
+      <section className="about-me-section w-full md:h-[60vh] overflow-x-hidden">
         <div className="w-full h-full py-10 px-3 md:p-8 flex flex-col-reverse md:flex-row items-center justify-between gap-8 md:gap-0">
           <motion.div
-            animate={{ y: -40 }}
-            transition={{ ease: "easeOut", duration: 1 }}
-            className="details h-full w-full mb-[-40px] md:w-1/2 flex flex-col items-center md:items-start text-center sm:text-start gap-6 md:gap-10 justify-center">
+            initial={{
+              y: 30,
+              opacity: 0,
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+            }}
+            transition={{
+              duration: 0.5,
+              ease: "easeInOut",
+            }}
+            className="details h-full w-full md:w-1/2 flex flex-col items-center md:items-start text-center sm:text-start gap-6 md:gap-10 justify-center">
             <h1 className="text-3xl md:text-5xl font-bold">
               Hey there, <span>I'm </span>
               <span className="text-red-500 tracking-tighter">
@@ -232,26 +242,64 @@ export default function About() {
             </div>
           </motion.div>
           <div className="profile-image h-full grow inline-flex items-center justify-center">
-            <div className="size-44 md:size-60 bg-white rounded-full shadow">
+            <motion.div
+              initial={{
+                scale: 0.8,
+                opacity: 0,
+              }}
+              animate={{
+                scale: 1,
+                opacity: 1,
+              }}
+              transition={{
+                duration: 0.5,
+                ease: "linear",
+              }}
+              className="size-44 md:size-60 bg-white rounded-full shadow">
               <img
                 src="/profile.jpeg"
                 alt="profile-photo"
                 className="w-full h-full object-cover rounded-full 
                 "
               />
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* My journey section */}
 
-      <section className="my-journey-section px-4 py-2 bg-gray-50">
-        <h3 className="text-2xl md:text-3xl font-bold my-8 ">
+      <section className="my-journey-section px-4 py-2 bg-gray-50 overflow-x-hidden">
+        <motion.h3
+          initial={{
+            x: -30,
+            opacity: 0,
+          }}
+          whileInView={{
+            x: 0,
+            opacity: 1,
+          }}
+          transition={{
+            duration: 0.5,
+          }}
+          viewport={{ once: true }}
+          className="text-2xl md:text-3xl font-bold my-8 ">
           My journey
-        </h3>
+        </motion.h3>
         <div className="w-full py-3 mb-5 min-h-[40vh] flex flex-col lg:flex-row justify-between lg:justify-around items-centergap-6 md:gap-3">
-          <div className="content h-full w-full lg:w-2/3 pb-4 lg:p-4 text-gray-700 md:text-lg">
+          <motion.div
+            initial={{
+              x: -30,
+              opacity: 0,
+            }}
+            animate={{
+              x: 0,
+              opacity: 1,
+            }}
+            transition={{
+              duration: 0.5,
+            }}
+            className="content h-full w-full lg:w-2/3 pb-4 lg:p-4 text-gray-700 md:text-lg">
             <p className="mb-4">
               {" "}
               My web development journey started with HTML and grew
@@ -265,20 +313,43 @@ export default function About() {
               stack app with TypeScript, authentication, and social
               features. I'm excited to keep growing as a developer.
             </p>
-          </div>
-          <div className="photo h-full w-3/4 lg:w-fit overflow-hidden">
+          </motion.div>
+          <motion.div
+            initial={{
+              x: 30,
+              opacity: 0,
+            }}
+            animate={{
+              x: 0,
+              opacity: 1,
+            }}
+            transition={{
+              duration: 0.5,
+            }}
+            className="photo h-full w-3/4 lg:w-fit overflow-hidden">
             <img
               className="lg:h-52 w-full lg:w-auto object-cover rounded-lg"
               src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
               alt=""
             />
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* about this platform */}
-      <section className="about-this-platform-section py-12 px-4">
-        <div className="text-center my-8">
+      <section className="about-this-platform-section py-12 px-4 overflow-x-hidden">
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          transition={{
+            duration: 0.9,
+          }}
+          viewport={{ once: true }}
+          className="text-center my-8">
           <h3 className="text-3xl lg:text-4xl font-bold mb-4">
             Blog Platform Features
           </h3>
@@ -286,12 +357,27 @@ export default function About() {
             A full-featured bloggin platform built with the MERN stack
             and Typsript.
           </p>
-        </div>
+        </motion.div>
         <div
           className="container-r w-full min-h-[60vh] px-2 sm:p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-7
         ">
-          {features.map((feature) => (
-            <div className="min-h-50 rounded-lg bg-gray-50 shadow-lg p-4 md:p-8 hover:scale-[102%] hover:scale-3d transition duration-75">
+          {features.map((feature, index) => (
+            <motion.div
+              initial={{
+                x: index % 2 === 0 ? -50 : 50,
+                opacity: 0,
+              }}
+              whileInView={{
+                x: 0,
+                opacity: 1,
+              }}
+              transition={{
+                duration: 0.6,
+                delay: index * 0.2,
+                ease: "easeOut",
+              }}
+              viewport={{ once: true }}
+              className="min-h-50 rounded-lg bg-gray-50 shadow-lg p-4 md:p-8 hover:scale-[102%] hover:scale-3d transition duration-75">
               {" "}
               <div className="icon mb-5 text-red-500">
                 {feature.icon}
@@ -300,25 +386,53 @@ export default function About() {
               <p className="pt-4 text-gray-600">
                 {feature.description}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
       {/* Technologies section */}
-      <section className="about-this-platform-section py-12 px-4 bg-gray-50">
-        <div className="text-center my-8">
+      <section className="about-this-platform-section py-12 px-4 bg-gray-50 overflow-x-hidden">
+        <motion.div
+          initial={{
+            y: 0,
+            opacity: 0,
+          }}
+          whileInView={{
+            y: 0,
+            opacity: 1,
+          }}
+          transition={{
+            duration: 0.9,
+          }}
+          viewport={{ once: true }}
+          className="text-center my-8">
           <h3 className="text-3xl lg:text-4xl font-bold mb-4">
             Technologies Used
           </h3>
           <p className="text-xl text-gray-600">
             The modern tech stack powering this blog platform.
           </p>
-        </div>
+        </motion.div>
         <div
           className="container-r w-full min-h-[60vh] px-2 sm:p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7
         ">
-          {technologies.map((technology) => (
-            <div className="min-h-50 flex flex-col items-center gap-8 rounded-lg bg-white shadow-lg p-4 md:p-8 hover:scale-[102%] hover:scale-3d transition duration-75">
+          {technologies.map((technology, index) => (
+            <motion.div
+              initial={{
+                y: 30,
+                opacity: 0,
+              }}
+              whileInView={{
+                y: 0,
+                opacity: 1,
+              }}
+              transition={{
+                duration: 0.4,
+                delay: index * 0.2,
+                ease: "easeOut",
+              }}
+              viewport={{ once: true }}
+              className="min-h-50 flex flex-col items-center gap-8 rounded-lg bg-white shadow-lg p-4 md:p-8 hover:scale-[102%] hover:scale-3d transition duration-75">
               {" "}
               <div className="icon text-red-500">
                 {technology.icon}
@@ -327,14 +441,25 @@ export default function About() {
               <p className=" text-gray-600 text-center">
                 {technology.description}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
 
       {/* My learnings section */}
-      <section className="my-learnings-section py-12 px-2 md:mx-4 bg-white">
-        <div className="text-center my-8">
+      <section className="my-learnings-section py-12 px-2 md:mx-4 bg-white overflow-x-hidden">
+        <motion.div
+          initial={{
+            opacity: 0,
+          }}
+          whileInView={{
+            opacity: 1,
+          }}
+          transition={{
+            duration: 0.5,
+          }}
+          viewport={{ once: true }}
+          className="text-center my-8">
           <h3 className="text-3xl lg:text-4xl font-bold mb-4">
             My Learnings
           </h3>
@@ -342,14 +467,28 @@ export default function About() {
             The key milestones in my self-taught web development
             journey.
           </p>
-        </div>
+        </motion.div>
         <div
           className="container- w-full min-h-[60vh] relative
         ">
           <div className="absolute h-full hidden md:block w-1 bg-red-200 top-0 left-1/2 translate-x-1/2"></div>
           {milestones.map((milestone, index) => (
             // map item
-            <div
+            <motion.div
+              initial={{
+                x: index % 2 === 0 ? -50 : 50,
+                opacity: 0,
+              }}
+              whileInView={{
+                x: 0,
+                opacity: 1,
+              }}
+              transition={{
+                duration: 0.6,
+                delay: index * 0.2,
+                ease: "easeOut",
+              }}
+              viewport={{ once: true }}
               className={`min-h-[20vh] flex items-center my-2 ${
                 index % 2 === 0 ? "flex-row-reverse" : "flex-row"
               }`}>
@@ -374,7 +513,7 @@ export default function About() {
                   {milestone.year}
                 </button>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
