@@ -8,6 +8,7 @@ import Signup from "./pages/Signup";
 import { Toaster } from "react-hot-toast";
 import useUserStore from "./store/userStore";
 import CreateBlog from "./pages/CreateBlog";
+import Contact from "./pages/Contact";
 
 function App() {
   const authUser =
@@ -47,6 +48,12 @@ function App() {
             path="/create-blog"
             element={
               !authUser ? <Navigate to={"/login"} /> : <CreateBlog />
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              !authUser ? <Navigate to={"/login"} /> : <Contact />
             }
           />
         </Route>
