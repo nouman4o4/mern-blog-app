@@ -1,5 +1,6 @@
 import { useId } from "react";
 import PostCard from "../components/PostCard";
+import { Link } from "react-router";
 
 export default function Profile() {
   const keyId = useId();
@@ -7,10 +8,10 @@ export default function Profile() {
     <div>
       <div className="min-h-screen w-full bg-gray-100 p-1 sm:p-3 md:p-6 lg:p-10">
         <div className="min-h-[70vh] w-full bg-white rounded-2xl">
-          <div className="user-profile&details w-full h-52 rounded-2xl bg-center bg-cover bg-[url(https://images.unsplash.com/photo-1508780709619-79562169bc64?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]"></div>
+          <div className="user-profile&details w-full h-40 sm:h-56 md:h-74 rounded-2xl bg-center bg-cover bg-[url(https://images.unsplash.com/photo-1508780709619-79562169bc64?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]"></div>
 
           <div className="w-full flex flex-col sm:flex-row min-h-[30vh] justify-between">
-            <div className="user-image  bg-yellow-600">
+            <div className="user-image">
               <div className="photo w-32 h-32 sm:w-48 sm:h-48 absolute sm:relative">
                 <div className="absolute left-4 top-[-40%]">
                   <img
@@ -21,12 +22,12 @@ export default function Profile() {
                 </div>
               </div>
             </div>
-            <div className="flex-grow p-6 pt-18 sm:pt-0">
+            <div className="flex-grow p-6 pt-18 sm:pt-6">
               <h1 className="text-4xl font-bold text-gray-800 mb-3">
                 John Doe
               </h1>
-              <div className="flex flex-wrap gap-5">
-                <div className="user-detail w-full sm:w-1/2">
+              <div className="flex flex-wrap">
+                <div className="user-detail sm:w-1/2">
                   <p className="font-semibold text-gray-800 mb-4">
                     Email:{" "}
                     <span className="text-gray-500">
@@ -44,7 +45,7 @@ export default function Profile() {
                     <span className="text-gray-500">Female</span>
                   </p>
                 </div>
-                <div className="w-full sm:w-1/2 px-5">
+                <div className="w-full sm:w-1/2 sm:px-5">
                   <p className="font-semibold text-gray-800 mb-4">
                     Posts: <span className="text-gray-500">15</span>
                   </p>
@@ -59,8 +60,17 @@ export default function Profile() {
         </div>
 
         {/* blogs */}
+        <div className="text-end my-3 py-3">
+          <Link
+            to={"/create-blog"}
+            className="text-xl font-semibold border bg-black text-white py-2 px-4 rounded-lg cursor-pointer">
+            Create a new post
+          </Link>
+        </div>
         <div className="w-full my-4">
-          <h1 className="py-3 text-3xl font-semibold">Posts</h1>
+          <h1 className="py-3 my-3 text-3xl font-semibold">
+            My Posts
+          </h1>
           <div className="posts-container">
             {/* post */}
             <div className="w-full bg-white rounded-3xl py-5 p-2">

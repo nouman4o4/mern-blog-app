@@ -39,7 +39,7 @@ const Home: React.FC = () => {
               <NavLink
                 to={"/blog/12"}
                 key={item.id}
-                className="w-full shrink-0 h-[65vh] md:h-[80vh] flex items-end bg-cover bg-center relative rounded-xl md:rounded-3xl overflow-hidden"
+                className="w-full shrink-0 h-[65vh] md:h-[80vh] flex items-end bg-cover bg-center relative rounded-lg md:rounded-2xl overflow-hidden"
                 style={{
                   backgroundImage: `url(${item.imageUrl})`,
                 }} // Replace with your actual image URL
