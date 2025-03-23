@@ -17,8 +17,10 @@ export const authMiddleware = async (
     ?.split("=")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized request" });
+    res.status(401).json({ message: "Unauthorized request" });
+    return;
   }
+
   try {
     const decode = jwt.verify(
       token,
@@ -26,7 +28,7 @@ export const authMiddleware = async (
     ) as JwtPayload;
 
     if (decode?.exp && decode?.exp * 1000 < Date.now()) {
-      return res
+      res
         .status(401)
         .json({ message: "Token expired, please login again!" });
     }
@@ -36,10 +38,10 @@ export const authMiddleware = async (
     next();
   } catch (error: any) {
     if (error.name === "TokenExpiredError") {
-      return res
+      res
         .status(401)
         .json({ message: "Token expired, please login again!" });
     }
-    return res.status(401).json({ message: "Unauthorized request" });
+    res.status(401).json({ message: "Unauthorized request" });
   }
 };
