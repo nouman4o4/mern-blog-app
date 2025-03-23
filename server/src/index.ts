@@ -4,6 +4,7 @@ import authRouter from "./routes/auth-route";
 import { configDotenv } from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import blogRouter from "./routes/blog-route";
 
 const app = express();
 const port = 3000;
@@ -23,7 +24,13 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
-app.use("/api/users", authRouter);
+
+// auth router
+// TODO: Seprate auth-router and users-router.(Recommended!)
+app.use("/api/v1/users", authRouter);
+
+// blog router
+app.use("/api/v1/blogs", blogRouter);
 
 app.listen(port, async () => {
   await connectDb();
