@@ -3,6 +3,7 @@ import { uploadFileToCloudinary } from "../lib/cloundinary";
 import { Post } from "../models/posts.model";
 import { createBlogShcema } from "../schemas/blog-schema";
 import fs from "fs";
+import mongoose from "mongoose";
 
 // Create blog post
 export const createBlog = async (req: Request, res: Response) => {
@@ -76,20 +77,168 @@ export const createBlog = async (req: Request, res: Response) => {
 
 // Get all blog posts
 export const getAllBlogs = async (req: Request, res: Response) => {
-  res.json({ message: "Get all blog posts" });
+  try {
+    const allBlogPosts = await Post.find();
+    if (!allBlogPosts) {
+      res.status(404).json({
+        success: false,
+        status: 404,
+        message: "No blog posts found",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "All blog posts retrieved successfully",
+      posts: allBlogPosts,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Failed to retrieved blog posts",
+      error: error.message || error,
+    });
+  }
 };
 
 // Get a blog post
 export const getBlog = async (req: Request, res: Response) => {
-  res.json({ message: "Get a blog post" });
+  try {
+    const postId = req.params.id;
+
+    const isValidPostId = mongoose.isValidObjectId(postId);
+    if (!isValidPostId) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid post ID",
+      });
+      return;
+    }
+
+    const blogPost = await Post.findOne({ _id: postId });
+
+    if (!blogPost) {
+      res.status(404).json({
+        success: false,
+        status: 404,
+        message: "Blog post not found",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Blog post retrieved successfully",
+      post: blogPost,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Failed to retrieved blog post",
+      error: error.message || error,
+    });
+  }
 };
 
 // Update a blog post
 export const updateBlog = async (req: Request, res: Response) => {
-  res.json({ message: "Update a blog post" });
+  try {
+    const postId = req.params.id;
+    const { title, content } = req.body;
+    if (
+      !title ||
+      title.length < 5 ||
+      !content ||
+      content.length < 8
+    ) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid request body",
+      });
+    }
+    const isValidPostId = mongoose.isValidObjectId(postId);
+    if (!isValidPostId) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid post ID",
+      });
+      return;
+    }
+
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      {
+        title,
+        content,
+      },
+      { new: true, runValidators: true }
+    );
+    if (!updatedPost) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Could'nt update the post",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Blog post updated successfully",
+      updatedPost,
+    });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Internal Server Error while update the post",
+      error: error.message || error,
+    });
+  }
 };
 
 // Delete blog post
 export const deleteBlog = async (req: Request, res: Response) => {
-  res.json({ message: "Delete a blog" });
+  const postId = req.params.id;
+  try {
+    const isValidPostId = mongoose.isValidObjectId(postId);
+    if (!isValidPostId) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid post ID",
+      });
+      return;
+    }
+    const post = await Post.findByIdAndDelete(postId);
+    if (!post) {
+      res.status(404).json({
+        success: false,
+        status: 404,
+        message: "Post not found",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Blog post deleted successfully",
+    });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Internal Server Error while deleting the post",
+      error: error.message || error,
+    });
+  }
 };
