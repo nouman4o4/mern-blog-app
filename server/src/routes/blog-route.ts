@@ -7,6 +7,7 @@ import {
   deleteBlog,
 } from "../controllers/blog-controller";
 import { authMiddleware } from "../middleswares/authMiddleware";
+import { upload } from "../middleswares/multer";
 
 const blogRouter = Router();
 
@@ -17,7 +18,7 @@ blogRouter.get("/", getAllBlogs);
 blogRouter.get("/:id", getBlog);
 
 // CREATE a blog post
-blogRouter.post("/", authMiddleware, createBlog);
+blogRouter.post("/", upload.single("file"), createBlog);
 
 // UPDATE a blog post
 blogRouter.put("/:id", authMiddleware, updateBlog);
