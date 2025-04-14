@@ -37,10 +37,17 @@ const extensions = [
 
 const content = "";
 
-export default () => {
+export default ({
+  onChange,
+}: {
+  onChange: (content: string) => void;
+}) => {
   const editor = useEditor({
     extensions,
     content,
+    onUpdate: ({ editor }) => {
+      onChange(editor.getHTML());
+    },
     editorProps: {
       attributes: {
         class:

@@ -1,11 +1,26 @@
 import { Check, ChevronDown, Loader2, Upload, X } from "lucide-react";
-import React, { HtmlHTMLAttributes, useRef, useState } from "react";
+import React, {
+  HtmlHTMLAttributes,
+  useActionState,
+  useRef,
+  useState,
+} from "react";
 import Editor from "../components/Editor";
+import { blogSchema } from "../schemas/blogSchema";
+import useUserStore from "../store/userStore";
 
 interface Category {
   id: string;
   name: string;
 }
+
+interface IFormData {
+  title: string;
+  content: string;
+  category: string;
+  image: File | null;
+}
+
 const categories: Category[] = [
   { id: "1", name: "Technology" },
   { id: "2", name: "Travel" },
@@ -21,9 +36,12 @@ export default function CreateBlog() {
   const [category, setCategory] = useState<string>("");
   const [image, setImage] = useState<File>();
   const [imagePreview, setImagePreview] = useState("");
-
+  const [content, setContent] = useState("string");
   const inputRef = useRef(null);
 
+  const authUser =
+    JSON.parse(localStorage.getItem("blog-app-user")!) ||
+    useUserStore((state) => state.authUser);
   const handleImageChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -39,6 +57,67 @@ export default function CreateBlog() {
     console.log(imagePreview);
   };
 
+  const submitFunction = async (
+    prevState: IFormData,
+    formData: FormData
+  ) => {
+    const title = formData.get("title") as string | null;
+    // const image = formData.get("image") as File | undefined;
+
+    const zodResult = blogSchema.safeParse({
+      title,
+      content,
+      category,
+    });
+    const validatonError = zodResult.error?.format();
+    if (!zodResult.success) {
+      console.log(validatonError);
+    }
+
+    // Api call
+    try {
+      const url = "http://localhost:3000/api/v1/blogs/";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        credentials: "include",
+        // author is missing here!!!
+        body: JSON.stringify({
+          title,
+          content,
+          category,
+          image,
+          author: authUser._id,
+        }),
+      });
+
+      const jsonResponse = await response.json();
+      console.log(jsonResponse);
+    } catch (error) {
+      console.error(error);
+    }
+    return {
+      title: title ?? "",
+      content: content ?? "",
+      category: category ?? "",
+      image: image ?? null,
+      error: "",
+    };
+  };
+
+  const [state, formAction, isPending] = useActionState(
+    submitFunction,
+    {
+      title: "",
+      content: "",
+      category: "",
+      image: null,
+      error: "",
+    }
+  );
+
   return (
     <div className="min-h-screen w-full p-2 md:p-4 md:px-8">
       <div className="h-full w-full bg-white md:p-4">
@@ -48,7 +127,7 @@ export default function CreateBlog() {
         {/* form */}
         <div className="w-full ">
           <form
-            onSubmit={(e) => e.preventDefault()}
+            action={formAction}
             className="w-full min-h-screen py-2 md:py-4
           ">
             {/* title input */}
@@ -159,14 +238,14 @@ export default function CreateBlog() {
             </div>
             {/* content Editer */}
             <div className="min-h-54 w-full mt-8 border-1 border-gray-200 rounded-lg">
-              <Editor />
+              <Editor onChange={setContent} />
             </div>
 
             <div className="flex justify-start py-4">
               <button
-                type="submit"
+                disabled={isPending}
                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
-                {false ? (
+                {isPending ? (
                   <>
                     <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5" />
                     Publishing...
