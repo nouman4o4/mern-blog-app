@@ -70,7 +70,7 @@ export default function Signup() {
       }
 
       // api call
-      const url = "http://localhost:3000/api/users/register";
+      const url = "http://localhost:3000/api/v1/users/register";
       const response = await fetch(url, {
         method: "POST",
         headers: {
