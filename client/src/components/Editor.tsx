@@ -80,6 +80,7 @@ export default ({
       <div className="control-group p-2 md:p-4 bg-gray-100">
         <div className="button-group flex flex-wrap gap-2">
           <button
+            type="button"
             onClick={() => editor?.chain().focus().toggleBold().run()}
             disabled={
               !editor?.can().chain().focus().toggleBold().run()
@@ -97,6 +98,7 @@ export default ({
           </button>
 
           <button
+            type="button"
             onClick={() =>
               editor?.chain().focus().toggleItalic().run()
             }
@@ -137,6 +139,7 @@ export default ({
           </button>
 
           <button
+            type="button"
             onClick={() =>
               editor?.chain().focus().toggleStrike().run()
             }
@@ -156,6 +159,7 @@ export default ({
           </button>
 
           <button
+            type="button"
             onClick={() => editor?.chain().focus().toggleCode().run()}
             disabled={
               !editor?.can().chain().focus().toggleCode().run()
@@ -173,6 +177,7 @@ export default ({
           </button>
 
           <button
+            type="button"
             onClick={() =>
               editor?.chain().focus().unsetAllMarks().run()
             }
@@ -219,6 +224,7 @@ export default ({
           </button>
 
           <button
+            type="button"
             onClick={() => editor?.chain().focus().undo().run()}
             disabled={!editor?.can().chain().focus().undo().run()}
             className={`flex items-center px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium rounded-md transition duration-150
@@ -234,6 +240,7 @@ export default ({
           </button>
 
           <button
+            type="button"
             onClick={() => editor?.chain().focus().redo().run()}
             disabled={!editor?.can().chain().focus().redo().run()}
             className={`flex items-center px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium rounded-md transition duration-150

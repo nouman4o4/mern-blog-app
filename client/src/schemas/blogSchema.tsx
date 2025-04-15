@@ -8,5 +8,7 @@ export const blogSchema = z.object({
     .string()
     .min(10, "content should be at least 10 character")
     .max(200, "content should not be more than 200 chracter"),
-  category: z.string({ required_error: "category is required" }),
+  category: z
+    .string({ required_error: "category is required" })
+    .min(3, "Category is required!"),
 });
