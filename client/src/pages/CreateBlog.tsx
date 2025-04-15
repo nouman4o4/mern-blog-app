@@ -8,6 +8,8 @@ import React, {
 import Editor from "../components/Editor";
 import { blogSchema } from "../schemas/blogSchema";
 import useUserStore from "../store/userStore";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 interface Category {
   id: string;
@@ -36,8 +38,11 @@ export default function CreateBlog() {
   const [category, setCategory] = useState<string>("");
   const [image, setImage] = useState<File>();
   const [imagePreview, setImagePreview] = useState("");
-  const [content, setContent] = useState("string");
+  const [content, setContent] = useState("");
+  const [titleError, setTitleError] = useState("");
   const inputRef = useRef(null);
+
+  const navigate = useNavigate();
 
   const authUser =
     JSON.parse(localStorage.getItem("blog-app-user")!) ||
@@ -54,7 +59,6 @@ export default function CreateBlog() {
       setImagePreview(reader.result as string);
     };
     reader.readAsDataURL(file);
-    console.log(imagePreview);
   };
 
   const submitFunction = async (
@@ -69,9 +73,23 @@ export default function CreateBlog() {
       content,
       category,
     });
-    const validatonError = zodResult.error?.format();
+    const validationError = zodResult.error?.format();
+
     if (!zodResult.success) {
-      console.log(validatonError);
+      toast("Please provide all the required data!", {
+        style: {
+          backgroundColor: "red",
+          color: "white",
+        },
+      });
+      setTitleError(validationError?.title?._errors[0] ?? "");
+      return {
+        title: title ?? "",
+        content: content ?? "",
+        category: category ?? "",
+        image: image ?? null,
+        error: validationError,
+      };
     }
 
     // Api call
@@ -83,7 +101,6 @@ export default function CreateBlog() {
           "Content-type": "application/json",
         },
         credentials: "include",
-        // author is missing here!!!
         body: JSON.stringify({
           title,
           content,
@@ -94,16 +111,22 @@ export default function CreateBlog() {
       });
 
       const jsonResponse = await response.json();
-      console.log(jsonResponse);
+      if (!jsonResponse.success) toast.error(jsonResponse.message);
+      else {
+        toast.success("Post created successfully!");
+        // Redirect to the post page
+        navigate("/");
+      }
     } catch (error) {
       console.error(error);
+      toast.error("Oops! an unexpected error occured");
     }
     return {
       title: title ?? "",
       content: content ?? "",
       category: category ?? "",
       image: image ?? null,
-      error: "",
+      error: null,
     };
   };
 
@@ -114,7 +137,7 @@ export default function CreateBlog() {
       content: "",
       category: "",
       image: null,
-      error: "",
+      error: null,
     }
   );
 
@@ -139,11 +162,16 @@ export default function CreateBlog() {
               </label>
               <input
                 type="text"
+                defaultValue={state.title as string}
                 name="title"
                 id="title"
+                onChange={() =>
+                  titleError.length > 0 && setTitleError("")
+                }
                 placeholder="Enter a title for your blog"
                 className="w-full my-2 p-2 md:p-3 text-lg rounded-lg outline-0 ring-1 ring-gray-300 focus:ring-blue-500"
               />
+              <p className="text-red-400 text-sm h-5">{titleError}</p>
             </div>
             {/* category */}
             <div className="title-input my-2 select-none relative">
@@ -193,6 +221,11 @@ export default function CreateBlog() {
                   ))}
                 </div>
               </div>
+              <p className="text-red-400 text-sm h-5">
+                {(category.length <= 0 &&
+                  state.error?.category?._errors[0]) ??
+                  ""}
+              </p>
             </div>
 
             {/* Featured image */}
@@ -236,13 +269,19 @@ export default function CreateBlog() {
                 </div>
               )}
             </div>
+
             {/* content Editer */}
             <div className="min-h-54 w-full mt-8 border-1 border-gray-200 rounded-lg">
               <Editor onChange={setContent} />
             </div>
-
+            <p className="text-red-400 text-sm h-5">
+              {(content.length <= 10 &&
+                state.error?.content?._errors[0]) ??
+                ""}
+            </p>
             <div className="flex justify-start py-4">
               <button
+                type="submit"
                 disabled={isPending}
                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
                 {isPending ? (
