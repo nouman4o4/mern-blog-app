@@ -1,23 +1,17 @@
 import express, { RequestHandler, Request, Response } from "express";
 import {
-  getUsers,
   login,
   logout,
   register,
-  removeUser,
-  updateUser,
 } from "../controllers/auth-controller";
 import { authMiddleware } from "../middleswares/authMiddleware";
 
-const router = express.Router();
+const authRouter = express.Router();
 
 // typescript error occurring becuase of returning the response;
 
-router.get("/", authMiddleware, getUsers);
-router.post("/register", register);
-router.post("/login", login);
-router.get("/logout", authMiddleware, logout);
-router.get("/delete", removeUser);
-router.put("/update", authMiddleware, updateUser);
+authRouter.post("/register", register);
+authRouter.post("/login", login);
+authRouter.get("/logout", authMiddleware, logout);
 
-export default router;
+export default authRouter;
