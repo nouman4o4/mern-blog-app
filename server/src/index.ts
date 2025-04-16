@@ -26,8 +26,11 @@ app.get("/", (req, res) => {
 });
 
 // auth router
-// TODO: Seprate auth-router and users-router.(Recommended!)
-app.use("/api/v1/users", authRouter);
+app.use("/api/v1/auth", authRouter);
+
+// users-router
+
+app.use("/api/v1/users");
 
 // blog router
 app.use("/api/v1/blogs", blogRouter);
