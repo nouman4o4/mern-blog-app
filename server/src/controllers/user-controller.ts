@@ -5,7 +5,8 @@ import mongoose from "mongoose";
 // Get all users
 export const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.find();
+    //TODO: omiting passwords
+    const users = await User.find().select("-password");
     res.status(200).json({
       success: true,
       status: 200,
@@ -24,6 +25,37 @@ export const getUsers = async (req: Request, res: Response) => {
   }
 };
 
+// Get a user
+export const getUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.id;
+
+    if (!mongoose.isValidObjectId(userId)) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid user id",
+      });
+      return;
+    }
+
+    const user = await User.findById(userId).select("-password");
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Operation successfull",
+      data: user,
+    });
+    return;
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Unexpected error occurred while fetching user",
+    });
+  }
+};
 // Update user
 export const updateUser = async (req: Request, res: Response) => {
   const userId = req.userId;

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleswares/authMiddleware";
 import {
+  getUser,
   getUsers,
   removeUser,
   updateUser,
@@ -9,6 +10,7 @@ import {
 const userRouter = Router();
 
 userRouter.get("/", authMiddleware, getUsers);
+userRouter.get("/:id", authMiddleware, getUser);
 userRouter.get("/delete/:id", removeUser);
 userRouter.put("/update/:id", authMiddleware, updateUser);
 
