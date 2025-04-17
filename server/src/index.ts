@@ -5,6 +5,7 @@ import { configDotenv } from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import blogRouter from "./routes/blog-route";
+import userRouter from "./routes/user-route";
 
 const app = express();
 const port = 3000;
@@ -30,7 +31,7 @@ app.use("/api/v1/auth", authRouter);
 
 // users-router
 
-app.use("/api/v1/users");
+app.use("/api/v1/users", userRouter);
 
 // blog router
 app.use("/api/v1/blogs", blogRouter);
