@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { IUser, User } from "../models/user.model";
 import mongoose from "mongoose";
+import { REFUSED } from "dns";
+import { uploadFileToCloudinary } from "../lib/cloundinary";
 
 // Get all users
 export const getUsers = async (req: Request, res: Response) => {
@@ -96,6 +98,83 @@ export const updateUser = async (req: Request, res: Response) => {
       status: 500,
       message: "Unexpected error occurred while updating the user",
       error,
+    });
+    return;
+  }
+};
+
+// Update user profile image
+
+export const updateProfileImage = async (
+  req: Request,
+  res: Response
+) => {
+  const userId = req.params.id;
+  const file = req.file;
+
+  try {
+    if (!mongoose.isValidObjectId(userId) || userId !== req.userId) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid user id",
+      });
+      return;
+    }
+
+    if (!file) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "No file uploaded",
+      });
+      return;
+    }
+
+    const cloundinaryUploadResult = await uploadFileToCloudinary(
+      file.path
+    );
+    if (!cloundinaryUploadResult) {
+      res.status(500).json({
+        success: false,
+        status: 500,
+        message: "Cloudinary upload failed",
+      });
+      return;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          profileImage: cloundinaryUploadResult.secure_url,
+        },
+      },
+      {
+        new: true,
+      }
+    ).select("-password");
+    if (!updatedUser) {
+      res.status(404).json({
+        success: false,
+        status: 404,
+        message: "User not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "User profile image updated successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Internal server error",
     });
     return;
   }

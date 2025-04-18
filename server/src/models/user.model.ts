@@ -5,6 +5,7 @@ interface IUser {
   lastname: string;
   email: string;
   password: string;
+  ProfileImage?: string;
   posts?: Types.ObjectId;
   gender: string;
   comparePassword: (password: string) => Promise<boolean>;
