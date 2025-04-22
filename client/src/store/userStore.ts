@@ -1,10 +1,11 @@
 import { create } from "zustand";
 
 interface AuthUser {
-  id: string;
+  _id: string;
   firstname: string;
   lastname: string;
   email: string;
+  profileImage: string;
 }
 interface StoreState {
   authUser: AuthUser | null;
