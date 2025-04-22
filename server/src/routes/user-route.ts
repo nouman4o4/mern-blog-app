@@ -16,7 +16,7 @@ userRouter.get("/:id", authMiddleware, getUser);
 userRouter.get("/delete/:id", removeUser);
 userRouter.put("/update/:id", authMiddleware, updateUser);
 userRouter.put(
-  "/updateProfile/:id",
+  "/update-profile/:id",
   upload.single("profile"),
   authMiddleware,
   updateProfileImage
