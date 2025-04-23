@@ -70,7 +70,7 @@ export default function Signup() {
       }
 
       // api call
-      const url = "http://localhost:3000/api/v1/users/register";
+      const url = "http://localhost:3000/api/v1/auth/register";
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -91,6 +91,7 @@ export default function Signup() {
       return formDataObj;
     } catch (error: any) {
       console.log(error.message);
+      toast.error("An unexpected error occured, Please try again.");
       return { ...formDataObj, error: "An unexpected error occured" };
     }
   };
