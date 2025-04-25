@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 
 import "dotenv/config";
+import fs from "fs";
 
 export const uploadFileToCloudinary = async function (
   localFilePath: string
@@ -30,5 +31,9 @@ export const uploadFileToCloudinary = async function (
       "Error while uploading image to the cloudinary:",
       error
     );
+  } finally {
+    fs.unlink(localFilePath, (err) => {
+      throw err;
+    });
   }
 };
