@@ -6,14 +6,17 @@ interface AuthUser {
   lastname: string;
   email: string;
   profileImage: string;
+  gender: string;
 }
 interface StoreState {
   authUser: AuthUser | null;
-  setAuthUser: (userData: AuthUser) => void;
+  setAuthUser: (userData: AuthUser | null) => void;
 }
 
 const useUserStore = create<StoreState>((set, get) => ({
-  authUser: null,
+  authUser: JSON.parse(
+    localStorage.getItem("blog-app-user") as string
+  ),
   setAuthUser: (userData) => {
     localStorage.setItem("blog-app-user", JSON.stringify(userData));
     set({ authUser: userData });
