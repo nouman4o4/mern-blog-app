@@ -11,10 +11,8 @@ import CreateBlog from "./pages/CreateBlog";
 import Contact from "./pages/Contact";
 
 function App() {
-  const authUser =
-    JSON.parse(localStorage.getItem("blog-app-user")!) ||
-    useUserStore((state) => state.authUser);
-  console.log(authUser);
+  const authUser = useUserStore((state) => state.authUser);
+  console.log({ authUser });
   return (
     <>
       <Toaster />

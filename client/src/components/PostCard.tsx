@@ -30,7 +30,7 @@ export default function PostCard({
         <NavLink to={"/blog/12"}>
           <div className="photo w-full overflow-hidden rounded-xl">
             <img
-              src="https://images.unsplash.com/photo-1587620962725-abab7fe55159"
+              src="https://via.placeholder.com/300x400"
               alt="photo"
               className="w-full hover:scale-105 duration-200"
             />

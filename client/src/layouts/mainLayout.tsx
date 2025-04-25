@@ -7,7 +7,7 @@ import { Outlet } from "react-router";
 
 const MainLayout = () => {
   return (
-    <div className="max-w-[1400px] w-full mx-auto">
+    <div className="max-w-[1400px] w-full mx-auto relative">
       <Navbar />
       <Breadcrumbs />
       <Search />

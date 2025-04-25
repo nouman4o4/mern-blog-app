@@ -9,9 +9,7 @@ import useUserStore from "../store/userStore.ts";
 export default function Navbar() {
   const { turnSeachOn, turnMobileMenuOn, isMobileMenu, isSearch } =
     useGlobalStore((state) => state);
-  const authUser =
-    JSON.parse(localStorage.getItem("blog-app-user")!) ||
-    useUserStore((state) => state.authUser);
+  const { authUser } = useUserStore();
 
   if (isMobileMenu || isSearch) {
     document.body.style.height = "100vh";
@@ -39,7 +37,13 @@ export default function Navbar() {
             <div className="h-full py-2 sm:block hidden">
               <NavLink to={"/profile"} className={"text-center"}>
                 <img
-                  src="https://avatar.iran.liara.run/public/15"
+                  src={`${
+                    authUser?.profileImage
+                      ? authUser?.profileImage
+                      : authUser?.gender === "male"
+                      ? "https://avatar.iran.liara.run/public/41"
+                      : "https://avatar.iran.liara.run/public/88"
+                  }`}
                   className="size-11 md:size-14 bg-white rounded-full border-3 border-white"
                 />
                 <p className="Firstname text-white font-semibold text-sm">
