@@ -103,6 +103,42 @@ export const getAllBlogs = async (req: Request, res: Response) => {
   }
 };
 
+// Get all blog posts of single user
+export const getAllBlogsForUser = async (
+  req: Request,
+  res: Response
+) => {
+  const userId = req.params.userid;
+
+  try {
+    if (!mongoose.isValidObjectId(userId)) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid user ID",
+      });
+      return;
+    }
+    const blogs = await Post.find({ author: userId });
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Data retrieved successfully",
+      data: blogs,
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Internal server error",
+    });
+    return;
+  }
+};
+
 // Get a blog post
 export const getBlog = async (req: Request, res: Response) => {
   try {

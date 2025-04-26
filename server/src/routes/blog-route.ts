@@ -5,6 +5,7 @@ import {
   getAllBlogs,
   getBlog,
   deleteBlog,
+  getAllBlogsForUser,
 } from "../controllers/blog-controller";
 import { authMiddleware } from "../middleswares/authMiddleware";
 import { upload } from "../middleswares/multer";
@@ -25,5 +26,8 @@ blogRouter.put("/:id", authMiddleware, updateBlog);
 
 // DELETE a blog post
 blogRouter.delete("/:id", authMiddleware, deleteBlog);
+
+// Get all blog posts fo a user
+blogRouter.get("/user/:userid", getAllBlogsForUser);
 
 export default blogRouter;
