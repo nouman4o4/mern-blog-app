@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import useImageCropper from "../hooks/useImageCropper";
 import useUserStore from "../store/userStore";
-import { Camera, Loader } from "lucide-react";
+import { Camera, Divide, Loader } from "lucide-react";
 import CropModal from "./CropModal";
 import { IUser } from "../types/User";
 
 export default function UserDetailSection({
   authorDetails,
   isAuthor,
+  likes,
 }: {
+  likes: string[];
   authorDetails: IUser | undefined;
   isAuthor: boolean;
 }) {
@@ -136,7 +138,9 @@ export default function UserDetailSection({
                 </p>
                 <p className="font-semibold text-gray-800 mb-4">
                   Total likes:{" "}
-                  <span className="text-gray-500">35</span>
+                  <span className="text-gray-500">
+                    {likes.length}
+                  </span>
                 </p>
               </div>
             </div>

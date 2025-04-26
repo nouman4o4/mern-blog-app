@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 export default function Profile() {
   const [authorDetails, setAuthorDetail] = useState();
   const [posts, setPosts] = useState([]);
+  const [likes, setLikes] = useState<string[]>([]);
   const { authUser } = useUserStore();
   const params = useParams();
   const authorId = params.id;
@@ -23,7 +24,7 @@ export default function Profile() {
           credentials: "include",
         });
         const jsonResponse = await response.json();
-        console.log(jsonResponse);
+
         if (!jsonResponse.success) {
           toast.error(
             "Something went wrong while fetching blogs data!"
@@ -45,7 +46,6 @@ export default function Profile() {
           credentials: "include",
         });
         const jsonResponse = await response.json();
-        console.log(jsonResponse);
         if (!jsonResponse.success) {
           toast.error(
             "Something went wrong while fetching the author data!"
@@ -58,12 +58,29 @@ export default function Profile() {
         toast.error("Opps! something went wrong");
       }
     })();
+    (async () => {
+      const url = `http://localhost:3000/api/v1/users/${authorId}/total-likes`;
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          credentials: "include",
+        });
+        const jsonResponse = await response.json();
+        if (!jsonResponse.success) {
+          return;
+        }
+        setLikes(jsonResponse.data);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
   }, []);
 
   return (
     <div>
       <div className="min-h-screen w-full bg-gray-100 p-1 sm:p-3 md:p-6 lg:p-10">
         <UserDetailSection
+          likes={likes}
           authorDetails={authorDetails}
           isAuthor={authorId === authUser?._id}
         />
