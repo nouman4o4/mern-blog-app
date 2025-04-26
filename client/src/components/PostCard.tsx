@@ -9,7 +9,7 @@ interface PostDetails {
   username: string;
   userProfile: string;
   id: string;
-  isAdmin: boolean;
+  isOwner: boolean;
 }
 
 export default function PostCard({
@@ -19,7 +19,7 @@ export default function PostCard({
   image,
   date,
   username,
-  isAdmin,
+  isOwner,
 }: PostDetails) {
   const newId = useId();
   return (
@@ -30,7 +30,7 @@ export default function PostCard({
         <NavLink to={"/blog/12"}>
           <div className="photo w-full overflow-hidden rounded-xl">
             <img
-              src="https://via.placeholder.com/300x400"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr2eDKZ-dZvcBAmwEcTVoVxsekAWpM7bDzFQ&s"
               alt="photo"
               className="w-full hover:scale-105 duration-200"
             />
@@ -61,7 +61,7 @@ export default function PostCard({
           <span className="date text-[13px] font-semibold">
             19 Jan 2025
           </span>
-          {isAdmin ? (
+          {isOwner ? (
             <button className="dlt px-3 py-1 bg-red-400 text-white rounded hover:shadow cursor-pointer hover:bg-red-500">
               Delete
             </button>

@@ -8,13 +8,17 @@ import { useNavigate, useNavigation } from "react-router";
 import ReactCrop from "react-image-crop";
 type PropsTypes = {
   imageSrc: string;
+  croppedUrl: string;
   setImageSrc: React.Dispatch<React.SetStateAction<string>>;
   setIsUploading: React.Dispatch<React.SetStateAction<boolean>>;
+  setCroppedUrl: React.Dispatch<React.SetStateAction<string>>;
 };
 export default function CropModal({
   imageSrc,
   setImageSrc,
   setIsUploading,
+  croppedUrl,
+  setCroppedUrl,
 }: PropsTypes) {
   const { authUser: user, setAuthUser } = useUserStore();
   const navigate = useNavigate();
@@ -23,15 +27,14 @@ export default function CropModal({
     setCrop,
     completedCrop,
     setCompletedCrop,
-    croppedUrl,
-    setCroppedUrl,
+
     isCropped,
     setIsCropped,
     imgRef,
     imageFile,
     setImageFile,
     getCroppedImage,
-  } = useImageCropper();
+  } = useImageCropper(croppedUrl, setCroppedUrl);
 
   const setImageAndUpload = async () => {
     toast("Image is uploading...");
@@ -59,6 +62,7 @@ export default function CropModal({
           setIsCropped(false);
           setImageSrc("");
           setCroppedUrl("");
+          setImageFile(null);
           navigate("/login");
           return;
         }
@@ -66,9 +70,7 @@ export default function CropModal({
           jsonResponse.message ||
             "Something went wrong, Please login again."
         );
-        setIsCropped(false);
-        setImageSrc("");
-        setCroppedUrl("");
+
         return;
       }
       const userData = jsonResponse.data;
@@ -83,8 +85,15 @@ export default function CropModal({
       toast.success("Profile updated successfully!");
     } catch (error) {
       console.error(error);
+      toast.error(
+        "Something went wrong while uploading profile image."
+      );
     } finally {
       setIsUploading(false);
+      setIsCropped(false);
+      setImageSrc("");
+      setCroppedUrl("");
+      setImageFile(null);
     }
   };
 

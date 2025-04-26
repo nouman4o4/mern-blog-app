@@ -1,7 +1,6 @@
 import { Menu, Search } from "lucide-react";
 
 import useGlobalStore from "../store/globalStore.ts";
-import LargeMenu from "./LargeMenu";
 import UpperNav from "./UpperNav";
 import { NavLink } from "react-router";
 import useUserStore from "../store/userStore.ts";
@@ -30,12 +29,26 @@ export default function Navbar() {
             </button>
           </NavLink>
         </div>
-        <LargeMenu />
+        <div className="md:block hidden">
+          <div className="nav flex flex-center gap-16 text-gray-50 font-semibold">
+            <NavLink className="largeMenulink" to="/">
+              Home
+            </NavLink>
+            <NavLink className="largeMenulink" to="/about">
+              About
+            </NavLink>
+            <NavLink className="largeMenulink" to="/">
+              Contact
+            </NavLink>
+          </div>
+        </div>
 
         <div className="nav-righ h-full flex items-center gap-6">
           {authUser ? (
             <div className="h-full py-2 sm:block hidden">
-              <NavLink to={"/profile"} className={"text-center"}>
+              <NavLink
+                to={`/profile/${authUser._id}`}
+                className={"text-center"}>
                 <img
                   src={`${
                     authUser?.profileImage

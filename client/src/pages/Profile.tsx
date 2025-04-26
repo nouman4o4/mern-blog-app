@@ -1,15 +1,18 @@
 import PostCard from "../components/PostCard";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import "react-image-crop/dist/ReactCrop.css";
-import UserDetailSection from "../components/userDetailSection";
+import UserDetailSection from "../components/UserDetailSection";
+import useUserStore from "../store/userStore";
 
 export default function Profile() {
-  // const [imageFile, setImageFile] = useState<Blob | null>(null);
+  const { authUser } = useUserStore();
+  const params = useParams();
+  const profileUserId = params.id;
 
   return (
     <div>
       <div className="min-h-screen w-full bg-gray-100 p-1 sm:p-3 md:p-6 lg:p-10">
-        <UserDetailSection />
+        <UserDetailSection profileUserId={profileUserId} />
 
         {/* blogs */}
         <div className="text-end my-3 py-3">
@@ -37,7 +40,7 @@ export default function Profile() {
                     image={"post.image"} // Make sure this is replaced with a valid image source
                     username="Jonathan Wills"
                     date={new Date()}
-                    isAdmin={true}
+                    isOwner={profileUserId === authUser?._id}
                   />
                 ))}
               </div>

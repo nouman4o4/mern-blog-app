@@ -1,11 +1,14 @@
 import { useCallback, useRef, useState } from "react";
 import { Crop, PixelCrop } from "react-image-crop";
 
-export default function useImageCropper() {
-  const [imageFile, setImageFile] = useState<any | null>(null);
+export default function useImageCropper(
+  croppedUrl: string,
+  setCroppedUrl: React.Dispatch<React.SetStateAction<string>>
+) {
+  const [imageFile, setImageFile] = useState<any | Blob>(null);
   const [completedCrop, setCompletedCrop] =
     useState<PixelCrop | null>(null);
-  const [croppedUrl, setCroppedUrl] = useState<string>("");
+  // const [croppedUrl, setCroppedUrl] = useState<string>("");
   const [isCropped, setIsCropped] = useState<boolean>(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
   const [crop, setCrop] = useState<Crop>({

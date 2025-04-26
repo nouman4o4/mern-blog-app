@@ -7,8 +7,11 @@ import CropModal from "./CropModal";
 export default function UserDetailSection() {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string>("");
-  const { croppedUrl, setCroppedUrl, isCropped, setIsCropped } =
-    useImageCropper();
+  const [croppedUrl, setCroppedUrl] = useState<string>("");
+  const { isCropped, setIsCropped } = useImageCropper(
+    croppedUrl,
+    setCroppedUrl
+  );
   const { authUser, setAuthUser } = useUserStore();
 
   useEffect(() => {
@@ -39,19 +42,24 @@ export default function UserDetailSection() {
   };
 
   const getProfileImage = () => {
-    if (isCropped && croppedUrl && isUploading) return croppedUrl;
+    if (isUploading) return croppedUrl;
     if (authUser?.profileImage) return authUser?.profileImage;
     return authUser?.gender === "male"
       ? "https://avatar.iran.liara.run/public/41"
       : "https://avatar.iran.liara.run/public/88";
   };
-
+  useEffect(
+    () => console.log({ croppedUrl }),
+    [croppedUrl, isCropped]
+  );
   return (
     <>
       <CropModal
         imageSrc={imageSrc}
         setImageSrc={setImageSrc}
         setIsUploading={setIsUploading}
+        croppedUrl={croppedUrl}
+        setCroppedUrl={setCroppedUrl}
       />
 
       <div className="min-h-[70vh] w-full bg-white rounded-2xl">
