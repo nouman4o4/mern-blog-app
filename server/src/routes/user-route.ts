@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleswares/authMiddleware";
 import {
+  getAllLikes,
   getUser,
   getUsers,
   removeUser,
@@ -26,5 +27,7 @@ userRouter.put(
   authMiddleware,
   updateProfileImage
 );
+// Get all the likes of a user
+userRouter.get("/:userId/total-likes", getAllLikes);
 
 export default userRouter;

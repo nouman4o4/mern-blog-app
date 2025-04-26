@@ -6,7 +6,7 @@ export interface IPost extends Document {
   featuredImage?: string;
   author: Types.ObjectId;
   attachments?: string[];
-  likes: Types.ObjectId;
+  likes: Types.ObjectId[];
   comments: {
     user: Types.ObjectId;
     text: string;

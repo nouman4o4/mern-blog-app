@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { IUser, User } from "../models/user.model";
 import mongoose from "mongoose";
-import { REFUSED } from "dns";
 import { uploadFileToCloudinary } from "../lib/cloundinary";
+import { Post } from "../models/posts.model";
 
 // Get all users
 export const getUsers = async (req: Request, res: Response) => {
@@ -215,5 +215,42 @@ export const removeUser = async (req: Request, res: Response) => {
       error,
     });
     return;
+  }
+};
+
+// Get all the likes of all posts
+export const getAllLikes = async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+
+  res.json("hi");
+  try {
+    if (!mongoose.isValidObjectId(userId)) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid user ID",
+      });
+      return;
+    }
+
+    const posts = await Post.find({ autor: userId }).select("likes");
+    const totalLikes = posts.reduce(
+      (acc, post) => acc + post?.likes.length,
+      0
+    );
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      data: totalLikes,
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Internal Server Error",
+    });
   }
 };
