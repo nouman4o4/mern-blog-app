@@ -3,8 +3,15 @@ import useImageCropper from "../hooks/useImageCropper";
 import useUserStore from "../store/userStore";
 import { Camera, Loader } from "lucide-react";
 import CropModal from "./CropModal";
+import { IUser } from "../types/User";
 
-export default function UserDetailSection() {
+export default function UserDetailSection({
+  authorDetails,
+  isAuthor,
+}: {
+  authorDetails: IUser | undefined;
+  isAuthor: boolean;
+}) {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string>("");
   const [croppedUrl, setCroppedUrl] = useState<string>("");
@@ -99,33 +106,33 @@ export default function UserDetailSection() {
           </div>
 
           <div className="flex-grow p-6 pt-18 sm:pt-6">
-            <h1 className="text-4xl font-bold text-gray-800 mb-3">
-              {authUser
-                ? authUser?.firstname + " " + authUser?.lastname
-                : "loading..."}
+            <h1 className="text-4xl font-bold text-gray-800 mb-3 capitalize">
+              {authorDetails?.firstname +
+                " " +
+                authorDetails?.lastname}
             </h1>
             <div className="flex flex-wrap">
               <div className="user-detail sm:w-1/2">
                 <p className="font-semibold text-gray-800 mb-4">
                   Email:{" "}
                   <span className="text-gray-500">
-                    {authUser ? authUser.email : "loading..."}
+                    {authorDetails?.email}
                   </span>
                 </p>
-                <p className="font-semibold text-gray-800 mb-4">
-                  Phone:{" "}
-                  <span className="text-gray-500">
-                    +1 (555) 123-4567
-                  </span>
-                </p>
+
                 <p className="text text-gray-800 mb-4 font-semibold">
                   Gender:{" "}
-                  <span className="text-gray-500">Female</span>
+                  <span className="text-gray-500 capitalize">
+                    {authorDetails?.gender}
+                  </span>
                 </p>
               </div>
               <div className="w-full sm:w-1/2 sm:px-5">
                 <p className="font-semibold text-gray-800 mb-4">
-                  Posts: <span className="text-gray-500">15</span>
+                  Posts:{" "}
+                  <span className="text-gray-500">
+                    {authorDetails?.posts?.length}
+                  </span>
                 </p>
                 <p className="font-semibold text-gray-800 mb-4">
                   Total likes:{" "}

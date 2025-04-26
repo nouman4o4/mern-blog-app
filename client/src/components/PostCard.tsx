@@ -9,7 +9,7 @@ interface PostDetails {
   username: string;
   userProfile: string;
   id: string;
-  isOwner: boolean;
+  isAuthor: boolean;
 }
 
 export default function PostCard({
@@ -19,7 +19,7 @@ export default function PostCard({
   image,
   date,
   username,
-  isOwner,
+  isAuthor,
 }: PostDetails) {
   const newId = useId();
   return (
@@ -61,7 +61,7 @@ export default function PostCard({
           <span className="date text-[13px] font-semibold">
             19 Jan 2025
           </span>
-          {isOwner ? (
+          {isAuthor ? (
             <button className="dlt px-3 py-1 bg-red-400 text-white rounded hover:shadow cursor-pointer hover:bg-red-500">
               Delete
             </button>
