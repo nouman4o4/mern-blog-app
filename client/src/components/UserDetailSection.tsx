@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useImageCropper from "../hooks/useImageCropper";
 import useUserStore from "../store/userStore";
-import { Camera, Divide, Loader } from "lucide-react";
+import { Camera, Divide, Edit, Loader } from "lucide-react";
 import CropModal from "./CropModal";
 import { IUser } from "../types/User";
 
@@ -57,10 +57,7 @@ export default function UserDetailSection({
       ? "https://avatar.iran.liara.run/public/41"
       : "https://avatar.iran.liara.run/public/88";
   };
-  useEffect(
-    () => console.log({ croppedUrl }),
-    [croppedUrl, isCropped]
-  );
+
   return (
     <>
       <CropModal
@@ -143,6 +140,9 @@ export default function UserDetailSection({
                   </span>
                 </p>
               </div>
+            </div>
+            <div className="float-end">
+              <Edit />
             </div>
           </div>
         </div>

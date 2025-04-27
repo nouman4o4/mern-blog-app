@@ -1,5 +1,6 @@
 import { useId } from "react";
 import { NavLink } from "react-router";
+import { IUser } from "../types/User";
 
 interface PostDetails {
   title: string;
@@ -10,6 +11,7 @@ interface PostDetails {
   userProfile: string;
   id: string;
   isAuthor: boolean;
+  authorDetails: IUser | undefined;
 }
 
 export default function PostCard({
