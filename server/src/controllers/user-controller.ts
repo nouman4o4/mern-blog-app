@@ -222,7 +222,6 @@ export const removeUser = async (req: Request, res: Response) => {
 export const getAllLikes = async (req: Request, res: Response) => {
   const userId = req.params.userId;
 
-  res.json("hi");
   try {
     if (!mongoose.isValidObjectId(userId)) {
       res.status(400).json({
@@ -233,7 +232,7 @@ export const getAllLikes = async (req: Request, res: Response) => {
       return;
     }
 
-    const posts = await Post.find({ autor: userId }).select("likes");
+    const posts = await Post.find({ author: userId }).select("likes");
     const totalLikes = posts.reduce(
       (acc, post) => acc + post?.likes.length,
       0
