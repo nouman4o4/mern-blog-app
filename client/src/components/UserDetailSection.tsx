@@ -4,6 +4,7 @@ import useUserStore from "../store/userStore";
 import { Camera, Divide, Edit, Loader } from "lucide-react";
 import CropModal from "./CropModal";
 import { IUser } from "../types/User";
+import ProfileEditForm from "./ProfileEditForm";
 
 export default function UserDetailSection({
   authorDetails,
@@ -17,6 +18,7 @@ export default function UserDetailSection({
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string>("");
   const [croppedUrl, setCroppedUrl] = useState<string>("");
+  const [isEditting, setIsEditting] = useState<boolean>(false);
   const { isCropped, setIsCropped } = useImageCropper(
     croppedUrl,
     setCroppedUrl
@@ -24,14 +26,14 @@ export default function UserDetailSection({
   const { authUser, setAuthUser } = useUserStore();
 
   useEffect(() => {
-    if (imageSrc) {
+    if (imageSrc || isEditting) {
       document.body.style.height = "100vh";
       document.body.style.overflowY = "hidden";
-    } else if (!imageSrc) {
+    } else if (!imageSrc || !isEditting) {
       document.body.style.height = "auto";
       document.body.style.overflowY = "auto";
     }
-  }, [isCropped, imageSrc]);
+  }, [isCropped, imageSrc, isEditting]);
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -142,10 +144,19 @@ export default function UserDetailSection({
               </div>
             </div>
             <div className="float-end">
-              <Edit />
+              <Edit onClick={() => setIsEditting(true)} />
             </div>
           </div>
         </div>
+        {/* Edit form */}
+        {isEditting && (
+          <ProfileEditForm
+            firstName={authorDetails?.firstname as string}
+            lastName={authorDetails?.lastname as string}
+            setIsEditting={setIsEditting}
+            isEditting={isEditting}
+          />
+        )}
       </div>
     </>
   );
