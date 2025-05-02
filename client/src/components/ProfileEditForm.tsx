@@ -47,21 +47,27 @@ export default function ProfileEditForm({
       firstname,
       lastname,
     });
-
+    const validationError = validationResult.error?.format();
     if (!validationResult.success) {
       return {
         ...formState,
         firstname,
         lastname,
-        error: validationResult.error?.format(),
+        error: validationError,
       };
     }
     // send the updates to the server
+    // return {
+    //   ...formState,
+    //   firstname,
+    //   lastname,
+    //   error: validationError,
+    // };
   };
   const [state, formAction, isPending] = useActionState(submitForm, {
     firstname: firstName,
     lastname: lastName,
-    error: { firstname: "", lastname: "" },
+    error: undefined,
   });
 
   return (
