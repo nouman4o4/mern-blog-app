@@ -108,9 +108,11 @@ export default function UserDetailSection({
 
           <div className="flex-grow p-6 pt-18 sm:pt-6">
             <h1 className="text-4xl font-bold text-gray-800 mb-3 capitalize">
-              {authorDetails?.firstname +
-                " " +
-                authorDetails?.lastname}
+              {isAuthor
+                ? authUser?.firstname + " " + authUser?.lastname
+                : authorDetails?.firstname +
+                  " " +
+                  authorDetails?.lastname}
             </h1>
             <div className="flex flex-wrap">
               <div className="user-detail sm:w-1/2">
@@ -153,6 +155,7 @@ export default function UserDetailSection({
           <ProfileEditForm
             firstName={authorDetails?.firstname as string}
             lastName={authorDetails?.lastname as string}
+            authorId={authorDetails?._id!}
             setIsEditting={setIsEditting}
             isEditting={isEditting}
           />

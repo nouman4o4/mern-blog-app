@@ -2,8 +2,11 @@ import { X } from "lucide-react";
 import React, { SetStateAction, useActionState } from "react";
 import { userUpadteSchema } from "../schemas/update-user";
 import { ZodFormattedError } from "zod";
+import toast from "react-hot-toast";
+import useUserStore from "../store/userStore";
 
 interface PropsI {
+  authorId: string;
   firstName: string;
   lastName: string;
   setIsEditting: React.Dispatch<SetStateAction<boolean>>;
@@ -25,18 +28,25 @@ interface FormState {
 }
 
 export default function ProfileEditForm({
+  authorId,
   firstName,
   lastName,
   setIsEditting,
   isEditting,
 }: PropsI) {
-  const submitForm = (formState: FormState, formData: FormData) => {
+  const { setAuthUser, authUser } = useUserStore();
+
+  const submitForm = async (
+    formState: FormState,
+    formData: FormData
+  ) => {
     const firstname = formData.get("firstname") as string;
     const lastname = formData.get("lastname") as string;
     if (
       formState.firstname === firstname &&
       lastname === formState.lastname
     ) {
+      toast("Please add some changes!");
       return {
         ...formState,
         firstname,
@@ -57,16 +67,42 @@ export default function ProfileEditForm({
       };
     }
     // send the updates to the server
-    // return {
-    //   ...formState,
-    //   firstname,
-    //   lastname,
-    //   error: validationError,
-    // };
+    try {
+      const url = `http://localhost:3000/api/v1/users/update/${authorId}`;
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ firstname, lastname }),
+        credentials: "include",
+      });
+      const jsonResponse = await response.json();
+      if (!jsonResponse.success) {
+        setIsEditting(false);
+        toast.error("Couldn't update the user");
+        return {
+          ...formState,
+        };
+      }
+
+      setAuthUser(jsonResponse.data);
+      toast.success("Profile udpated successfully!");
+      setIsEditting(false);
+    } catch (error) {
+      toast.error("Coudn't update the user");
+      console.log(error);
+    }
+    return {
+      ...formState,
+      firstname,
+      lastname,
+      error: validationError,
+    };
   };
   const [state, formAction, isPending] = useActionState(submitForm, {
-    firstname: firstName,
-    lastname: lastName,
+    firstname: authUser?.firstname ?? "",
+    lastname: authUser?.lastname ?? "",
     error: undefined,
   });
 
@@ -129,7 +165,7 @@ export default function ProfileEditForm({
           <button
             type="submit"
             className="bg-black text-white rounded-md py-2 mt-4 hover:bg-white border-1 hover:text-black hover:border-black transition-all duration-150">
-            Save Changes
+            {isPending ? "updating..." : "Save Changes"}
           </button>
         </form>
       </div>
