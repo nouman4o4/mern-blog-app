@@ -76,7 +76,7 @@ export default function CreateBlog() {
     const validationError = zodResult.error?.format();
 
     if (!zodResult.success) {
-      toast("Please provide all the required data!", {
+      toast("Please provide all the required data correctly", {
         style: {
           backgroundColor: "red",
           color: "white",
@@ -275,7 +275,7 @@ export default function CreateBlog() {
               <Editor onChange={setContent} />
             </div>
             <p className="text-red-400 text-sm h-5">
-              {(content.length <= 10 &&
+              {(content.length >= 10 &&
                 state.error?.content?._errors[0]) ??
                 ""}
             </p>

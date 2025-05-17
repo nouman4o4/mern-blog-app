@@ -23,7 +23,7 @@ export default function UserDetailSection({
     croppedUrl,
     setCroppedUrl
   );
-  const { authUser, setAuthUser } = useUserStore();
+  const { authUser } = useUserStore();
 
   useEffect(() => {
     if (imageSrc || isEditting) {
@@ -89,19 +89,21 @@ export default function UserDetailSection({
                     <Loader />
                   </div>
                 )}
-                <div className="absolute right-2 bottom-2 bg-red-500 rounded-full p-2 text-lg text-white">
-                  <label htmlFor="profile-image">
-                    <Camera className=" " />
-                    <input
-                      id="profile-image"
-                      name="profile-image"
-                      type="file"
-                      accept=".png,.jpg,.jpeg"
-                      onChange={handleFileChange}
-                      hidden
-                    />
-                  </label>
-                </div>
+                {isAuthor && (
+                  <div className="absolute right-2 bottom-2 bg-red-500 rounded-full p-2 text-lg text-white">
+                    <label htmlFor="profile-image">
+                      <Camera className=" " />
+                      <input
+                        id="profile-image"
+                        name="profile-image"
+                        type="file"
+                        accept=".png,.jpg,.jpeg"
+                        onChange={handleFileChange}
+                        hidden
+                      />
+                    </label>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -145,9 +147,11 @@ export default function UserDetailSection({
                 </p>
               </div>
             </div>
-            <div className="float-end">
-              <Edit onClick={() => setIsEditting(true)} />
-            </div>
+            {isAuthor && (
+              <div className="float-end cursor-pointer hover:scale-105">
+                <Edit onClick={() => setIsEditting(true)} />
+              </div>
+            )}
           </div>
         </div>
         {/* Edit form */}

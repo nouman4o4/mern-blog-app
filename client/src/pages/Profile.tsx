@@ -5,10 +5,11 @@ import UserDetailSection from "../components/UserDetailSection";
 import useUserStore from "../store/userStore";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { IPost } from "../types/Post";
 
 export default function Profile() {
   const [authorDetails, setAuthorDetail] = useState();
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<IPost[]>([]);
   const [likes, setLikes] = useState<string[]>([]);
   const { authUser } = useUserStore();
   const params = useParams();
@@ -24,7 +25,7 @@ export default function Profile() {
           credentials: "include",
         });
         const jsonResponse = await response.json();
-
+        console.log(jsonResponse);
         if (!jsonResponse.success) {
           toast.error(
             "Something went wrong while fetching blogs data!"
@@ -87,16 +88,18 @@ export default function Profile() {
 
         {/* blogs */}
         <div className="text-end my-3 py-3">
-          <Link
-            to={"/create-blog"}
-            className="text-xl font-semibold border bg-black text-white py-2 px-4 rounded-lg cursor-pointer">
-            Create a new post
-          </Link>
+          {authorId === authUser?._id && (
+            <Link
+              to={"/create-blog"}
+              className="text-xl font-semibold border bg-black text-white py-2 px-4 rounded-lg cursor-pointer">
+              Create a new post
+            </Link>
+          )}
         </div>
         <div className="w-full my-4">
-          <h1 className="py-3 my-3 text-3xl font-semibold">
+          {/* <h1 className="py-3 my-3 text-3xl font-semibold">
             My Posts
-          </h1>
+          </h1> */}
           <div className="posts-container">
             {/* post */}
             <div className="w-full bg-white rounded-lg py-5 p-2">
@@ -125,13 +128,14 @@ export default function Profile() {
                   posts?.map((post, index) => (
                     <PostCard
                       key={index}
-                      userProfile="hello"
-                      id={Date.now().toString()} // Ensure unique ID
-                      title="Migrating to linear 101"
-                      desc="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis, deserunt?"
-                      image={"post.image"} // Make sure this is replaced with a valid image source
-                      username="Jonathan Wills"
-                      date={new Date()}
+                      postData={post}
+                      // userProfile="hello"
+                      // id={Date.now().toString()} // Ensure unique ID
+                      // title={post.title}
+                      // desc={post.content}
+                      // image={"post.image"} // Make sure this is replaced with a valid image source
+                      // username="Jonathan Wills"
+                      // date={new Date()}
                       authorDetails={authorDetails}
                       isAuthor={authorId === authUser?._id}
                     />

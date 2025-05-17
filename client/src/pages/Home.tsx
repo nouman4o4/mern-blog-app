@@ -11,6 +11,7 @@ import "swiper/css/navigation";
 import { Swiper as SwiperClass } from "swiper";
 import PostCard from "../components/PostCard";
 import Categories from "../components/Category-section";
+import { dummyPosts } from "../dummy/dummyPosts";
 
 const Home: React.FC = () => {
   const swiperRef = useRef<SwiperClass | null>(null);
@@ -84,18 +85,8 @@ const Home: React.FC = () => {
           Recent Blog posts
         </h3>
         <div className="blog-container pt-6 flex items-center justify-center gap-5 flex-wrap">
-          {Array.from({ length: 6 }).map(() => (
-            <PostCard
-              userProfile="hello"
-              id={"post._id"}
-              title={"post.title"}
-              desc="Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Debitis, deserunt?"
-              image={"post.image"}
-              username={"post.username"}
-              date={new Date()}
-              isAdmin={false}
-            />
+          {dummyPosts.map((post, index) => (
+            <PostCard postData={post} isAuthor={false} />
           ))}
         </div>
       </div>

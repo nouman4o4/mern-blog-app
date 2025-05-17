@@ -76,7 +76,7 @@ export const updateUser = async (req: Request, res: Response) => {
       userId,
       { $set: { firstname, lastname } },
       { new: true }
-    );
+    ).select("firstname lastname gender email");
     if (!updatedUser) {
       res.status(404).json({
         success: false,

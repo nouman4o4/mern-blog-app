@@ -29,8 +29,6 @@ interface FormState {
 
 export default function ProfileEditForm({
   authorId,
-  firstName,
-  lastName,
   setIsEditting,
   isEditting,
 }: PropsI) {

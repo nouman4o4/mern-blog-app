@@ -1,6 +1,6 @@
 export interface IPost {
   title: string;
-  content: string;
+  content: string | TrustedHTML;
   category: string;
   featuredImage?: string;
   author: string;

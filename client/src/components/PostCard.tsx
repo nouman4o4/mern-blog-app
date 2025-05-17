@@ -1,29 +1,21 @@
 import { useId } from "react";
 import { NavLink } from "react-router";
 import { IUser } from "../types/User";
+import { IPost } from "../types/Post";
 
 interface PostDetails {
-  title: string;
-  desc: string;
-  image: string;
-  date: Date;
-  username: string;
-  userProfile: string;
-  id: string;
+  postData: IPost;
+  authorDetails?: IUser | undefined;
   isAuthor: boolean;
-  authorDetails: IUser | undefined;
 }
 
 export default function PostCard({
-  id,
-  title,
-  desc,
-  image,
-  date,
-  username,
+  postData,
+  authorDetails,
   isAuthor,
 }: PostDetails) {
   const newId = useId();
+  console.log({ postData });
   return (
     <div
       key={newId}
@@ -32,7 +24,10 @@ export default function PostCard({
         <NavLink to={"/blog/12"}>
           <div className="photo w-full overflow-hidden rounded-xl">
             <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr2eDKZ-dZvcBAmwEcTVoVxsekAWpM7bDzFQ&s"
+              src={
+                postData.featuredImage ??
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr2eDKZ-dZvcBAmwEcTVoVxsekAWpM7bDzFQ&s"
+              }
               alt="photo"
               className="w-full hover:scale-105 duration-200"
             />
@@ -42,11 +37,11 @@ export default function PostCard({
         <div className="content p-2">
           <NavLink to={"/blog/12"}>
             <h2 className="heading text-lg font-semibold  my-3">
-              {title}
+              {postData.title}
             </h2>
-            <p className="desc text-sm leading-tight pb-2 text-gray-600">
-              {desc}
-            </p>
+            <p
+              dangerouslySetInnerHTML={{ __html: postData.content }}
+              className="desc text-sm leading-tight pb-2 text-gray-600"></p>
           </NavLink>
         </div>
         <div className="userDetails flex gap-2 p-2 justify-between items-center">
@@ -57,7 +52,7 @@ export default function PostCard({
               className="size-8 rounded-full inline mr-2"
             />
             <p className="name text-[14px] font-semibold inline">
-              {username}
+              {postData.author}
             </p>
           </div>
           <span className="date text-[13px] font-semibold">
