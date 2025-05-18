@@ -8,7 +8,6 @@ export async function uploadProfileImage(userId: string, file: Blob) {
     credentials: "include",
   });
   const jsonReponse = await response.json();
-  console.log({ response });
-  console.log({ jsonReponse });
+
   return jsonReponse;
 }
