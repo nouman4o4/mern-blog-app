@@ -33,7 +33,7 @@ export const uploadFileToCloudinary = async function (
     );
   } finally {
     fs.unlink(localFilePath, (err) => {
-      throw err;
+      if (err) console.log(err);
     });
   }
 };
