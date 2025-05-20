@@ -26,14 +26,14 @@ export default function UserDetailSection({
   const { authUser } = useUserStore();
 
   useEffect(() => {
-    if (imageSrc || isEditting) {
+    if (imageSrc) {
       document.body.style.height = "100vh";
       document.body.style.overflowY = "hidden";
-    } else if (!imageSrc || !isEditting) {
+    } else if (!imageSrc) {
       document.body.style.height = "auto";
       document.body.style.overflowY = "auto";
     }
-  }, [isCropped, imageSrc, isEditting]);
+  }, [isCropped, imageSrc]);
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -155,15 +155,12 @@ export default function UserDetailSection({
           </div>
         </div>
         {/* Edit form */}
-        {isEditting && (
-          <ProfileEditForm
-            firstName={authorDetails?.firstname as string}
-            lastName={authorDetails?.lastname as string}
-            authorId={authorDetails?._id!}
-            setIsEditting={setIsEditting}
-            isEditting={isEditting}
-          />
-        )}
+
+        <ProfileEditForm
+          authorId={authorDetails?._id!}
+          setIsEditting={setIsEditting}
+          isEditting={isEditting}
+        />
       </div>
     </>
   );
