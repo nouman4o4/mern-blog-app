@@ -78,7 +78,7 @@ export const createBlog = async (req: Request, res: Response) => {
 // Get all blog posts
 export const getAllBlogs = async (req: Request, res: Response) => {
   try {
-    const allBlogPosts = await Post.find();
+    const allBlogPosts = await Post.find().sort({ createdAt: -1 });
     if (!allBlogPosts) {
       res.status(404).json({
         success: false,
@@ -119,7 +119,9 @@ export const getAllBlogsForUser = async (
       });
       return;
     }
-    const blogs = await Post.find({ author: userId });
+    const blogs = await Post.find({ author: userId }).sort({
+      createdAt: -1,
+    });
 
     res.status(200).json({
       success: true,

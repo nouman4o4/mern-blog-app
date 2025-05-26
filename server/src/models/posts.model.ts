@@ -17,54 +17,57 @@ export interface IPost extends Document {
   updatedAt: Date;
 }
 
-const PostSchema = new Schema<IPost>({
-  title: {
-    type: String,
-    required: true,
-  },
-  content: {
-    type: String,
-    required: true,
-  },
-  featuredImage: {
-    type: String,
-    default: "",
-  },
-  category: {
-    type: String,
-    required: true,
-  },
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-
-  attachments: [{ type: String }],
-  likes: [
-    {
-      type: Types.ObjectId,
-      ref: "User",
+const PostSchema = new Schema<IPost>(
+  {
+    title: {
+      type: String,
+      required: true,
     },
-  ],
+    content: {
+      type: String,
+      required: true,
+    },
+    featuredImage: {
+      type: String,
+      default: "",
+    },
+    category: {
+      type: String,
+      required: true,
+    },
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
 
-  comments: [
-    {
-      user: {
+    attachments: [{ type: String }],
+    likes: [
+      {
         type: Types.ObjectId,
         ref: "User",
-        required: true,
       },
-      text: {
-        type: String,
-        required: true,
+    ],
+
+    comments: [
+      {
+        user: {
+          type: Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        text: {
+          type: String,
+          required: true,
+        },
+        likes: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
       },
-      likes: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    },
-  ],
-});
+    ],
+  },
+  { timestamps: true }
+);
 
 export const Post = mongoose.model<IPost>("Post", PostSchema);
