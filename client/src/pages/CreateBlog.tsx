@@ -66,7 +66,6 @@ export default function CreateBlog() {
     formData: FormData
   ) => {
     const title = formData.get("title") as string | null;
-    // const image = formData.get("image") as File | undefined;
 
     const zodResult = blogSchema.safeParse({
       title,
@@ -83,6 +82,7 @@ export default function CreateBlog() {
         },
       });
       setTitleError(validationError?.title?._errors[0] ?? "");
+
       return {
         title: title ?? "",
         content: content ?? "",
@@ -92,30 +92,27 @@ export default function CreateBlog() {
       };
     }
 
+    formData.append("content", content!);
+    formData.append("category", category!);
+    formData.append("author", authUser._id!);
+    formData.append("file", image!);
+
     // Api call
     try {
       const url = "http://localhost:3000/api/v1/blogs/";
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
         credentials: "include",
-        body: JSON.stringify({
-          title,
-          content,
-          category,
-          image,
-          author: authUser._id,
-        }),
+        body: formData,
       });
 
       const jsonResponse = await response.json();
+      console.log(jsonResponse);
       if (!jsonResponse.success) toast.error(jsonResponse.message);
       else {
         toast.success("Post created successfully!");
         // Redirect to the post page
-        navigate("/");
+        // navigate("/");
       }
     } catch (error) {
       console.error(error);

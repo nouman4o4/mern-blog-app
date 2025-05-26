@@ -15,7 +15,6 @@ export default function PostCard({
   isAuthor,
 }: PostDetails) {
   const newId = useId();
-  console.log({ postData });
   return (
     <div
       key={newId}
