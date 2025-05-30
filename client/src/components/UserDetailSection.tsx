@@ -83,16 +83,16 @@ export default function UserDetailSection({
       />
 
       <div className="min-h-[70vh] w-full bg-white rounded-2xl">
-        <div className="user-profile&details w-full h-40 sm:h-56 md:h-74 rounded-2xl bg-center bg-cover bg-[url(https://images.unsplash.com/photo-1508780709619-79562169bc64?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]"></div>
+        <div className="user-profile&details w-full h-40 sm:h-56 md:h-74 sm:rounded-2xl bg-center bg-cover bg-[url(https://images.unsplash.com/photo-1508780709619-79562169bc64?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]"></div>
 
         <div className="w-full flex flex-col sm:flex-row min-h-[30vh] justify-between">
           <div className="user-image">
-            <div className="photo w-32 h-32 sm:w-48 sm:h-48 absolute sm:relative">
+            <div className="photo w-44 h-32 sm:w-52 sm:h-48 absolute sm:relative">
               <div className="absolute bg-white left-4 top-[-40%] border-2 border-black rounded-full">
                 <img
                   src={getProfileImage() ?? null}
                   alt=""
-                  className={`w-full h-full object-cover rounded-full ${
+                  className={`size-32 sm:size-44 object-cover rounded-full ${
                     isUploading ? "opacity-60" : ""
                   }`}
                 />
@@ -121,7 +121,7 @@ export default function UserDetailSection({
           </div>
 
           <div className="flex-grow p-6 pt-18 sm:pt-6">
-            <h1 className="text-4xl font-bold text-gray-800 mb-3 capitalize">
+            <h1 className="text-4xl font-bold text-gray-800 mb-3 capitalize mt-4 sm:mt-0">
               {isAuthor
                 ? authUser?.firstname + " " + authUser?.lastname
                 : authorDetails?.firstname +
