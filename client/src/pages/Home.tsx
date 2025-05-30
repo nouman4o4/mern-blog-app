@@ -84,7 +84,7 @@ const Home: React.FC = () => {
         <h3 className="text-xl font-bold my-1 text-black">
           Recent Blog posts
         </h3>
-        <div className="blog-container pt-6 flex items-center justify-center gap-5 flex-wrap">
+        <div className="blog-container pt-6 flex items-center justify-center gap-8 flex-wrap">
           {dummyPosts.map((post, index) => (
             <PostCard postData={post} isAuthor={false} />
           ))}

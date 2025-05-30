@@ -103,7 +103,7 @@ export default function Profile() {
           <div className="posts-container">
             {/* post */}
             <div className="w-full bg-white rounded-lg py-5 p-2">
-              <div className="blog-container pt-6 flex items-center justify-center gap-5 flex-wrap">
+              <div className="blog-container pt-6 flex items-center justify-center gap-8 flex-wrap">
                 {posts.length === 0 ? (
                   <div className="flex flex-col items-center justify-center text-center p-10 rounded-lg">
                     <img
