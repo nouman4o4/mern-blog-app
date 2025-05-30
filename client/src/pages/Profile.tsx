@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { IPost } from "../types/Post";
 
 export default function Profile() {
-  const [authorDetails, setAuthorDetail] = useState();
+  const [authorDetails, setAuthorDetails] = useState();
   const [posts, setPosts] = useState<IPost[]>([]);
   const [likes, setLikes] = useState<string[]>([]);
   const { authUser } = useUserStore();
@@ -53,7 +53,7 @@ export default function Profile() {
           );
           return;
         }
-        setAuthorDetail(jsonResponse.data);
+        setAuthorDetails(jsonResponse.data);
       } catch (error) {
         console.log(error);
         toast.error("Opps! something went wrong");
@@ -75,7 +75,7 @@ export default function Profile() {
         console.log(error);
       }
     })();
-  }, []);
+  }, [params.id]);
 
   return (
     <div>
@@ -129,14 +129,7 @@ export default function Profile() {
                     <PostCard
                       key={index}
                       postData={post}
-                      // userProfile="hello"
-                      // id={Date.now().toString()} // Ensure unique ID
-                      // title={post.title}
-                      // desc={post.content}
-                      // image={"post.image"} // Make sure this is replaced with a valid image source
-                      // username="Jonathan Wills"
-                      // date={new Date()}
-                      authorDetails={authorDetails}
+                      authorId={post.author}
                       isAuthor={authorId === authUser?._id}
                     />
                   ))
