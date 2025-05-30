@@ -1,20 +1,49 @@
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
 import { Link, NavLink } from "react-router";
 import { IUser } from "../types/User";
 import { IPost } from "../types/Post";
+import toast from "react-hot-toast";
 
 interface PostDetails {
   postData: IPost;
   authorDetails?: IUser | undefined;
   isAuthor: boolean;
+  authorId: string;
 }
 
 export default function PostCard({
   postData,
-  authorDetails,
+  // authorDetails,
+  authorId,
   isAuthor,
 }: PostDetails) {
   const newId = useId();
+  const [authorDetails, setAuthorDetails] = useState<IUser>();
+
+  // Getting authorDetails
+  useEffect(() => {
+    (async () => {
+      const url = `http://localhost:3000/api/v1/users/${authorId}`;
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          credentials: "include",
+        });
+        const jsonResponse = await response.json();
+        if (!jsonResponse.success) {
+          toast.error(
+            "Something went wrong while fetching the author data!"
+          );
+          return;
+        }
+        setAuthorDetails(jsonResponse.data);
+      } catch (error) {
+        console.log(error);
+        toast.error("Opps! something went wrong");
+      }
+    })();
+  }, []);
+
   return (
     <div
       key={newId}
@@ -46,7 +75,13 @@ export default function PostCard({
           <div className="userDetails flex gap-2 p-2 justify-between items-center">
             <div>
               <img
-                src={`${authorDetails?.profileImage}`}
+                src={`${
+                  authorDetails?.profileImage
+                    ? authorDetails?.profileImage
+                    : authorDetails?.gender === "male"
+                    ? "https://avatar.iran.liara.run/public/41"
+                    : "https://avatar.iran.liara.run/public/88"
+                } `}
                 alt=""
                 className="size-8 rounded-full inline mr-2"
               />
@@ -54,11 +89,12 @@ export default function PostCard({
                 <Link
                   className="name text-[14px] font-semibold inline"
                   to={`/profile/${postData.author}`}>
-                  {authorDetails?.firstname} {authorDetails?.lastname}
+                  {authorDetails?.firstname} {authorDetails?.lastname}{" "}
                 </Link>
               ) : (
                 <p className="name text-[14px] font-semibold inline">
-                  {authorDetails?.firstname} {authorDetails?.lastname}
+                  {authorDetails?.firstname} {authorDetails?.lastname}{" "}
+                  (you)
                 </p>
               )}
             </div>
