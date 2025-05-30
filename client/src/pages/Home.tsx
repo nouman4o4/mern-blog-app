@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router";
 import { dummyData } from "../utils/dummydata";
 
@@ -12,9 +12,34 @@ import { Swiper as SwiperClass } from "swiper";
 import PostCard from "../components/PostCard";
 import Categories from "../components/Category-section";
 import { dummyPosts } from "../dummy/dummyPosts";
+import { IPost } from "../types/Post";
+import toast from "react-hot-toast";
+import useUserStore from "../store/userStore";
 
 const Home: React.FC = () => {
   const swiperRef = useRef<SwiperClass | null>(null);
+  const [blogPosts, setBlogPosts] = useState<IPost[]>();
+  const { authUser } = useUserStore();
+
+  useEffect(() => {
+    (async () => {
+      const url = "http://localhost:3000/api/v1/blogs";
+      const response = await fetch(url, {
+        method: "GET",
+        credentials: "include",
+      });
+      const jsonResponse = await response.json();
+      console.log({ jsonResponse });
+      if (!jsonResponse.success) {
+        toast.error(
+          "Something went wrong while getting blog posts data"
+        );
+        return;
+      }
+      setBlogPosts(jsonResponse.posts);
+    })();
+  }, []);
+
   return (
     <div>
       <div
@@ -85,8 +110,12 @@ const Home: React.FC = () => {
           Recent Blog posts
         </h3>
         <div className="blog-container pt-6 flex items-center justify-center gap-8 flex-wrap">
-          {dummyPosts.map((post, index) => (
-            <PostCard postData={post} isAuthor={false} />
+          {blogPosts?.map((post, index) => (
+            <PostCard
+              authorId={post.author}
+              postData={post}
+              isAuthor={authUser?._id === post.author}
+            />
           ))}
         </div>
       </div>
