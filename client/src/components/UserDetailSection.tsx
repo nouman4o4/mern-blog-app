@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import useImageCropper from "../hooks/useImageCropper";
 import useUserStore from "../store/userStore";
-import { Camera, Divide, Edit, Loader } from "lucide-react";
+import { Camera, Divide, Edit, Loader, LogOut } from "lucide-react";
 import CropModal from "./CropModal";
 import { IUser } from "../types/User";
 import ProfileEditForm from "./ProfileEditForm";
+import { logout } from "../utils/logout";
+import { useNavigate } from "react-router";
 
 export default function UserDetailSection({
   authorDetails,
@@ -23,7 +25,8 @@ export default function UserDetailSection({
     croppedUrl,
     setCroppedUrl
   );
-  const { authUser } = useUserStore();
+  const { authUser, setAuthUser } = useUserStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (imageSrc) {
@@ -54,10 +57,19 @@ export default function UserDetailSection({
 
   const getProfileImage = () => {
     if (isUploading) return croppedUrl;
-    if (authUser?.profileImage) return authUser?.profileImage;
+    if (authorDetails?.profileImage)
+      return authorDetails?.profileImage;
+
     return authUser?.gender === "male"
       ? "https://avatar.iran.liara.run/public/41"
       : "https://avatar.iran.liara.run/public/88";
+  };
+
+  const handleLogout = async () => {
+    const isLogout = await logout(authUser?._id!);
+    if (!isLogout) return;
+    setAuthUser(null);
+    navigate("/");
   };
 
   return (
@@ -78,7 +90,7 @@ export default function UserDetailSection({
             <div className="photo w-32 h-32 sm:w-48 sm:h-48 absolute sm:relative">
               <div className="absolute bg-white left-4 top-[-40%] border-2 border-black rounded-full">
                 <img
-                  src={getProfileImage()}
+                  src={getProfileImage() ?? null}
                   alt=""
                   className={`w-full h-full object-cover rounded-full ${
                     isUploading ? "opacity-60" : ""
@@ -147,9 +159,27 @@ export default function UserDetailSection({
                 </p>
               </div>
             </div>
-            {isAuthor && (
-              <div className="float-end cursor-pointer hover:scale-105">
-                <Edit onClick={() => setIsEditting(true)} />
+            {isAuthor ? (
+              <div className="w-full flex items-center justify-between bg-rd-200">
+                <Edit
+                  className="cursor-pointer hover:scale-110"
+                  onClick={() => setIsEditting(true)}
+                />
+                <div
+                  onClick={handleLogout}
+                  className="px-3 py-1 shaodw-lg rounded bg-red-400 text-white cursor-pointer hover:bg-red-500 hover:scale-105">
+                  {" "}
+                  <LogOut className="inline" /> Log out
+                </div>
+              </div>
+            ) : (
+              <div className="w-full text-end">
+                <button
+                  onClick={handleLogout}
+                  className="px-3 py-1 shaodw-lg rounded bg-red-400 text-white cursor-pointer hover:bg-red-500 hover:scale-105">
+                  {" "}
+                  <LogOut className="inline" /> Log out
+                </button>
               </div>
             )}
           </div>
