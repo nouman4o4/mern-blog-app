@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router";
+import { Navigate, Route, Routes, useLocation } from "react-router";
 import { About, Blog, Home, Profile } from "./pages";
 
 import MainLayout from "./layouts/mainLayout";
@@ -9,10 +9,14 @@ import { Toaster } from "react-hot-toast";
 import useUserStore from "./store/userStore";
 import CreateBlog from "./pages/CreateBlog";
 import Contact from "./pages/Contact";
+import { useEffect } from "react";
 
 function App() {
   const authUser = useUserStore((state) => state.authUser);
-  console.log({ authUser });
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
   return (
     <>
       <Toaster />
