@@ -14,4 +14,5 @@ export interface IPost {
   }[];
   createdAt: Date;
   updatedAt: Date;
+  _id: string;
 }
