@@ -48,9 +48,10 @@ export default function PostCard({
     <div
       key={newId}
       className="card w-full md:h-64  shadow-xl rounded">
-      <div className="w-full h-full flex items-center gap-4">
+      <div className="w-full h-full flex items-center flex-col bg-red-200 md:flew-row gap-4">
         {/* image */}
-        <div className={`photo h-64 w-1/3 flex-shrink-0 `}>
+        <div
+          className={`photo w-full h-1/4 md:h-64 md:w-1/3  flex-shrink-0 `}>
           <img
             src={
               postData.featuredImage ??

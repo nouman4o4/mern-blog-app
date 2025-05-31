@@ -22,7 +22,7 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
-  const { setAuthUser, authUser } = useUserStore();
+  const { setAuthUser } = useUserStore();
 
   // clear field error
   const clearFieldError = (field: keyof FieldErrorsI) => {

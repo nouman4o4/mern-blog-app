@@ -11,7 +11,6 @@ import "swiper/css/navigation";
 import { Swiper as SwiperClass } from "swiper";
 import PostCard from "../components/PostCard";
 import Categories from "../components/Category-section";
-import { dummyPosts } from "../dummy/dummyPosts";
 import { IPost } from "../types/Post";
 import toast from "react-hot-toast";
 import useUserStore from "../store/userStore";
@@ -46,11 +45,7 @@ const Home: React.FC = () => {
         className="w-full h-[70vh] md:h-[90vh] p-1 md:p-6 relative flex overflow-hidden rounded-xl md:rounded-3xl
     ">
         {/* Next arrow button */}
-        {/* <div
-          onClick={() => swiperRef?.current?.slideNext()}
-          className="navigater absolute top-[40%] lg:top-[50%] z-20 right-15 cursor-pointer bg-white/40 rounded-full hover:bg-white/40 duration-200 hover:scale-110">
-          <ArrowRight className="text-black hover:text- size-12 lg:size-20" />
-        </div> */}
+
         <Swiper
           onSwiper={(swiper) => (swiperRef.current = swiper)}
           slidesPerView={1}
@@ -110,7 +105,7 @@ const Home: React.FC = () => {
           Recent Blog posts
         </h3>
         <div className="blog-container pt-6 flex items-center justify-center gap-8 flex-wrap">
-          {blogPosts?.map((post, index) => (
+          {blogPosts?.map((post) => (
             <PostCard
               authorId={post.author}
               postData={post}

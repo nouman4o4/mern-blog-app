@@ -1,10 +1,5 @@
 import { Check, ChevronDown, Loader2, Upload, X } from "lucide-react";
-import React, {
-  HtmlHTMLAttributes,
-  useActionState,
-  useRef,
-  useState,
-} from "react";
+import React, { useActionState, useRef, useState } from "react";
 import Editor from "../components/Editor";
 import { blogSchema } from "../schemas/blogSchema";
 import useUserStore from "../store/userStore";
@@ -42,8 +37,6 @@ export default function CreateBlog() {
   const [titleError, setTitleError] = useState("");
   const inputRef = useRef(null);
 
-  const navigate = useNavigate();
-
   const authUser =
     JSON.parse(localStorage.getItem("blog-app-user")!) ||
     useUserStore((state) => state.authUser);
@@ -61,10 +54,7 @@ export default function CreateBlog() {
     reader.readAsDataURL(file);
   };
 
-  const submitFunction = async (
-    prevState: IFormData,
-    formData: FormData
-  ) => {
+  const submitFunction = async (_: IFormData, formData: FormData) => {
     const title = formData.get("title") as string | null;
 
     const zodResult = blogSchema.safeParse({
