@@ -6,6 +6,7 @@ import useUserStore from "../store/userStore";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { IPost } from "../types/Post";
+import { Edit2 } from "lucide-react";
 
 export default function Profile() {
   const [authorDetails, setAuthorDetails] = useState();
@@ -87,12 +88,15 @@ export default function Profile() {
         />
 
         {/* blogs */}
-        <div className="text-end my-3 py-3">
+        <div className="text-center my-3 py-3">
           {authorId === authUser?._id && (
             <Link
               to={"/create-blog"}
-              className="text-xl font-semibold border bg-black text-white py-2 px-4 rounded-lg cursor-pointer">
-              Create a new post
+              className="text-sm md:text-xl font-semibold bg-white text-black py-2 px-4 rounded-lg cursor-pointer shadow-lg">
+              Create a new post{" "}
+              <span>
+                <Edit2 className="inline size-4 md:size-6 ml-2" />
+              </span>
             </Link>
           )}
         </div>

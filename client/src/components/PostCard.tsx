@@ -1,8 +1,9 @@
 import { useEffect, useId, useState } from "react";
-import { Link, NavLink } from "react-router";
+import { Link, NavLink, useLocation } from "react-router";
 import { IUser } from "../types/User";
 import { IPost } from "../types/Post";
 import toast from "react-hot-toast";
+import { Delete, Edit, Trash } from "lucide-react";
 
 interface PostDetails {
   postData: IPost;
@@ -19,7 +20,10 @@ export default function PostCard({
 }: PostDetails) {
   const newId = useId();
   const [authorDetails, setAuthorDetails] = useState<IUser>();
-
+  const location = useLocation();
+  const [isHomePage, setIsHomePage] = useState<boolean>(
+    location.pathname === "/"
+  );
   // Getting authorDetails
   useEffect(() => {
     (async () => {
@@ -48,10 +52,10 @@ export default function PostCard({
     <div
       key={newId}
       className="card w-full md:h-64  shadow-xl rounded">
-      <div className="w-full h-full flex items-center flex-col bg-red-200 md:flew-row gap-4">
+      <div className="w-full h-full flex items-center flex-col md:flex-row md:flew-row gap-4">
         {/* image */}
         <div
-          className={`photo w-full h-1/4 md:h-64 md:w-1/3  flex-shrink-0 `}>
+          className={`photo w-full h-1/4 md:h-64 md:w-1/3 flex-shrink-0`}>
           <img
             src={
               postData.featuredImage ??
@@ -62,18 +66,21 @@ export default function PostCard({
           />
         </div>
 
-        <div className="h-full flex flex-col justify-between grow bg-red200 py-3">
-          <div className="content p-2 py-3 mb-3 overflow-hidden">
+        <div className="h-full flex flex-col justify-between grow md:py-3">
+          <div className="content p-2 py-3 mb-3 h-52 overflow-hidden">
             <NavLink to={`/blog/${postData._id}`}>
               <h2 className="heading text-xl font-semibold mb-3">
                 {postData.title}
               </h2>
               <p
                 dangerouslySetInnerHTML={{ __html: postData.content }}
-                className="desc text-sm leading-tight pb-2 text-gray-600 "></p>
+                className="desc text-sm leading-tight pb-2 text-gray-600"></p>
             </NavLink>
           </div>
-          <div className="userDetails flex gap-2 p-2 justify-between items-center">
+          <div
+            className={`userDetails flex gap-2 p-2 justify-between ${
+              isHomePage ? "flex-row" : "flex-col md:flex-row"
+            } md:items-center `}>
             <div>
               <img
                 src={`${
@@ -99,21 +106,37 @@ export default function PostCard({
                 </p>
               )}
             </div>
-            <span className="date text-[13px] font-semibold">
-              {new Date(postData.createdAt!).toLocaleDateString()}
-            </span>
-            {isAuthor ? (
-              <div>
-                <button className="edit px-3 py-1 mx-3 bg-blue-400 text-white rounded hover:shadow cursor-pointer hover:bg-blue-500">
-                  Edit
-                </button>
-                <button className="dlt px-3 py-1 bg-red-400 text-white rounded hover:shadow cursor-pointer hover:bg-red-500">
-                  Delete
-                </button>
-              </div>
-            ) : (
-              ""
-            )}
+            <div
+              className={` ${
+                !isHomePage ? "w-full md:w-1/2 " : ""
+              }  flex justify-between mt-3 mx-3`}>
+              <span className="date text-[13px] font-semibold">
+                {new Date(postData.createdAt!).toLocaleDateString()}
+              </span>
+              {isAuthor && !isHomePage ? (
+                <>
+                  {" "}
+                  <div className=" hidden md:block">
+                    <button className="edit px-3 py-1 mx-3 bg-blue-400 text-white rounded hover:shadow cursor-pointer hover:bg-blue-500">
+                      Edit
+                    </button>
+                    <button className="dlt px-3 py-1 bg-red-400 text-white rounded hover:shadow cursor-pointer hover:bg-red-500">
+                      Delete
+                    </button>
+                  </div>
+                  <div className="block md:hidden">
+                    <button className="edit text-gray-500 mx-3 rounded hover:shadow cursor-pointer ">
+                      <Edit />
+                    </button>
+                    <button className="dlt text-red-400 rounded hover:shadow cursor-pointer ">
+                      <Trash />
+                    </button>
+                  </div>
+                </>
+              ) : (
+                ""
+              )}
+            </div>
           </div>
         </div>
       </div>
