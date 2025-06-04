@@ -6,10 +6,13 @@ import useUserStore from "../store/userStore";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { IPost } from "../types/Post";
+
 import { Edit2 } from "lucide-react";
+import getSingleUser from "../utils/getUser";
+import { IUser } from "../types/User";
 
 export default function Profile() {
-  const [authorDetails, setAuthorDetails] = useState();
+  const [authorDetails, setAuthorDetails] = useState<IUser>();
   const [posts, setPosts] = useState<IPost[]>([]);
   const [likes, setLikes] = useState<string[]>([]);
   const { authUser } = useUserStore();
@@ -40,25 +43,10 @@ export default function Profile() {
       }
     })();
 
+    // get author data ;
     (async () => {
-      const url = `http://localhost:3000/api/v1/users/${authorId}`;
-      try {
-        const response = await fetch(url, {
-          method: "GET",
-          credentials: "include",
-        });
-        const jsonResponse = await response.json();
-        if (!jsonResponse.success) {
-          toast.error(
-            "Something went wrong while fetching the author data!"
-          );
-          return;
-        }
-        setAuthorDetails(jsonResponse.data);
-      } catch (error) {
-        console.log(error);
-        toast.error("Opps! something went wrong");
-      }
+      const userData: IUser = await getSingleUser(authorId!);
+      setAuthorDetails(userData);
     })();
     (async () => {
       const url = `http://localhost:3000/api/v1/users/${authorId}/total-likes`;
