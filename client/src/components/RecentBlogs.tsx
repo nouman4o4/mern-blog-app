@@ -58,9 +58,9 @@ export default function RecentBlogs() {
         <h5 className="px-2 font-semibold">Most Recent</h5>
 
         <div className="reccomendation-blogs-container py-5 gap-2">
-          {dummyData.map((item) => (
+          {dummyData.map((item, i) => (
             <div
-              key={item.id}
+              key={i}
               className="categ-item flex gap-3 items-center pb-5">
               <div className="photo size-18">
                 <img
