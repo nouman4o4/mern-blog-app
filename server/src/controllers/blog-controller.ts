@@ -280,3 +280,65 @@ export const deleteBlog = async (req: Request, res: Response) => {
     });
   }
 };
+
+// Like a Blog
+export const likeBlog = async (req: Request, res: Response) => {
+  const postId = req.params.id;
+  const userId = req.userId;
+  try {
+    if (!mongoose.isValidObjectId(postId)) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid post ID",
+      });
+      return;
+    }
+    if (!mongoose.isValidObjectId(userId)) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid user ID",
+      });
+      return;
+    }
+    const post = await Post.findById(postId).select("likes");
+    if (!post) {
+      res.status(404).json({
+        success: false,
+        status: 404,
+        message: "Post not found",
+      });
+      return;
+    }
+    const alreadyLiked = post.likes.some(
+      (id) => id.toString() === userId?.toString()
+    );
+    if (alreadyLiked) {
+      post.likes = post.likes.filter(
+        (id) => id.toString() !== userId?.toString()
+      );
+    } else {
+      post.likes.push(userId!);
+    }
+    // only get likes not entire post: for performance,
+
+    await post.save();
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: alreadyLiked
+        ? "Blog post unliked successfully"
+        : "Blog post liked successfully",
+      data: post.likes.length,
+    });
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Internal Server Error while liking the post",
+      error: error.message || error,
+    });
+  }
+};
