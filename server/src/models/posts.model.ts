@@ -44,7 +44,7 @@ const PostSchema = new Schema<IPost>(
     attachments: [{ type: String }],
     likes: [
       {
-        type: Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
     ],

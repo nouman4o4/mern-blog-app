@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response, response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import mongoose from "mongoose";
 
 declare module "express-serve-static-core" {
   interface Request {
-    userId?: string;
+    userId?: mongoose.Types.ObjectId;
   }
 }
 export const authMiddleware = async (
