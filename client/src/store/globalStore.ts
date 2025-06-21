@@ -3,6 +3,8 @@ import { create } from "zustand";
 interface storeState {
   isSearch: boolean;
   isMobileMenu: boolean;
+  isLoading: boolean;
+  setIsLoading: (value: boolean) => void;
   turnSeachOn: () => void;
   turnSeachOff: () => void;
   turnMobileMenuOn: () => void;
@@ -11,6 +13,11 @@ interface storeState {
 const useGlobalStore = create<storeState>((set) => ({
   isSearch: false,
   isMobileMenu: false,
+  isLoading: false,
+
+  setIsLoading: (value) => {
+    set({ isLoading: value });
+  },
 
   turnSeachOff: () => {
     set({ isSearch: false });

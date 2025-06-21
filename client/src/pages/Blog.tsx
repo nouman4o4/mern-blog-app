@@ -13,9 +13,11 @@ import { IPost } from "../types/Post";
 import toast from "react-hot-toast";
 import { IUser } from "../types/User";
 import getSingleUser from "../utils/getUser";
+import useGlobalStore from "../store/globalStore";
 export default function Blog() {
   const [blogData, setBlogData] = useState<IPost>();
   const [authorDetails, setAuthorDetails] = useState<IUser>();
+  const { isLoading, setIsLoading } = useGlobalStore();
   const params = useParams();
   const { blogId } = params;
 
@@ -24,6 +26,7 @@ export default function Blog() {
       // get blog data
       const url = `http://localhost:3000/api/v1/blogs/${blogId}`;
       try {
+        setIsLoading(true);
         const response = await fetch(url, {
           method: "GET",
           credentials: "include",
@@ -41,12 +44,14 @@ export default function Blog() {
 
           return;
         }
+
         setBlogData(jsonResponse.post);
       } catch (error) {
         console.log(error);
         toast.error("Something went wrong while fetching post data");
+      } finally {
+        setIsLoading(false);
       }
-      // get author data
     })();
   }, [blogId]);
 
@@ -91,7 +96,9 @@ export default function Blog() {
             </div>
             {/* blog Title */}
             <h1 className="text-2xl md:text-4xl font-bold py-3 my-4">
-              {blogData?.title}
+              {!blogData && isLoading
+                ? "Loading data..."
+                : blogData?.title}
             </h1>
             {/* author details */}
             <div className="interactions flex gap-5 items-center my-7">
@@ -124,7 +131,12 @@ export default function Blog() {
             {/* blog text */}
 
             <p
-              dangerouslySetInnerHTML={{ __html: blogData?.content! }}
+              dangerouslySetInnerHTML={{
+                __html:
+                  !blogData && isLoading
+                    ? "Loading data..."
+                    : blogData?.content!,
+              }}
               className="text-lg text-gray-600"></p>
           </div>
           <div className="w-full h-[1px] bg-gray-500"></div>
