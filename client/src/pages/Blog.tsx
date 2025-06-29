@@ -8,18 +8,24 @@ import {
 } from "lucide-react";
 import RecentBlogs from "../components/RecentBlogs";
 import { useParams } from "react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { IPost } from "../types/Post";
 import toast from "react-hot-toast";
 import { IUser } from "../types/User";
 import getSingleUser from "../utils/getUser";
 import useGlobalStore from "../store/globalStore";
+import useUserStore from "../store/userStore";
+import CommentsSection from "../components/CommentsSection";
+// import 'dotenv/config'
 export default function Blog() {
   const [blogData, setBlogData] = useState<IPost>();
   const [authorDetails, setAuthorDetails] = useState<IUser>();
   const { isLoading, setIsLoading } = useGlobalStore();
+  const [alreadyLiked, setAlreadyLiked] = useState(false);
+  const [disliked, setDisliked] = useState(false);
   const params = useParams();
   const { blogId } = params;
+  const { authUser } = useUserStore();
 
   useEffect(() => {
     (async () => {
@@ -53,7 +59,7 @@ export default function Blog() {
         setIsLoading(false);
       }
     })();
-  }, [blogId]);
+  }, [blogId, alreadyLiked]);
 
   // get author details
   useEffect(() => {
@@ -65,7 +71,45 @@ export default function Blog() {
 
       setAuthorDetails(authorData);
     })();
+    // cheack already liked
+    const alreadyLiked = blogData?.likes.some(
+      (id) => id.toString() === authUser?._id.toString()
+    );
+    setAlreadyLiked(alreadyLiked!);
   }, [blogData]);
+
+  // like post
+  const handleLike = async () => {
+    disliked && setDisliked(false);
+
+    const uri = `${
+      import.meta.env.VITE_BASE_SERVER_URL
+    }/blogs/${blogId}/like`;
+    try {
+      const response = await fetch(uri, {
+        method: "PATCH",
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log("Couldn't like a post");
+        toast.error("Failed to like, please try again.");
+        return;
+      }
+      const jsonResponse = await response.json();
+      if (
+        jsonResponse?.message === "Blog post unliked successfully"
+      ) {
+        setAlreadyLiked(false);
+      } else if (
+        jsonResponse?.message === "Blog post liked successfully"
+      ) {
+        setAlreadyLiked(true);
+      }
+    } catch (error) {
+      console.log("Couldn't like a post,error:", error);
+      return;
+    }
+  };
 
   return (
     <div className="w-full md:my-11">
@@ -95,7 +139,7 @@ export default function Blog() {
               </div>
             </div>
             {/* blog Title */}
-            <h1 className="text-2xl md:text-4xl font-bold py-3 my-4">
+            <h1 className="text-2xl md:text-4xl font-bold py-3 my-4 [font-family:var(--font-roboto-condensed)] uppercase">
               {!blogData && isLoading
                 ? "Loading data..."
                 : blogData?.title}
@@ -119,7 +163,11 @@ export default function Blog() {
                 <Eye className="inline" /> <span>--</span>
               </div>
               <div className="likes">
-                <Heart className="inline" />{" "}
+                <Heart
+                  className={`inline ${
+                    alreadyLiked ? "text-red-600" : ""
+                  }`}
+                />{" "}
                 <span>{blogData?.likes.length}</span>
               </div>
               <div className="messages">
@@ -141,89 +189,34 @@ export default function Blog() {
           </div>
           <div className="w-full h-[1px] bg-gray-500"></div>
           <div className="buttons w-full md:w-3/4 mx-auto flex gap-6 my-9 px-2 md:px-0">
-            <div className="bg-blue-500 grow hover:bg-blue-700 text-white font-bold px-4 rounded flex items-center py-3 justify-center gap-3">
+            <button
+              onClick={handleLike}
+              className={`border-2 grow font-bold px-4 rounded flex items-center py-3 justify-center gap-3 cursor-pointer transition-all duration-100 ease-linear
+            ${
+              alreadyLiked
+                ? "text-white border-blue-600 bg-blue-600 hover:bg-blue-700"
+                : "text-blue-400 hover:text-blue-600 border-blue-400 hover:bg-blue-200"
+            }`}>
               <ThumbsUp className="inline" />{" "}
               <span>{blogData?.likes.length}</span>
-            </div>
-            <div className="bg-red-500 grow hover:bg-red-700 text-white font-bold  px-4 rounded flex items-center py-3 justify-center gap-3">
+            </button>
+            <button
+              onClick={() => {
+                setDisliked(true);
+                alreadyLiked && handleLike();
+              }}
+              className={` grow  hover:bg-red-200 text-red-400 hover:text-red-600 border-2 border-red-600 font-bold  px-4 rounded flex items-center py-3 justify-center gap-3 cursor-pointer ${
+                disliked
+                  ? "bg-red-600 text-white hover:bg-red-500"
+                  : " hover:bg-red-200 text-red-400 hover:text-red-600"
+              }`}>
               <ThumbsDown />
-            </div>
+            </button>
           </div>
 
           {/* comment-section */}
 
-          <div className="comment-section w-full mx-auto mt-10 p-3 md:p-6 bg-white ">
-            <p className="text-center text-2xl font-semibold text-gray-800 mb-4">
-              Leave a Comment
-            </p>
-            <div className="cmnt-input flex w-full border border-gray-300 rounded-lg overflow-hidden">
-              <textarea
-                className="w-3/4 p-3 md:text-lg text-gray-600 outline-none resize-none"
-                placeholder="Write your comment..."
-              />
-              <button className="w-1/4 bg-black text-white md:text-lg font-medium transition-all duration-300 hover:bg-gray-800">
-                Post
-              </button>
-            </div>
-            {/* comments container*/}
-            <div className="cmnts-container my-6 text-gray-800">
-              <h4 className="text-lg font-bold border-b pb-2 my-3">
-                Comments
-              </h4>
-
-              {/* comment */}
-              {blogData && blogData?.comments.length > 0 ? (
-                [1, 2, 3, 4, 5, 6].map((_, i) => (
-                  <div
-                    key={i}
-                    className="comment max-w-2xl flex gap-2 my-8 p-2 shadow-lg rounded-xl">
-                    <div className="profile-img w-10 h-10 shrink-0">
-                      <img
-                        className="rounded-full w-full h-full"
-                        src="https://i.pravatar.cc/40"
-                        alt=""
-                      />
-                    </div>
-                    {/* comment */}
-                    <div className="comment-body px-2">
-                      <div>
-                        <div className="flex justify-between gap-8 items-center">
-                          <h3 className="font-bold ">John Doe</h3>{" "}
-                          <span className="text-[12px] text-gray-400 ">
-                            2/18/2025, 9:29:13 PM
-                          </span>
-                        </div>
-                        <p className="text-gray-60">
-                          Lorem ipsum dolor sit amet, consectetur
-                          Lorem ipsum dolor sit amet consectetur
-                          adipisicing elit. Architecto soluta nulla
-                          assumenda cum, facere nostrum neque quam
-                          sint quibusdam corrupti fugit quod magnam
-                          tempora explicabo nam eaque nobis aliquid
-                          nemo.
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-6 py-3 text-gray-500 ">
-                        <div className="">
-                          {" "}
-                          <ThumbsUp className="size-6 inline mr-1 cursor-pointer" />
-                          <p className="text-sm inline-block">45k</p>
-                        </div>
-                        <div>
-                          {" "}
-                          <ThumbsDown className="size-6 cursor-pointer" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center text-sm font-semibold">
-                  No Comments yet
-                </div>
-              )}
-            </div>
-          </div>
+          <CommentsSection blogData={blogData!} />
         </div>
 
         {/* Recent blogs component */}
