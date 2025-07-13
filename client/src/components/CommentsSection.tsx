@@ -1,6 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IPost } from "../types/Post";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { motion } from "framer-motion";
+
+interface IComment {
+  text: string;
+  user: {
+    firstname: string;
+    lastname: string;
+    profileImage: string;
+  };
+  likes: string[];
+  createdAt: Date;
+  _id: string;
+}
 
 export default function CommentsSection({
   blogData,
@@ -9,10 +22,75 @@ export default function CommentsSection({
 }) {
   const [comment, setComment] = useState<string>();
   const [isLoading, setIsloading] = useState(false);
-  const handleSubmit = () => {
+  const [comments, setComments] = useState<IComment[] | null>(null);
+
+  // submit create comment
+  const handleSubmit = async () => {
     // call api
-    console.log(comment);
+
+    const uri = `${import.meta.env.VITE_BASE_SERVER_URL}/blogs/${
+      blogData._id
+    }/comments`;
+    try {
+      setIsloading(true);
+      const response = await fetch(uri, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ comment }),
+      });
+      // console.log({ response });
+      const jsonResponse = await response.json();
+      if (!response.ok) {
+        console.log("Error posting comment");
+        return;
+      }
+      if (!jsonResponse.success) {
+        console.log(
+          jsonResponse.message || "Can't post comment data..."
+        );
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsloading(false);
+      setComment("");
+    }
   };
+
+  useEffect(() => {
+    blogData &&
+      (async () => {
+        if (!blogData._id) return;
+        // get all comments for the blog post
+        try {
+          const uri = `${
+            import.meta.env.VITE_BASE_SERVER_URL
+          }/blogs/${blogData._id}/comments`;
+          const response = await fetch(uri, {
+            method: "GET",
+            credentials: "include",
+          });
+          if (!response.ok) {
+            console.log("Error fetching comments");
+            return;
+          }
+          const jsonResponse = await response.json();
+          if (!jsonResponse.success) {
+            console.log(
+              jsonResponse.message || "Can't fetch comments data..."
+            );
+            return;
+          }
+          setComments(jsonResponse.data);
+        } catch (error) {
+          console.log(error);
+        }
+      })();
+  }, [isLoading, blogData]);
 
   return (
     <div className="comment-section w-full mx-auto mt-10 p-3 md:p-6 bg-white ">
@@ -22,6 +100,7 @@ export default function CommentsSection({
 
       <div className="cmnt-input flex w-full border border-gray-300 rounded-lg overflow-hidden">
         <textarea
+          value={comment}
           onChange={(e) => setComment(e.currentTarget.value)}
           name="comment"
           id="comment"
@@ -30,7 +109,7 @@ export default function CommentsSection({
         />
         <button
           onClick={handleSubmit}
-          className="w-1/4 bg-black text-white md:text-lg font-medium transition-all duration-300 hover:bg-gray-800">
+          className="w-1/4 bg-black text-white md:text-lg font-medium transition-all duration-300 hover:bg-gray-800 cursor-pointer">
           {isLoading ? "Posting..." : "Post"}
         </button>
       </div>
@@ -43,50 +122,71 @@ export default function CommentsSection({
         </h4>
 
         {/* comment */}
-        {blogData && blogData?.comments.length > 0 ? (
-          [1, 2, 3, 4, 5, 6].map((_, i) => (
-            <div
-              key={i}
-              className="comment max-w-2xl flex gap-2 my-8 p-2 shadow-lg rounded-xl">
-              <div className="profile-img w-10 h-10 shrink-0">
-                <img
-                  className="rounded-full w-full h-full"
-                  src="https://i.pravatar.cc/40"
-                  alt=""
-                />
-              </div>
-              {/* comment */}
-              <div className="comment-body px-2">
-                <div>
-                  <div className="flex justify-between gap-8 items-center">
-                    <h3 className="font-bold ">John Doe</h3>{" "}
-                    <span className="text-[12px] text-gray-400 ">
-                      2/18/2025, 9:29:13 PM
-                    </span>
-                  </div>
-                  <p className="text-gray-60">
-                    Lorem ipsum dolor sit amet, consectetur Lorem
-                    ipsum dolor sit amet consectetur adipisicing elit.
-                    Architecto soluta nulla assumenda cum, facere
-                    nostrum neque quam sint quibusdam corrupti fugit
-                    quod magnam tempora explicabo nam eaque nobis
-                    aliquid nemo.
-                  </p>
+
+        {blogData && comments ? (
+          comments.map((comment, i) => {
+            const isNew = i === 0;
+            const CommentWrapper = isNew ? motion.div : "div";
+            // animation not wokring properly. fix it later
+            return (
+              <CommentWrapper
+                key={i}
+                layout
+                initial={isNew ? { opacity: 0, y: -20 } : false}
+                animate={isNew ? { opacity: 1, y: 0 } : false}
+                transition={
+                  isNew
+                    ? { duration: 0.4, ease: "easeInOut" }
+                    : undefined
+                }
+                className="comment max-w-2xl flex gap-2 my-8 p-2 shadow-lg rounded-xl">
+                <div className="profile-img w-10 h-10 shrink-0">
+                  <img
+                    className="rounded-full w-full h-full"
+                    src={
+                      comment.user.profileImage ||
+                      "https://i.pravatar.cc/40"
+                    }
+                    alt=""
+                  />
                 </div>
-                <div className="flex items-center gap-6 py-3 text-gray-500 ">
-                  <div className="">
-                    {" "}
-                    <ThumbsUp className="size-6 inline mr-1 cursor-pointer" />
-                    <p className="text-sm inline-block">45k</p>
-                  </div>
+                {/* comment */}
+                <div className="comment-body px-2 grow">
                   <div>
-                    {" "}
-                    <ThumbsDown className="size-6 cursor-pointer" />
+                    <div className="flex justify-between gap-8 items-center">
+                      <h3 className="font-bold ">
+                        {comment.user.firstname +
+                          " " +
+                          comment.user.lastname}
+                      </h3>{" "}
+                      <span className="text-[12px] text-gray-400 ">
+                        {new Date(
+                          comment.createdAt
+                        ).toLocaleDateString()}
+                        ,{" "}
+                        {new Date(
+                          comment.createdAt
+                        ).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}{" "}
+                      </span>
+                    </div>
+                    <p className="text-gray-60">{comment.text}</p>
+                  </div>
+                  <div className="flex items-center justify-end py-3 text-gray-500 px-3">
+                    <div className="">
+                      {" "}
+                      <ThumbsUp className="size-6 inline mr-1 cursor-pointer" />
+                      <p className="text-sm inline-block ml-2">
+                        {comment.likes?.length || 0}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          ))
+              </CommentWrapper>
+            );
+          })
         ) : (
           <div className="text-center text-sm font-semibold">
             No Comments yet
