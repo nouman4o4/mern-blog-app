@@ -7,6 +7,8 @@ import {
   deleteBlog,
   getAllBlogsForUser,
   likeBlog,
+  createComment,
+  getCommentsForBlog,
 } from "../controllers/blog-controller";
 import { authMiddleware } from "../middleswares/authMiddleware";
 import { upload } from "../middleswares/multer";
@@ -33,5 +35,11 @@ blogRouter.patch("/:id/like", authMiddleware, likeBlog);
 
 // Get all blog posts fo a user
 blogRouter.get("/user/:userid", getAllBlogsForUser);
+
+// Create a comment
+blogRouter.post("/:id/comments", authMiddleware, createComment);
+
+// get all comments for a blog post
+blogRouter.get("/:id/comments", authMiddleware, getCommentsForBlog);
 
 export default blogRouter;

@@ -342,3 +342,122 @@ export const likeBlog = async (req: Request, res: Response) => {
     });
   }
 };
+
+// Create a comment
+export const createComment = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId;
+    const postId = req.params.id;
+    const { comment } = req.body;
+    if (!mongoose.isValidObjectId(postId)) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid post ID",
+      });
+      return;
+    }
+    if (!mongoose.isValidObjectId(userId)) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid user Id",
+      });
+      return;
+    }
+    const post = await Post.findById(postId).select("comments");
+    post?.comments.push({
+      user: userId!,
+      text: comment,
+    });
+    if (!post) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "blog post not found",
+      });
+      return;
+    }
+    await post.save();
+    res.status(201).json({
+      success: true,
+      status: 201,
+      message: "comment created successfully",
+      data: post.comments,
+    });
+  } catch (error) {
+    // console.log(error);
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Something went wrong",
+      error,
+    });
+    return;
+  }
+};
+
+// get all comments for a blog post
+export const getCommentsForBlog = async (
+  req: Request,
+  res: Response
+) => {
+  const postId = req.params.id;
+  const userId = req.userId;
+  try {
+    const isValidPostId = mongoose.isValidObjectId(postId);
+    if (!isValidPostId) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid post ID",
+      });
+      return;
+    }
+    if (!mongoose.isValidObjectId(userId)) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid user Id",
+      });
+      return;
+    }
+    const blogPost = await Post.findById(postId)
+      .populate({
+        path: "comments.user",
+        select: "firstname lastname profileImage",
+      })
+      .select("comments");
+    if (!blogPost) {
+      res.status(404).json({
+        success: false,
+        status: 404,
+        message: "Comments not found",
+      });
+      return;
+    }
+    blogPost.comments.sort(
+      (a, b) =>
+        new Date(b.createdAt!).getTime() -
+        new Date(a.createdAt!).getTime()
+    );
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Comments retrieved successfully",
+      data: blogPost.comments,
+    });
+
+    return;
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Internal Server Error while retrieving comments",
+      error: error.message || error,
+    });
+    return;
+  }
+};

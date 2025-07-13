@@ -10,12 +10,36 @@ export interface IPost extends Document {
   comments: {
     user: Types.ObjectId;
     text: string;
-    likes: Types.ObjectId[];
-    createdAt: Date;
+    likes?: Types.ObjectId[];
+    createdAt?: Date;
   }[];
   createdAt: Date;
   updatedAt: Date;
 }
+
+const commentSchema = new Schema(
+  {
+    user: {
+      type: Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    text: {
+      type: String,
+      required: true,
+    },
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+  },
+  {
+    _id: true,
+    timestamps: true,
+  }
+);
 
 const PostSchema = new Schema<IPost>(
   {
@@ -49,23 +73,7 @@ const PostSchema = new Schema<IPost>(
       },
     ],
 
-    comments: [
-      {
-        user: {
-          type: Types.ObjectId,
-          ref: "User",
-          required: true,
-        },
-        text: {
-          type: String,
-          required: true,
-        },
-        likes: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-        },
-      },
-    ],
+    comments: [commentSchema],
   },
   { timestamps: true }
 );
