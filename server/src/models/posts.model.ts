@@ -1,4 +1,13 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
+
+export interface IComment extends Types.Subdocument {
+  user: Types.ObjectId;
+  text: string;
+  likes?: Types.ObjectId[];
+  createdAt?: Date;
+  _id: string;
+}
+
 export interface IPost extends Document {
   title: string;
   content: string;
@@ -7,26 +16,20 @@ export interface IPost extends Document {
   author: Types.ObjectId;
   attachments?: string[];
   likes: Types.ObjectId[];
-  comments: {
-    user: Types.ObjectId;
-    text: string;
-    likes?: Types.ObjectId[];
-    createdAt?: Date;
-  }[];
+  comments: IComment[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-const commentSchema = new Schema(
+const commentSchema = new Schema<IComment>(
   {
     user: {
-      type: Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
     text: {
       type: String,
-      required: true,
     },
     likes: [
       {
