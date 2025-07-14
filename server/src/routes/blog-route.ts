@@ -9,6 +9,7 @@ import {
   likeBlog,
   createComment,
   getCommentsForBlog,
+  likeComment,
 } from "../controllers/blog-controller";
 import { authMiddleware } from "../middleswares/authMiddleware";
 import { upload } from "../middleswares/multer";
@@ -41,5 +42,12 @@ blogRouter.post("/:id/comments", authMiddleware, createComment);
 
 // get all comments for a blog post
 blogRouter.get("/:id/comments", authMiddleware, getCommentsForBlog);
+
+// like a comment
+blogRouter.patch(
+  "/:id/comments/:commentId/like",
+  authMiddleware,
+  likeComment
+);
 
 export default blogRouter;

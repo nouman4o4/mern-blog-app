@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { uploadFileToCloudinary } from "../lib/cloundinary";
-import { Post } from "../models/posts.model";
+import { IComment, Post } from "../models/posts.model";
 import { createBlogShcema } from "../schemas/blog-schema";
 import fs from "fs";
 import mongoose from "mongoose";
@@ -365,12 +365,22 @@ export const createComment = async (req: Request, res: Response) => {
       });
       return;
     }
-    const post = await Post.findById(postId).select("comments");
-    post?.comments.push({
-      user: userId!,
-      text: comment,
-    });
-    if (!post) {
+    const blogPost = await Post.findByIdAndUpdate(
+      postId,
+      {
+        $push: {
+          comments: {
+            user: userId,
+            text: comment,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        },
+      },
+      { new: true }
+    );
+
+    if (!blogPost) {
       res.status(400).json({
         success: false,
         status: 400,
@@ -378,12 +388,12 @@ export const createComment = async (req: Request, res: Response) => {
       });
       return;
     }
-    await post.save();
+    // await post.save();
     res.status(201).json({
       success: true,
       status: 201,
       message: "comment created successfully",
-      data: post.comments,
+      data: blogPost.comments,
     });
   } catch (error) {
     // console.log(error);
@@ -457,6 +467,142 @@ export const getCommentsForBlog = async (
       status: 500,
       message: "Internal Server Error while retrieving comments",
       error: error.message || error,
+    });
+    return;
+  }
+};
+
+// Like a comment
+export const likeComment = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId;
+    const blogId = req.params.id;
+    const commentId = req.params.commentId;
+
+    if (!mongoose.isValidObjectId(userId)) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid user Id",
+      });
+      return;
+    }
+    if (!mongoose.isValidObjectId(blogId)) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid blog Id",
+      });
+      return;
+    }
+    if (!mongoose.isValidObjectId(commentId)) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Invalid comment Id",
+      });
+      return;
+    }
+
+    // First approach JavaScript logic
+    // -----------
+    // const blogPost = await Post.findById(blogId).select("comments");
+
+    // if (!blogPost) {
+    //   res.status(404).json({
+    //     success: false,
+    //     status: 404,
+    //     message: "Blog post not found",
+    //   });
+    //   return;
+    // }
+
+    // const currentComment = blogPost.comments.find(
+    //   (comment) => comment._id.toString() === commentId?.toString()
+    // );
+
+    // if (!currentComment) {
+    //   res
+    //     .status(404)
+    //     .json({
+    //       success: false,
+    //       status: 404,
+    //       message: "Comment not found",
+    //     });
+    //   return;
+    // }
+
+    // const alreadyLiked = currentComment?.likes?.some(
+    //   (id) => id.toString() === userId?.toString()
+    // );
+
+    // if (alreadyLiked) {
+    //   currentComment?.likes?.filter(
+    //     (id) => id.toString() !== userId?.toString()
+    //   );
+    // } else {
+    //   currentComment?.likes?.push(userId!);
+    // }
+    // await blogPost?.save();
+    // res.status(200).json({
+    //   success: true,
+    //   status: 200,
+    //   message: alreadyLiked
+    //     ? "Comment unliked successfully"
+    //     : "Comment liked successfully",
+    // });
+    // return;
+
+    // Seccond approach mongodb query level appraoch
+
+    const blogPost = await Post.findOne(
+      { _id: blogId, "comments._id": commentId },
+      { "comments.$": 1 }
+    );
+    if (!blogPost || !blogPost.comments[0]) {
+      res.status(404).json({
+        success: false,
+        status: 404,
+        message: "Comment not found",
+      });
+      return;
+    }
+    const alreadyLiked = blogPost.comments[0].likes?.some(
+      (id) => id.toString() === userId?.toString()
+    );
+    if (alreadyLiked) {
+      await Post.updateOne(
+        { _id: blogId, "comments._id": commentId },
+        { $pull: { "comments.$.likes": userId } }
+      );
+      res.status(200).json({
+        success: true,
+        status: 200,
+        message: "Comment unliked successfully",
+      });
+      return;
+    } else {
+      await Post.updateOne(
+        { _id: blogId, "comments._id": commentId },
+        { $addToSet: { "comments.$.likes": userId } }
+      );
+      res.status(200).json({
+        success: true,
+        status: 200,
+        message: "Comment liked successfully",
+      });
+      return;
+    }
+  } catch (error: any) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message:
+        error.message ||
+        "Internal Server Error while retrieving comments",
+      error: error.stack,
     });
     return;
   }
