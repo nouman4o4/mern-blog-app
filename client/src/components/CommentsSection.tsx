@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { IPost } from "../types/Post";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { motion } from "framer-motion";
+import useUserStore from "../store/userStore";
+import toast from "react-hot-toast";
 
 interface IComment {
   text: string;
@@ -20,12 +22,18 @@ export default function CommentsSection({
 }: {
   blogData: IPost;
 }) {
-  const [comment, setComment] = useState<string>();
+  const [comment, setComment] = useState<string>("");
   const [isLoading, setIsloading] = useState(false);
   const [comments, setComments] = useState<IComment[] | null>(null);
+  const [isliked, setIsliked] = useState<boolean>();
+
+  const { authUser } = useUserStore();
 
   // submit create comment
   const handleSubmit = async () => {
+    if (comment?.trim().length < 3) {
+      return;
+    }
     // call api
 
     const uri = `${import.meta.env.VITE_BASE_SERVER_URL}/blogs/${
@@ -41,7 +49,7 @@ export default function CommentsSection({
         },
         body: JSON.stringify({ comment }),
       });
-      // console.log({ response });
+
       const jsonResponse = await response.json();
       if (!response.ok) {
         console.log("Error posting comment");
@@ -53,6 +61,7 @@ export default function CommentsSection({
         );
         return;
       }
+      toast.success("Comment added successfully");
     } catch (error) {
       console.log(error);
     } finally {
@@ -85,12 +94,37 @@ export default function CommentsSection({
             );
             return;
           }
+
           setComments(jsonResponse.data);
         } catch (error) {
           console.log(error);
         }
       })();
-  }, [isLoading, blogData]);
+  }, [isLoading, blogData, isliked]);
+
+  const handleLikeComment = async (commentId: string) => {
+    const uri = `${import.meta.env.VITE_BASE_SERVER_URL}/blogs/${
+      blogData._id
+    }/comments/${commentId}/like`;
+    try {
+      const response = await fetch(uri, {
+        method: "PATCH",
+        credentials: "include",
+      });
+      if (!response.ok) {
+        console.log("Error liking a comment");
+        return;
+      }
+
+      const jsonResonse = await response.json();
+      if (!jsonResonse.success) {
+        toast.error(jsonResonse.message || "Error liking a comment");
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="comment-section w-full mx-auto mt-10 p-3 md:p-6 bg-white ">
@@ -107,9 +141,15 @@ export default function CommentsSection({
           className="w-3/4 p-1 md:p-3 md:text-lg text-gray-600 outline-none resize-none"
           placeholder="Write your comment..."
         />
+
         <button
+          disabled={comment.trim().length < 3}
           onClick={handleSubmit}
-          className="w-1/4 bg-black text-white md:text-lg font-medium transition-all duration-300 hover:bg-gray-800 cursor-pointer">
+          className={`w-1/4 md:text-lg ${
+            comment.trim().length < 3
+              ? "bg-black/40 text-gray-200 hover:bg-black/40 cursor-not-allowed"
+              : "bg-black text-white hover:bg-gray-800  cursor-pointer"
+          } font-medium transition-all duration-300`}>
           {isLoading ? "Posting..." : "Post"}
         </button>
       </div>
@@ -125,6 +165,9 @@ export default function CommentsSection({
 
         {blogData && comments ? (
           comments.map((comment, i) => {
+            const isLikedByCurrentUser = comment.likes.some(
+              (id) => id.toString() === authUser?._id
+            );
             const isNew = i === 0;
             const CommentWrapper = isNew ? motion.div : "div";
             // animation not wokring properly. fix it later
@@ -177,7 +220,16 @@ export default function CommentsSection({
                   <div className="flex items-center justify-end py-3 text-gray-500 px-3">
                     <div className="">
                       {" "}
-                      <ThumbsUp className="size-6 inline mr-1 cursor-pointer" />
+                      <ThumbsUp
+                        fill={
+                          isLikedByCurrentUser ? "black" : "white"
+                        }
+                        onClick={() => {
+                          handleLikeComment(comment._id);
+                          setIsliked(!isliked);
+                        }}
+                        className="size-6 inline mr-1 cursor-pointer"
+                      />
                       <p className="text-sm inline-block ml-2">
                         {comment.likes?.length || 0}
                       </p>
