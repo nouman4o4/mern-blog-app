@@ -50,13 +50,23 @@ export default function MobileMenu() {
               <div className="border-b-1 border-gray-300">
                 <div className="h-full p-2 flex items-center gap-4">
                   <div>
-                    <img
-                      src="https://avatar.iran.liara.run/public/15"
-                      className="size-14 bg-white rounded-full border-3 border-white"
-                    />
+                    <NavLink
+                      to={`/profile/${authUser._id}`}
+                      onClick={turnMobileMenuOff}>
+                      <img
+                        src={`${
+                          authUser?.profileImage
+                            ? authUser?.profileImage
+                            : authUser?.gender === "male"
+                            ? "https://avatar.iran.liara.run/public/41"
+                            : "https://avatar.iran.liara.run/public/88"
+                        }`}
+                        className="size-14 bg-white rounded-full border-3 border-white"
+                      />
+                    </NavLink>
                   </div>
                   <NavLink
-                    to={"/profile"}
+                    to={`/profile/${authUser._id}`}
                     onClick={turnMobileMenuOff}
                     className={"text-left"}>
                     <p className="Firstname font-semibold ">
