@@ -118,7 +118,7 @@ export default function Blog() {
         <div className="blog-detail w-full md:w-3/4">
           <div className="image bg-amber-400 w-full h-auto">
             <img
-              className="w-full h-auto"
+              className="w-full h-[350px] md:h-[450px] lg:h-[600px] object-cover"
               src={`${blogData?.featuredImage || null}`}
               alt=""
             />
