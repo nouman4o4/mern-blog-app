@@ -78,7 +78,16 @@ export const createBlog = async (req: Request, res: Response) => {
 // Get all blog posts
 export const getAllBlogs = async (req: Request, res: Response) => {
   try {
-    const allBlogPosts = await Post.find().sort({ createdAt: -1 });
+    const { category } = req.query;
+
+    const allBlogPosts = await Post.find(
+      category && typeof category === "string"
+        ? {
+            category:
+              category.charAt(0).toUpperCase() + category.slice(1),
+          }
+        : {}
+    ).sort({ createdAt: -1 });
     if (!allBlogPosts) {
       res.status(404).json({
         success: false,
