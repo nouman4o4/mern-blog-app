@@ -1,4 +1,5 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
+import { useNavigate } from "react-router";
 
 // Define a type for the category
 interface Category {
@@ -11,49 +12,47 @@ interface Category {
 const categories: Category[] = [
   {
     id: 1,
-    name: "Sports",
+    name: "Technology",
     imageUrl:
       "https://html.quomodosoft.com/binduz/assets/images/favorites-categories-1.png",
   },
   {
     id: 2,
-    name: "Journal",
+    name: "Travel",
     imageUrl:
       "https://html.quomodosoft.com/binduz/assets/images/favorites-categories-3.png",
   },
   {
     id: 3,
-    name: "Beating",
+    name: "Food",
     imageUrl:
       "https://html.quomodosoft.com/binduz/assets/images/favorites-categories-4.png",
   },
   {
     id: 4,
-    name: "Movies",
+    name: "Lifestyle",
     imageUrl:
       "https://html.quomodosoft.com/binduz/assets/images/favorites-categories-5.png",
   },
   {
     id: 5,
-    name: "Magazine",
+    name: "Business",
     imageUrl:
       "https://html.quomodosoft.com/binduz/assets/images/favorites-categories-6.png",
   },
   {
     id: 6,
-    name: "Film",
+    name: "Health",
     imageUrl:
       "https://html.quomodosoft.com/binduz/assets/images/favorites-categories-7.png",
-  },
-  {
-    id: 7,
-    name: "Sports",
-    imageUrl:
-      "https://html.quomodosoft.com/binduz/assets/images/favorites-categories-8.png",
   },
 ];
 
 const Categories: React.FC = () => {
+  const navigate = useNavigate();
+  const handleSelctCategory = (selectedCategory: string) => {
+    navigate(`/?category=${selectedCategory}`);
+  };
   return (
     <div className="w-full min-h- bg-gray-50 p-6 px-1 md:p-12">
       <h3 className="text-xl font-bold my-1 text-black p-3">
@@ -61,7 +60,12 @@ const Categories: React.FC = () => {
       </h3>
       <div className="w-full h-full flex flex-wrap justify-start">
         {categories.map((category) => (
-          <div key={category.id} className="box w-25 h-30 p-1 m-2">
+          <div
+            key={category.id}
+            onClick={() =>
+              handleSelctCategory(category.name.toLowerCase())
+            }
+            className="box w-25 h-30 p-1 m-2 cursor-pointer">
             <div className="photo w-full h-21 overflow-hidden">
               <img
                 className="w-full h-full object-cover"

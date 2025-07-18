@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { NavLink } from "react-router";
+import { NavLink, useLocation, useNavigate } from "react-router";
 import { dummyData } from "../utils/dummydata";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -14,19 +14,30 @@ import Categories from "../components/Category-section";
 import { IPost } from "../types/Post";
 import toast from "react-hot-toast";
 import useUserStore from "../store/userStore";
+import HeroSlider from "../components/HeroSlider";
 
 const Home: React.FC = () => {
-  const swiperRef = useRef<SwiperClass | null>(null);
   const [blogPosts, setBlogPosts] = useState<IPost[]>();
+  const [category, setCategory] = useState<string | null>("");
   const { authUser } = useUserStore();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    console.log({ category });
     (async () => {
-      const url = "http://localhost:3000/api/v1/blogs";
+      const url = `${import.meta.env.VITE_BASE_SERVER_URL}/blogs${
+        category ? `?category=${category}` : ""
+      }`;
+      console.log({ url });
       const response = await fetch(url, {
         method: "GET",
         credentials: "include",
       });
+      if (!response.ok) {
+        console.log("Failed to fetch all blogs", response);
+        return;
+      }
       const jsonResponse = await response.json();
       console.log({ jsonResponse });
       if (!jsonResponse.success) {
@@ -37,66 +48,18 @@ const Home: React.FC = () => {
       }
       setBlogPosts(jsonResponse.posts);
     })();
-  }, []);
+  }, [category]);
+
+  // setting seletected category
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const category = params.get("category");
+    setCategory(category);
+  }, [location]);
 
   return (
     <div>
-      <div
-        className="w-full h-[70vh] md:h-[90vh] p-1 md:p-6 relative flex overflow-hidden rounded-xl md:rounded-3xl
-    ">
-        {/* Next arrow button */}
-
-        <Swiper
-          onSwiper={(swiper) => (swiperRef.current = swiper)}
-          slidesPerView={1}
-          centeredSlides={true}
-          spaceBetween={50}
-          speed={2500}
-          loop={true}
-          autoplay={{ delay: 3500, disableOnInteraction: false }}
-          modules={[Autoplay]}>
-          {dummyData.map((item) => (
-            <SwiperSlide key={item.id}>
-              <NavLink
-                to={"/blog/12"}
-                key={item.id}
-                className="w-full shrink-0 h-[65vh] md:h-[80vh] flex items-end bg-cover bg-center relative rounded-lg md:rounded-2xl overflow-hidden"
-                style={{
-                  backgroundImage: `url(${item.imageUrl})`,
-                }} // Replace with your actual image URL
-              >
-                {/* Overlay for better text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black-10"></div>
-
-                {/* Content Container */}
-                <div className="w-full lg:w-[70%] z-10 p-7 px-3 lg:p-10">
-                  <NavLink to={""} className="content grow-2">
-                    <h3 className="text-white font-bold lg:text-lg ">
-                      Featured
-                    </h3>
-                    <div className="title mb-3 lg:mb-4">
-                      <div className="text-2xl lg:text-4xl  font-semibold text-white">
-                        {" "}
-                        {item.title} <br />
-                        Advice from Unitiled Founder, Frankie
-                      </div>
-                    </div>
-                    <div className="desc">
-                      <p className="text-gray-200 lg:text-lg leading-tight text-wrap overflow-hidden ">
-                        {item.description}
-                      </p>
-                    </div>
-                  </NavLink>
-                </div>
-
-                {/* <div className="absolute bottom-10 right-10 bg-white size-8">
-          hi
-        </div> */}
-              </NavLink>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
+      <HeroSlider />
 
       <Categories />
       {/* all blogs */}
@@ -105,13 +68,35 @@ const Home: React.FC = () => {
           Recent Blog posts
         </h3>
         <div className="blog-container pt-6 flex items-center justify-center gap-8 flex-wrap">
-          {blogPosts?.map((post) => (
-            <PostCard
-              authorId={post.author}
-              postData={post}
-              isAuthor={authUser?._id === post.author}
-            />
-          ))}
+          {blogPosts?.length! > 0 ? (
+            blogPosts?.map((post) => (
+              <PostCard
+                authorId={post.author}
+                postData={post}
+                isAuthor={authUser?._id === post.author}
+              />
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center text-center p-10 rounded-lg">
+              <img
+                src="https://illustrations.popsy.co/gray/work-from-home.svg"
+                alt="No posts"
+                className="w-48 h-48 mb-4 opacity-80"
+              />
+              <h2 className="text-2xl font-semibold text-gray-700 mb-2">
+                No Blogs Yet
+              </h2>
+              <p className="text-gray-500 mb-4">
+                Looks like there's no any blogs. Start writing your
+                own one!
+              </p>
+              <button
+                onClick={() => navigate("/create-blog")}
+                className="px-6 py-2 bg-red-400 hover:bg-red-500 text-white rounded-md transition-all">
+                Create Blog
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
