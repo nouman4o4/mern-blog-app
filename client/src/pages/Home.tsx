@@ -1,14 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router";
-import { dummyData } from "../utils/dummydata";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { Swiper as SwiperClass } from "swiper";
 import PostCard from "../components/PostCard";
 import Categories from "../components/Category-section";
 import { IPost } from "../types/Post";
@@ -29,7 +25,6 @@ const Home: React.FC = () => {
       const url = `${import.meta.env.VITE_BASE_SERVER_URL}/blogs${
         category ? `?category=${category}` : ""
       }`;
-      console.log({ url });
       const response = await fetch(url, {
         method: "GET",
         credentials: "include",
@@ -39,9 +34,9 @@ const Home: React.FC = () => {
         return;
       }
       const jsonResponse = await response.json();
-      console.log({ jsonResponse });
+
       if (!jsonResponse.success) {
-        toast.error(
+        console.log(
           "Something went wrong while getting blog posts data"
         );
         return;
@@ -64,8 +59,8 @@ const Home: React.FC = () => {
       <Categories />
       {/* all blogs */}
       <div className="w-[90%] mx-auto py-6">
-        <h3 className="text-xl font-bold my-1 text-black">
-          Recent Blog posts
+        <h3 className="text-xl font-bold my-1 text-black capitalize">
+          {category ?? "recent"} Blogs
         </h3>
         <div className="blog-container pt-6 flex items-center justify-center gap-8 flex-wrap">
           {blogPosts?.length! > 0 ? (

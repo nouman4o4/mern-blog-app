@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { useNavigate } from "react-router";
 
 // Define a type for the category
@@ -11,47 +11,62 @@ interface Category {
 // Dummy data for favorite categories
 const categories: Category[] = [
   {
+    id: 0,
+    name: "Recent",
+    imageUrl:
+      "https://thumbs.dreamstime.com/b/young-girl-writing-blog-laptop-sitting-wooden-desk-cup-coffee-smartphone-99344707.jpg",
+  },
+  {
     id: 1,
     name: "Technology",
     imageUrl:
-      "https://html.quomodosoft.com/binduz/assets/images/favorites-categories-1.png",
+      "https://images.unsplash.com/photo-1518773553398-650c184e0bb3?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 2,
     name: "Travel",
     imageUrl:
-      "https://html.quomodosoft.com/binduz/assets/images/favorites-categories-3.png",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 3,
     name: "Food",
     imageUrl:
-      "https://html.quomodosoft.com/binduz/assets/images/favorites-categories-4.png",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 4,
     name: "Lifestyle",
     imageUrl:
-      "https://html.quomodosoft.com/binduz/assets/images/favorites-categories-5.png",
+      "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 5,
     name: "Business",
     imageUrl:
-      "https://html.quomodosoft.com/binduz/assets/images/favorites-categories-6.png",
+      "https://images.unsplash.com/photo-1556742031-c6961e8560b0?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: 6,
     name: "Health",
     imageUrl:
-      "https://html.quomodosoft.com/binduz/assets/images/favorites-categories-7.png",
+      "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=800&q=80",
   },
 ];
 
 const Categories: React.FC = () => {
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>("");
+
   const navigate = useNavigate();
   const handleSelctCategory = (selectedCategory: string) => {
-    navigate(`/?category=${selectedCategory}`);
+    setSelectedCategory(selectedCategory);
+
+    navigate(
+      selectedCategory === "recent"
+        ? "/"
+        : `/?category=${selectedCategory}`
+    );
   };
   return (
     <div className="w-full min-h- bg-gray-50 p-6 px-1 md:p-12">
@@ -65,7 +80,11 @@ const Categories: React.FC = () => {
             onClick={() =>
               handleSelctCategory(category.name.toLowerCase())
             }
-            className="box w-25 h-30 p-1 m-2 cursor-pointer">
+            className={`box w-25 h-30 p-1 m-2 cursor-pointer border-b-4 ${
+              category.name.toLocaleLowerCase() === selectedCategory
+                ? "border-red-300"
+                : " border-transparent"
+            }`}>
             <div className="photo w-full h-21 overflow-hidden">
               <img
                 className="w-full h-full object-cover"
