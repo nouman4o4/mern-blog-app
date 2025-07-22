@@ -10,6 +10,7 @@ import useUserStore from "./store/userStore";
 import CreateBlog from "./pages/CreateBlog";
 import Contact from "./pages/Contact";
 import { useEffect } from "react";
+import UpdateBlog from "./pages/UpdateBlog";
 
 function App() {
   const authUser = useUserStore((state) => state.authUser);
@@ -50,6 +51,12 @@ function App() {
             path="/create-blog"
             element={
               !authUser ? <Navigate to={"/login"} /> : <CreateBlog />
+            }
+          />
+          <Route
+            path="/update-blog/:id"
+            element={
+              !authUser ? <Navigate to={"/login"} /> : <UpdateBlog />
             }
           />
           <Route
