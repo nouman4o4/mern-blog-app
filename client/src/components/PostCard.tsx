@@ -117,9 +117,12 @@ export default function PostCard({
                 <>
                   {" "}
                   <div className=" hidden md:block">
-                    <button className="edit px-3 py-1 mx-3 bg-blue-400 text-white rounded hover:shadow cursor-pointer hover:bg-blue-500">
-                      Edit
-                    </button>
+                    <Link to={`/update-blog/${postData._id}`}>
+                      <button className="edit px-3 py-1 mx-3 bg-blue-400 text-white rounded hover:shadow cursor-pointer hover:bg-blue-500">
+                        {" "}
+                        Edit
+                      </button>
+                    </Link>
                     <button className="dlt px-3 py-1 bg-red-400 text-white rounded hover:shadow cursor-pointer hover:bg-red-500">
                       Delete
                     </button>
