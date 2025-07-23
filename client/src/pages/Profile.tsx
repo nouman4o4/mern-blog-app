@@ -29,7 +29,7 @@ export default function Profile() {
           credentials: "include",
         });
         const jsonResponse = await response.json();
-        console.log(jsonResponse);
+
         if (!jsonResponse.success) {
           toast.error(
             "Something went wrong while fetching blogs data!"
@@ -89,9 +89,6 @@ export default function Profile() {
           )}
         </div>
         <div className="w-full my-4">
-          {/* <h1 className="py-3 my-3 text-3xl font-semibold">
-            My Posts
-          </h1> */}
           <div className="posts-container">
             {/* post */}
             <div className="w-full bg-white rounded-lg py-5 p-2">

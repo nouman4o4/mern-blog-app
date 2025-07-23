@@ -8,7 +8,6 @@ import "swiper/css/navigation";
 import PostCard from "../components/PostCard";
 import Categories from "../components/Category-section";
 import { IPost } from "../types/Post";
-import toast from "react-hot-toast";
 import useUserStore from "../store/userStore";
 import HeroSlider from "../components/HeroSlider";
 
@@ -20,7 +19,6 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log({ category });
     (async () => {
       const url = `${import.meta.env.VITE_BASE_SERVER_URL}/blogs${
         category ? `?category=${category}` : ""
