@@ -20,6 +20,7 @@ import {
   ListOrdered,
   Heading,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -35,11 +36,12 @@ const extensions = [
   }),
 ];
 
-const content = "";
-
 export default ({
   onChange,
+  content,
 }: {
+  content: any;
+
   onChange: (content: string) => void;
 }) => {
   const editor = useEditor({
@@ -54,6 +56,7 @@ export default ({
           "prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl focus:outline-none min-h-[300px] p-2 md:p-4 leading-[1.2]",
       },
     },
+    immediatelyRender: true,
   });
 
   const editorState = editor
