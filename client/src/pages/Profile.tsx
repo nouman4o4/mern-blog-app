@@ -16,6 +16,7 @@ export default function Profile() {
   const [posts, setPosts] = useState<IPost[]>([]);
   const [likes, setLikes] = useState<string[]>([]);
   const { authUser } = useUserStore();
+  const [refreshQuery, setRefreshQuery] = useState(false);
   const params = useParams();
   const authorId = params.id;
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ export default function Profile() {
         console.log(error);
       }
     })();
-  }, [params.id]);
+  }, [params.id, refreshQuery]);
 
   return (
     <div>
@@ -120,6 +121,9 @@ export default function Profile() {
                       postData={post}
                       authorId={post.author}
                       isAuthor={authorId === authUser?._id}
+                      setRefreshQuery={() =>
+                        setRefreshQuery(!refreshQuery)
+                      }
                     />
                   ))
                 )}

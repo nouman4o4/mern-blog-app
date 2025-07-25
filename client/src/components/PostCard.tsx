@@ -4,12 +4,14 @@ import { IUser } from "../types/User";
 import { IPost } from "../types/Post";
 import toast from "react-hot-toast";
 import { Delete, Edit, Trash } from "lucide-react";
+import AlerDialog from "./AlerDialog";
 
 interface PostDetails {
   postData: IPost;
   authorDetails?: IUser | undefined;
   isAuthor: boolean;
   authorId: string;
+  setRefreshQuery: () => void;
 }
 
 export default function PostCard({
@@ -17,6 +19,7 @@ export default function PostCard({
   // authorDetails,
   authorId,
   isAuthor,
+  setRefreshQuery,
 }: PostDetails) {
   const newId = useId();
   const [authorDetails, setAuthorDetails] = useState<IUser>();
@@ -24,6 +27,7 @@ export default function PostCard({
   const [isHomePage, setIsHomePage] = useState<boolean>(
     location.pathname === "/"
   );
+  const [isAlert, setIsAlert] = useState(false);
   // Getting authorDetails
   useEffect(() => {
     (async () => {
@@ -123,7 +127,9 @@ export default function PostCard({
                         Edit
                       </button>
                     </Link>
-                    <button className="dlt px-3 py-1 bg-red-400 text-white rounded hover:shadow cursor-pointer hover:bg-red-500">
+                    <button
+                      onClick={() => setIsAlert(true)}
+                      className="dlt px-3 py-1 bg-red-400 text-white rounded hover:shadow cursor-pointer hover:bg-red-500">
                       Delete
                     </button>
                   </div>
@@ -131,7 +137,9 @@ export default function PostCard({
                     <button className="edit text-gray-500 mx-3 rounded hover:shadow cursor-pointer ">
                       <Edit />
                     </button>
-                    <button className="dlt text-red-400 rounded hover:shadow cursor-pointer ">
+                    <button
+                      onClick={() => setIsAlert(true)}
+                      className="dlt text-red-400 rounded hover:shadow cursor-pointer ">
                       <Trash />
                     </button>
                   </div>
@@ -143,6 +151,15 @@ export default function PostCard({
           </div>
         </div>
       </div>
+      {!isAlert ? (
+        ""
+      ) : (
+        <AlerDialog
+          setIsAlert={setIsAlert}
+          blogId={postData._id}
+          setRefreshQuery={setRefreshQuery}
+        />
+      )}
     </div>
   );
 }
