@@ -195,7 +195,8 @@ export const getBlog = async (req: Request, res: Response) => {
 export const updateBlog = async (req: Request, res: Response) => {
   try {
     const postId = req.params.id;
-    const { title, content } = req.body;
+    const { title, content, category } = req.body;
+    const featuredImageFile = req.file;
     if (
       !title ||
       title.length < 5 ||

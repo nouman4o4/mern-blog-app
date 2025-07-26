@@ -26,7 +26,12 @@ blogRouter.get("/:id", getBlog);
 blogRouter.post("/", upload.single("file"), createBlog);
 
 // UPDATE a blog post
-blogRouter.put("/:id", authMiddleware, updateBlog);
+blogRouter.put(
+  "/:id",
+  authMiddleware,
+  upload.single("imageFile"),
+  updateBlog
+);
 
 // DELETE a blog post
 blogRouter.delete("/:id", authMiddleware, deleteBlog);
