@@ -96,25 +96,42 @@ export default function BlogForm({
 
     formData.append("content", content!);
     formData.append("category", category!);
-    formData.append("author", authUser._id!);
+    !updatePage && formData.append("author", authUser._id!);
     formData.append("file", image!);
 
     // Api call
     try {
-      const url = "http://localhost:3000/api/v1/blogs/";
-      const response = await fetch(url, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
+      if (!updatePage) {
+        const url = "http://localhost:3000/api/v1/blogs/";
+        const response = await fetch(url, {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        });
 
-      const jsonResponse = await response.json();
-      console.log(jsonResponse);
-      if (!jsonResponse.success) toast.error(jsonResponse.message);
-      else {
-        toast.success("Post created successfully!");
-        // Redirect to the post page
-        // navigate("/");
+        const jsonResponse = await response.json();
+        console.log(jsonResponse);
+        if (!jsonResponse.success) toast.error(jsonResponse.message);
+        else {
+          toast.success("Post created successfully!");
+          // Redirect to the post page
+          // navigate("/");
+        }
+      } else if (updatePage) {
+        const url = `http://localhost:3000/api/v1/blogs/:${updateBlogId}`;
+        const response = await fetch(url, {
+          method: "PUT",
+          credentials: "include",
+          body: formData,
+        });
+
+        const jsonResponse = await response.json();
+        console.log("JsonResponse of update: ", jsonResponse);
+        console.log(jsonResponse);
+        if (!jsonResponse.success) toast.error(jsonResponse.message);
+        else {
+          toast.success("Blog updated successfully!");
+        }
       }
     } catch (error) {
       console.error(error);
