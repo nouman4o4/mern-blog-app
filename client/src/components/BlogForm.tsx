@@ -10,6 +10,7 @@ import { blogSchema } from "../schemas/blogSchema";
 import useUserStore from "../store/userStore";
 import toast from "react-hot-toast";
 import { IPost } from "../types/Post";
+import { useNavigate } from "react-router";
 
 interface Category {
   id: string;
@@ -48,6 +49,7 @@ export default function BlogForm({
   const [updateBlogData, setUpdateBlogData] = useState<IPost>();
   const [category, setCategory] = useState<string>("");
   const inputRef = useRef(null);
+  const navigate = useNavigate();
 
   const authUser =
     JSON.parse(localStorage.getItem("blog-app-user")!) ||
@@ -118,12 +120,24 @@ export default function BlogForm({
           // navigate("/");
         }
       } else if (updatePage) {
-        const url = `http://localhost:3000/api/v1/blogs/:${updateBlogId}`;
+        const url = `http://localhost:3000/api/v1/blogs/${updateBlogId}`;
         const response = await fetch(url, {
           method: "PUT",
           credentials: "include",
           body: formData,
         });
+
+        if (!response.ok) {
+          console.log(response);
+          toast.error("Oops something went wrong while updating..");
+          return {
+            title: title ?? "",
+            content: content ?? "",
+            category: category ?? "",
+            image: image ?? null,
+            error: null,
+          };
+        }
 
         const jsonResponse = await response.json();
         console.log("JsonResponse of update: ", jsonResponse);
@@ -131,6 +145,7 @@ export default function BlogForm({
         if (!jsonResponse.success) toast.error(jsonResponse.message);
         else {
           toast.success("Blog updated successfully!");
+          navigate(-1);
         }
       }
     } catch (error) {
