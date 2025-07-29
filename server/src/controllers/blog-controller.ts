@@ -196,7 +196,6 @@ export const updateBlog = async (req: Request, res: Response) => {
   try {
     const postId = req.params.id;
     const { title, content, category } = req.body;
-    const featuredImageFile = req.file;
     if (
       !title ||
       title.length < 5 ||
@@ -219,11 +218,35 @@ export const updateBlog = async (req: Request, res: Response) => {
       return;
     }
 
+    const featuredImageFile = req.file;
+    let featuredImageUrl: string | undefined;
+    if (featuredImageFile) {
+      try {
+        const imageUploadResult = await uploadFileToCloudinary(
+          featuredImageFile.path
+        );
+        featuredImageUrl = imageUploadResult?.secure_url;
+        fs.unlink(featuredImageFile.path, (err) => {
+          if (err) console.error("Error deleting file:", err);
+        });
+      } catch (error) {
+        res.status(500).json({
+          success: false,
+          status: 500,
+          message: "Something went wrong while updating..",
+          error,
+        });
+        return;
+      }
+    }
+
     const updatedPost = await Post.findByIdAndUpdate(
       postId,
       {
         title,
         content,
+        category,
+        featuredImageUrl,
       },
       { new: true, runValidators: true }
     );
@@ -231,7 +254,7 @@ export const updateBlog = async (req: Request, res: Response) => {
       res.status(400).json({
         success: false,
         status: 400,
-        message: "Could'nt update the post",
+        message: "Couldn't update the post",
       });
       return;
     }
@@ -248,7 +271,7 @@ export const updateBlog = async (req: Request, res: Response) => {
       success: false,
       status: 500,
       message: "Internal Server Error while update the post",
-      error: error.message || error,
+      error: error.stack || error,
     });
   }
 };
