@@ -29,7 +29,7 @@ blogRouter.post("/", upload.single("file"), createBlog);
 blogRouter.put(
   "/:id",
   authMiddleware,
-  upload.single("imageFile"),
+  upload.single("file"),
   updateBlog
 );
 
