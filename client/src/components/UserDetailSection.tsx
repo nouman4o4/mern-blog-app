@@ -55,15 +55,15 @@ export default function UserDetailSection({
     reader.readAsDataURL(file);
   };
 
-  const getProfileImage = () => {
-    if (isUploading) return croppedUrl;
-    if (authorDetails?.profileImage)
-      return authorDetails?.profileImage;
+  // const getProfileImage = () => {
+  //   if (isUploading) return croppedUrl;
+  //   if (authorDetails?.profileImage)
+  //     return authorDetails?.profileImage;
 
-    return authUser?.gender === "male"
-      ? "https://avatar.iran.liara.run/public/41"
-      : "https://avatar.iran.liara.run/public/88";
-  };
+  //   return authUser?.gender === "male"
+  //     ? "https://avatar.iran.liara.run/public/41"
+  //     : "https://avatar.iran.liara.run/public/88";
+  // };
 
   const handleLogout = async () => {
     const isLogout = await logout(authUser?._id!);
@@ -90,7 +90,13 @@ export default function UserDetailSection({
             <div className="photo w-44 h-32 sm:w-52 sm:h-48 absolute sm:relative">
               <div className="absolute bg-white left-4 top-[-40%] border-2 border-black rounded-full">
                 <img
-                  src={getProfileImage() ?? null}
+                  src={
+                    authUser?.profileImage
+                      ? authUser?.profileImage
+                      : authUser?.gender === "male"
+                      ? "https://avatar.iran.liara.run/public/41"
+                      : "https://avatar.iran.liara.run/public/88"
+                  }
                   alt=""
                   className={`size-32 sm:size-44 object-cover rounded-full ${
                     isUploading ? "opacity-60" : ""
