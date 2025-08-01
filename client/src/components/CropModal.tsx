@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { uploadProfileImage } from "../utils/uploadImage";
 import toast from "react-hot-toast";
 import useUserStore from "../store/userStore";
-import { useNavigate, useNavigation } from "react-router";
+import { useNavigate } from "react-router";
 import ReactCrop from "react-image-crop";
 type PropsTypes = {
   imageSrc: string;
@@ -25,9 +25,7 @@ export default function CropModal({
   const {
     crop,
     setCrop,
-    completedCrop,
     setCompletedCrop,
-
     isCropped,
     setIsCropped,
     imgRef,
@@ -103,7 +101,7 @@ export default function CropModal({
 
   if (!imageSrc) return;
   return (
-    <div className="profile-image-preview absolute top-0 left-0 z-20 h-screen w-screen bg-black/75 flex items-center justify-center p-2">
+    <div className="profile-image-preview fixed inset-0 z-20 h-screen w-screen bg-black/75 flex items-center justify-center p-2">
       <div className="bg-white rounded-lg w-full md:w-8/12 h-fit max-h-3/4 p-5 flex items-center flex-col relative xlg:pt-4 pt-14">
         <div
           onClick={() => {
