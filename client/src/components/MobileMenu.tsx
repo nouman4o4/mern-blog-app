@@ -7,9 +7,10 @@ import useUserStore from "../store/userStore.ts";
 export default function MobileMenu() {
   const { isMobileMenu, turnMobileMenuOff, turnSeachOn } =
     useGlobalStore((state) => state);
+  const { authUser: authUserInStore } = useUserStore();
   const authUser =
     JSON.parse(localStorage.getItem("blog-app-user")!) ||
-    useUserStore((state) => state.authUser);
+    authUserInStore;
 
   return (
     <>
