@@ -1,5 +1,8 @@
 import { Request, response, Response } from "express";
-import { uploadFileToCloudinary } from "../lib/cloundinary";
+import {
+  deleteFileFromCloudinary,
+  uploadFileToCloudinary,
+} from "../lib/cloundinary";
 import { IComment, Post } from "../models/posts.model";
 import { createBlogShcema } from "../schemas/blog-schema";
 import fs from "fs";
@@ -29,17 +32,24 @@ export const createBlog = async (req: Request, res: Response) => {
     }
 
     const featuredImageFile = req.file;
-    let featuredImageUrl: string | undefined;
+    let uploadedImageData: { secureUrl: string; publicId: string } = {
+      secureUrl: "",
+      publicId: "",
+    };
 
     if (featuredImageFile) {
       try {
         const imageUploadResult = await uploadFileToCloudinary(
           featuredImageFile.path
         );
-        featuredImageUrl = imageUploadResult?.secure_url;
-        fs.unlink(featuredImageFile.path, (err) => {
-          if (err) console.error("Error deleting file:", err);
-        });
+        if (imageUploadResult) {
+          uploadedImageData.secureUrl = imageUploadResult.secure_url;
+          uploadedImageData.publicId = imageUploadResult.public_id;
+
+          fs.unlink(featuredImageFile.path, (err) => {
+            if (err) console.error("Error deleting file:", err);
+          });
+        }
       } catch (error) {
         res.status(500).json({
           success: false,
@@ -56,7 +66,7 @@ export const createBlog = async (req: Request, res: Response) => {
       content,
       author,
       category,
-      featuredImage: featuredImageUrl,
+      featuredImage: uploadedImageData,
     });
 
     res.status(201).json({
@@ -217,23 +227,44 @@ export const updateBlog = async (req: Request, res: Response) => {
       });
       return;
     }
-
+    const postToUpdate = await Post.findById(postId).select(
+      "featuredImage"
+    );
     const featuredImageFile = req.file;
-    let featuredImageUrl: string | undefined;
+    let uploadedImageData: { secureUrl: string; publicId: string } = {
+      secureUrl: "",
+      publicId: "",
+    };
     if (featuredImageFile) {
       try {
-        const imageUploadResult = await uploadFileToCloudinary(
-          featuredImageFile.path
-        );
-        featuredImageUrl = imageUploadResult?.secure_url;
-        fs.unlink(featuredImageFile.path, (err) => {
-          if (err) console.error("Error deleting file:", err);
-        });
+        const deletePrevFeaturedImageResult =
+          await deleteFileFromCloudinary(
+            postToUpdate?.featuredImage?.publicId!
+          );
+
+        if (
+          postToUpdate?.featuredImage?.secureUrl === "" ||
+          deletePrevFeaturedImageResult.result === "ok"
+        ) {
+          const imageUploadResult = await uploadFileToCloudinary(
+            featuredImageFile.path
+          );
+
+          if (imageUploadResult) {
+            uploadedImageData.secureUrl =
+              imageUploadResult.secure_url;
+            uploadedImageData.publicId = imageUploadResult.public_id;
+
+            fs.unlink(featuredImageFile.path, (err) => {
+              if (err) console.error("Error deleting file:", err);
+            });
+          }
+        }
       } catch (error) {
         res.status(500).json({
           success: false,
           status: 500,
-          message: "Something went wrong while updating..",
+          message: "Error, couldn't update the blog. try again.",
           error,
         });
         return;
@@ -246,7 +277,7 @@ export const updateBlog = async (req: Request, res: Response) => {
         title,
         content,
         category,
-        featuredImageUrl,
+        featuredImage: uploadedImageData,
       },
       { new: true, runValidators: true }
     );

@@ -12,7 +12,10 @@ export interface IPost extends Document {
   title: string;
   content: string;
   category: string;
-  featuredImage?: string;
+  featuredImage?: {
+    secureUrl: string;
+    publicId: string;
+  };
   author: Types.ObjectId;
   attachments?: string[];
   likes: Types.ObjectId[];
@@ -55,8 +58,12 @@ const PostSchema = new Schema<IPost>(
       required: true,
     },
     featuredImage: {
-      type: String,
-      default: "",
+      secureUrl: {
+        type: String,
+      },
+      publicId: {
+        type: String,
+      },
     },
     category: {
       type: String,
