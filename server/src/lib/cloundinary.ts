@@ -20,7 +20,6 @@ export const uploadFileToCloudinary = async function (
     const uploadResult = await cloudinary.uploader.upload(
       localFilePath,
       {
-        public_id: "blogImage",
         resource_type: "auto",
       }
     );
@@ -35,5 +34,21 @@ export const uploadFileToCloudinary = async function (
     fs.unlink(localFilePath, (err) => {
       if (err) console.log(err);
     });
+  }
+};
+
+export const deleteFileFromCloudinary = async function (
+  publicId: string
+) {
+  cloudinary.config({
+    cloud_name: "dsvnh6opu",
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+  try {
+    const deleteResult = await cloudinary.uploader.destroy(publicId);
+    return deleteResult;
+  } catch (error) {
+    console.log("Error while deleting image from cloudinary:", error);
   }
 };
