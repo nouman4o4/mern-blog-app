@@ -501,7 +501,7 @@ export const getCommentsForBlog = async (
     const blogPost = await Post.findById(postId)
       .populate({
         path: "comments.user",
-        select: "firstname lastname profileImage",
+        select: "firstname lastname profileImage gender",
       })
       .select("comments");
     if (!blogPost) {

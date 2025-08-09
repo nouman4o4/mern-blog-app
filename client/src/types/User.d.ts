@@ -4,7 +4,10 @@ export interface IUser {
   lastname: string;
   email: string;
   password: string;
-  profileImage?: string;
+  profileImage?: {
+    secureUrl: string;
+    publicId: string;
+  };
   posts?: string[];
   gender: string;
 }

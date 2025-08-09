@@ -10,7 +10,10 @@ interface IComment {
   user: {
     firstname: string;
     lastname: string;
-    profileImage: string;
+    profileImage: {
+      secureUrl: string;
+    };
+    gender: string;
   };
   likes: string[];
   createdAt: Date;
@@ -187,8 +190,11 @@ export default function CommentsSection({
                   <img
                     className="rounded-full w-full h-full"
                     src={
-                      comment.user.profileImage ||
-                      "https://i.pravatar.cc/40"
+                      comment?.user.profileImage?.secureUrl
+                        ? comment.user.profileImage.secureUrl
+                        : comment?.user.gender === "male"
+                        ? "https://avatar.iran.liara.run/public/41"
+                        : "https://avatar.iran.liara.run/public/88"
                     }
                     alt=""
                   />

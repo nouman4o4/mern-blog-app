@@ -56,8 +56,8 @@ export default function MobileMenu() {
                       onClick={turnMobileMenuOff}>
                       <img
                         src={`${
-                          authUser?.profileImage
-                            ? authUser?.profileImage
+                          authUser?.profileImage?.secureUrl
+                            ? authUser?.profileImage.secureUrl
                             : authUser?.gender === "male"
                             ? "https://avatar.iran.liara.run/public/41"
                             : "https://avatar.iran.liara.run/public/88"

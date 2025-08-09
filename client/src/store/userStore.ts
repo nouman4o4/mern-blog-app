@@ -1,16 +1,9 @@
 import { create } from "zustand";
+import { IUser } from "../types/User";
 
-interface AuthUser {
-  _id: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  profileImage: string;
-  gender: string;
-}
 interface StoreState {
-  authUser: AuthUser | null;
-  setAuthUser: (userData: AuthUser | null) => void;
+  authUser: IUser | null;
+  setAuthUser: (userData: IUser | null) => void;
 }
 
 const useUserStore = create<StoreState>((set, get) => ({

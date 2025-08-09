@@ -150,8 +150,8 @@ export default function Blog() {
                 <img
                   className="w-8 h-8"
                   src={`${
-                    authorDetails?.profileImage
-                      ? authorDetails.profileImage
+                    authorDetails?.profileImage?.secureUrl
+                      ? authorDetails.profileImage.secureUrl
                       : authorDetails?.gender === "male"
                       ? "https://avatar.iran.liara.run/public/41"
                       : "https://avatar.iran.liara.run/public/88"

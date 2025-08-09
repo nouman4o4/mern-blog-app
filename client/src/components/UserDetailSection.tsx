@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useImageCropper from "../hooks/useImageCropper";
 import useUserStore from "../store/userStore";
-import { Camera, Divide, Edit, Loader, LogOut } from "lucide-react";
+import { Camera, Edit, Loader, LogOut } from "lucide-react";
 import CropModal from "./CropModal";
 import { IUser } from "../types/User";
 import ProfileEditForm from "./ProfileEditForm";
@@ -91,8 +91,8 @@ export default function UserDetailSection({
               <div className="absolute bg-white left-4 top-[-40%] border-2 border-black rounded-full">
                 <img
                   src={
-                    authUser?.profileImage
-                      ? authUser?.profileImage
+                    authUser?.profileImage?.secureUrl
+                      ? authUser?.profileImage.secureUrl
                       : authUser?.gender === "male"
                       ? "https://avatar.iran.liara.run/public/41"
                       : "https://avatar.iran.liara.run/public/88"
@@ -110,16 +110,16 @@ export default function UserDetailSection({
                 {isAuthor && (
                   <div className="absolute right-2 bottom-2 bg-red-500 rounded-full p-2 text-lg text-white">
                     <label htmlFor="profile-image">
-                      <Camera className=" " />
-                      <input
-                        id="profile-image"
-                        name="profile-image"
-                        type="file"
-                        accept=".png,.jpg,.jpeg"
-                        onChange={handleFileChange}
-                        hidden
-                      />
+                      <Camera className="cursor-pointer" />
                     </label>
+                    <input
+                      id="profile-image"
+                      name="profile-image"
+                      type="file"
+                      accept=".png,.jpg,.jpeg"
+                      onChange={handleFileChange}
+                      hidden
+                    />
                   </div>
                 )}
               </div>

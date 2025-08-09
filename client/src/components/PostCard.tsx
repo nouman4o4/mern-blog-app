@@ -88,8 +88,8 @@ export default function PostCard({
             <div>
               <img
                 src={`${
-                  authorDetails?.profileImage
-                    ? authorDetails?.profileImage
+                  authorDetails?.profileImage?.secureUrl
+                    ? authorDetails?.profileImage.secureUrl
                     : authorDetails?.gender === "male"
                     ? "https://avatar.iran.liara.run/public/41"
                     : "https://avatar.iran.liara.run/public/88"
