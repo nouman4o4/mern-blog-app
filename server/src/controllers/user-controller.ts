@@ -1,8 +1,12 @@
 import { Request, Response } from "express";
 import { IUser, User } from "../models/user.model";
 import mongoose from "mongoose";
-import { uploadFileToCloudinary } from "../lib/cloundinary";
+import {
+  deleteFileFromCloudinary,
+  uploadFileToCloudinary,
+} from "../lib/cloundinary";
 import { Post } from "../models/posts.model";
+import { UploadApiResponse } from "cloudinary";
 
 // Get all users
 export const getUsers = async (req: Request, res: Response) => {
@@ -113,7 +117,10 @@ export const updateProfileImage = async (
   const file = req.file;
 
   try {
-    if (!mongoose.isValidObjectId(userId) || userId !== req.userId) {
+    if (
+      !mongoose.isValidObjectId(userId) ||
+      userId !== req.userId?.toString()
+    ) {
       res.status(400).json({
         success: false,
         status: 400,
@@ -131,9 +138,26 @@ export const updateProfileImage = async (
       return;
     }
 
-    const cloundinaryUploadResult = await uploadFileToCloudinary(
-      file.path
+    const userToUpdate = await User.findById(userId).select(
+      "profileImage"
     );
+
+    const cloudinaryDeleteResult = userToUpdate?.profileImage
+      ?.publicId
+      ? await deleteFileFromCloudinary(
+          userToUpdate?.profileImage?.publicId!
+        )
+      : undefined;
+
+    let cloundinaryUploadResult: UploadApiResponse | undefined;
+    if (
+      cloudinaryDeleteResult?.result === "ok" ||
+      !userToUpdate?.profileImage?.publicId
+    ) {
+      cloundinaryUploadResult = await uploadFileToCloudinary(
+        file.path
+      );
+    }
     if (!cloundinaryUploadResult) {
       res.status(500).json({
         success: false,
@@ -147,7 +171,10 @@ export const updateProfileImage = async (
       userId,
       {
         $set: {
-          profileImage: cloundinaryUploadResult.secure_url,
+          profileImage: {
+            secureUrl: cloundinaryUploadResult.secure_url,
+            publicId: cloundinaryUploadResult.public_id,
+          },
         },
       },
       {

@@ -237,10 +237,12 @@ export const updateBlog = async (req: Request, res: Response) => {
     };
     if (featuredImageFile) {
       try {
-        const deletePrevFeaturedImageResult =
-          await deleteFileFromCloudinary(
-            postToUpdate?.featuredImage?.publicId!
-          );
+        const deletePrevFeaturedImageResult = postToUpdate
+          ?.featuredImage?.publicId
+          ? await deleteFileFromCloudinary(
+              postToUpdate?.featuredImage?.publicId!
+            )
+          : undefined;
 
         if (
           postToUpdate?.featuredImage?.secureUrl === "" ||

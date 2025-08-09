@@ -5,7 +5,10 @@ interface IUser {
   lastname: string;
   email: string;
   password: string;
-  profileImage?: string;
+  profileImage?: {
+    secureUrl: string;
+    publicId: string;
+  };
   posts?: Types.ObjectId;
   gender: string;
   comparePassword: (password: string) => Promise<boolean>;
@@ -17,7 +20,14 @@ const userSchema = new Schema(
     lastname: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     gender: { type: String, required: true },
-    profileImage: { type: String },
+    profileImage: {
+      secureUrl: {
+        type: String,
+      },
+      publicId: {
+        type: String,
+      },
+    },
     password: { type: String, required: true },
     posts: [{ type: Types.ObjectId, ref: "Post" }],
   },
