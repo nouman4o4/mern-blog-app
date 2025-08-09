@@ -2,7 +2,10 @@ export interface IPost {
   title: string;
   content: string | TrustedHTML;
   category: string;
-  featuredImage?: string;
+  featuredImage?: {
+    secureUrl: string;
+    publicId: string;
+  };
   author: string;
   attachments?: string[];
   likes: string[];

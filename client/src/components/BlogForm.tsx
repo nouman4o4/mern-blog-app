@@ -112,12 +112,13 @@ export default function BlogForm({
         });
 
         const jsonResponse = await response.json();
-        console.log(jsonResponse);
-        if (!jsonResponse.success) toast.error(jsonResponse.message);
-        else {
+        if (!jsonResponse.success) {
+          navigate(-1);
+          toast.error(jsonResponse.message);
+        } else {
+          navigate(-1);
           toast.success("Post created successfully!");
           // Redirect to the post page
-          // navigate("/");
         }
       } else if (updatePage) {
         const url = `http://localhost:3000/api/v1/blogs/${updateBlogId}`;
@@ -130,6 +131,7 @@ export default function BlogForm({
         if (!response.ok) {
           console.log(response);
           toast.error("Oops something went wrong while updating..");
+          navigate(-1);
           return {
             title: title ?? "",
             content: content ?? "",
@@ -142,8 +144,10 @@ export default function BlogForm({
         const jsonResponse = await response.json();
         console.log("JsonResponse of update: ", jsonResponse);
         console.log(jsonResponse);
-        if (!jsonResponse.success) toast.error(jsonResponse.message);
-        else {
+        if (!jsonResponse.success) {
+          toast.error(jsonResponse.message);
+          navigate(-1);
+        } else {
           toast.success("Blog updated successfully!");
           navigate(-1);
         }
@@ -326,11 +330,14 @@ export default function BlogForm({
                         <>
                           {updatePage &&
                           updateBlogData &&
-                          updateBlogData.featuredImage &&
+                          updateBlogData.featuredImage?.secureUrl &&
                           !image ? (
                             <div className="w-full relative h-64 flex items-center justify-center py-4 p-2">
                               <img
-                                src={updateBlogData.featuredImage}
+                                src={
+                                  updateBlogData.featuredImage
+                                    .secureUrl
+                                }
                                 alt=""
                                 className="h-full rounded-lg"
                               />

@@ -119,7 +119,7 @@ export default function Blog() {
           <div className="image bg-amber-400 w-full h-auto">
             <img
               className="w-full h-[350px] md:h-[450px] lg:h-[600px] object-cover"
-              src={`${blogData?.featuredImage || null}`}
+              src={`${blogData?.featuredImage?.secureUrl || null}`}
               alt=""
             />
           </div>

@@ -3,8 +3,9 @@ import { Link, NavLink, useLocation } from "react-router";
 import { IUser } from "../types/User";
 import { IPost } from "../types/Post";
 import toast from "react-hot-toast";
-import { Delete, Edit, Trash } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import AlerDialog from "./AlerDialog";
+import noImage from "/noImage.png";
 
 interface PostDetails {
   postData: IPost;
@@ -24,9 +25,7 @@ export default function PostCard({
   const newId = useId();
   const [authorDetails, setAuthorDetails] = useState<IUser>();
   const location = useLocation();
-  const [isHomePage, setIsHomePage] = useState<boolean>(
-    location.pathname === "/"
-  );
+  const [isHomePage] = useState<boolean>(location.pathname === "/");
   const [isAlert, setIsAlert] = useState(false);
   // Getting authorDetails
   useEffect(() => {
@@ -62,8 +61,9 @@ export default function PostCard({
           className={`photo w-full h-1/4 md:h-64 md:w-1/3 flex-shrink-0`}>
           <img
             src={
-              postData.featuredImage ??
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr2eDKZ-dZvcBAmwEcTVoVxsekAWpM7bDzFQ&s"
+              (postData?.featuredImage?.secureUrl &&
+                postData.featuredImage.secureUrl) ||
+              noImage
             }
             alt="photo"
             className="w-full h-full object-cover hover:scale-105 duration-200"

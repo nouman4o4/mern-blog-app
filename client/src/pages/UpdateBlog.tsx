@@ -6,7 +6,6 @@ export default function UpdateBlog() {
   const blogId = params.id;
   return (
     <div>
-      Update Blog
       <BlogForm updatePage={true} updateBlogId={blogId!} />
     </div>
   );
