@@ -158,3 +158,51 @@ export const logout = (req: Request, res: Response) => {
     });
   }
 };
+
+// verify auth
+
+export const verifyAuth = async (req: Request, res: Response) => {
+  try {
+    const userId = req.userId;
+    const requestedUserId = req.params.id;
+
+    if (
+      !mongoose.isValidObjectId(requestedUserId) ||
+      userId?.toString() !== requestedUserId.toString()
+    ) {
+      res.status(400).json({
+        success: false,
+        status: 400,
+        message: "Incorrect user id",
+      });
+      return;
+    }
+
+    const authUser = await User.findById(requestedUserId).select(
+      "-password"
+    );
+    if (!authUser) {
+      res.status(404).json({
+        status: 404,
+        success: false,
+        message: "User not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "User is verified",
+    });
+    return;
+  } catch (error: any) {
+    res.status(500).json({
+      status: 500,
+      success: false,
+      message: "Something went wrong while verifying the user",
+      error: error.stack,
+    });
+    return;
+  }
+};

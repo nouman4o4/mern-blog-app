@@ -3,6 +3,7 @@ import {
   login,
   logout,
   register,
+  verifyAuth,
 } from "../controllers/auth-controller";
 import { authMiddleware } from "../middleswares/authMiddleware";
 
@@ -13,5 +14,6 @@ const authRouter = express.Router();
 authRouter.post("/register", register);
 authRouter.post("/login", login);
 authRouter.get("/logout/:id", authMiddleware, logout);
+authRouter.get("/verify/:id", authMiddleware, verifyAuth);
 
 export default authRouter;
