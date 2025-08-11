@@ -7,6 +7,7 @@ import { IUser } from "../types/User";
 import ProfileEditForm from "./ProfileEditForm";
 import { logout } from "../utils/logout";
 import { useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 export default function UserDetailSection({
   authorDetails,
@@ -67,7 +68,12 @@ export default function UserDetailSection({
 
   const handleLogout = async () => {
     const isLogout = await logout(authUser?._id!);
-    if (!isLogout) return;
+    if (!isLogout) {
+      toast.error("Error, Failed to logout, try again.");
+      return;
+    }
+    toast.success("Logout successfully.");
+
     setAuthUser(null);
     navigate("/");
   };
