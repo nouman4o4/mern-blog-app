@@ -1,8 +1,6 @@
-import toast from "react-hot-toast";
-
 const getSingleUser = async (authorId: string) => {
   if (!authorId) {
-    toast.error("Couldn't find the provided user id");
+    console.log("Couldn't find the provided user id");
 
     return null;
   }
@@ -17,7 +15,7 @@ const getSingleUser = async (authorId: string) => {
     const jsonResponse = await response.json();
 
     if (!jsonResponse.success) {
-      toast.error(
+      console.log(
         jsonResponse?.message ||
           "Something went wrong while fetching the author data!"
       );
@@ -27,7 +25,7 @@ const getSingleUser = async (authorId: string) => {
     return jsonResponse.data;
   } catch (error) {
     console.log(error);
-    toast.error("Opps! something went wrong");
+
     return null;
   }
 };

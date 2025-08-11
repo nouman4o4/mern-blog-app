@@ -38,13 +38,13 @@ export default function Blog() {
           credentials: "include",
         });
         if (!response.ok) {
-          toast.error("Error, Something went wrong..");
+          console.log("Error, Something went wrong..");
           return;
         }
         const jsonResponse = await response.json();
 
         if (!jsonResponse.success) {
-          toast.error(
+          console.log(
             jsonResponse.message || "Can't fetch post data..."
           );
 

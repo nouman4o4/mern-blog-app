@@ -2,7 +2,6 @@ import { useEffect, useId, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router";
 import { IUser } from "../types/User";
 import { IPost } from "../types/Post";
-import toast from "react-hot-toast";
 import { Edit, Trash } from "lucide-react";
 import AlerDialog from "./AlerDialog";
 import noImage from "/noImage.png";
@@ -38,7 +37,7 @@ export default function PostCard({
         });
         const jsonResponse = await response.json();
         if (!jsonResponse.success) {
-          toast.error(
+          console.log(
             "Something went wrong while fetching the author data!"
           );
           return;
@@ -46,7 +45,7 @@ export default function PostCard({
         setAuthorDetails(jsonResponse.data);
       } catch (error) {
         console.log(error);
-        toast.error("Opps! something went wrong");
+        console.log("Opps! something went wrong");
       }
     })();
   }, []);
