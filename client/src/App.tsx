@@ -1,4 +1,10 @@
-import { Navigate, Route, Routes, useLocation } from "react-router";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router";
 import { About, Blog, Home, Profile } from "./pages";
 
 import MainLayout from "./layouts/mainLayout";
@@ -11,13 +17,63 @@ import CreateBlog from "./pages/CreateBlog";
 import Contact from "./pages/Contact";
 import { useEffect } from "react";
 import UpdateBlog from "./pages/UpdateBlog";
+import { logout } from "./utils/logout";
 
 function App() {
-  const authUser = useUserStore((state) => state.authUser);
+  const { authUser, setAuthUser } = useUserStore();
+  const navigate = useNavigate();
+
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (!authUser) navigate("/login");
+    console.log("authUser form app.tsx: ", authUser);
+    // (async () => await verifyAuth(authUser?._id!))();
   }, [pathname]);
+  useEffect(() => {
+    (async () => {
+      try {
+        if (!authUser?._id) {
+          localStorage.removeItem("blog-app-user");
+          setAuthUser(null);
+          navigate("/login");
+          return;
+        }
+        const url = `${
+          import.meta.env.VITE_BASE_SERVER_URL
+        }/auth/verify/${authUser?._id}`;
+        const response = await fetch(url, {
+          method: "GET",
+          credentials: "include",
+        });
+        // if (!response.ok) {
+        //   console.log(
+        //     "something went wrong while verifying auth user, response: ",
+        //     response
+        //   );
+        //   logout(userId);
+        //   return;
+        // }
+        const jsonResponse = await response.json();
+        console.log("jsonResponse when verifying: ", jsonResponse);
+        if (jsonResponse.success) {
+          console.log("User verified");
+          return;
+        }
+        logout(authUser._id);
+        setAuthUser(null);
+        navigate("/login");
+      } catch (error) {
+        console.log(
+          "Something went wrong while verifying the user, error: ",
+          error
+        );
+        logout(authUser?._id!);
+        setAuthUser(null);
+        navigate("/login");
+      }
+    })();
+  }, [pathname, authUser]);
   return (
     <>
       <Toaster />
