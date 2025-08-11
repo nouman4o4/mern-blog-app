@@ -18,7 +18,13 @@ export const authMiddleware = async (
     ?.split("=")[1];
 
   if (!token) {
-    res.status(401).json({ message: "Unauthorized request" });
+    res
+      .status(401)
+      .json({
+        success: false,
+        status: 401,
+        message: "Unauthorized request",
+      });
     return;
   }
 
@@ -31,7 +37,11 @@ export const authMiddleware = async (
     if (decode?.exp && decode?.exp * 1000 < Date.now()) {
       res
         .status(401)
-        .json({ message: "Token expired, please login again!" });
+        .json({
+          success: false,
+          status: 401,
+          message: "Token expired, please login again!",
+        });
     }
 
     req.userId = decode.userId;
@@ -41,8 +51,18 @@ export const authMiddleware = async (
     if (error.name === "TokenExpiredError") {
       res
         .status(401)
-        .json({ message: "Token expired, please login again!" });
+        .json({
+          success: false,
+          status: 401,
+          message: "Token expired, please login again!",
+        });
     }
-    res.status(401).json({ message: "Unauthorized request" });
+    res
+      .status(401)
+      .json({
+        success: false,
+        status: 401,
+        message: "Unauthorized request",
+      });
   }
 };
