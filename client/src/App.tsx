@@ -27,8 +27,6 @@ function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (!authUser) navigate("/login");
-    console.log("authUser form app.tsx: ", authUser);
-    // (async () => await verifyAuth(authUser?._id!))();
   }, [pathname]);
   useEffect(() => {
     (async () => {
@@ -55,9 +53,8 @@ function App() {
         //   return;
         // }
         const jsonResponse = await response.json();
-        console.log("jsonResponse when verifying: ", jsonResponse);
         if (jsonResponse.success) {
-          console.log("User verified");
+          console.log("User is verified");
           return;
         }
         logout(authUser._id);
