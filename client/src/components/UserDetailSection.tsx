@@ -56,15 +56,22 @@ export default function UserDetailSection({
     reader.readAsDataURL(file);
   };
 
-  // const getProfileImage = () => {
-  //   if (isUploading) return croppedUrl;
-  //   if (authorDetails?.profileImage)
-  //     return authorDetails?.profileImage;
+  const getProfileImage = () => {
+    if (isUploading) return croppedUrl;
+    if (isAuthor && authUser?.profileImage?.secureUrl) {
+      return authUser.profileImage.secureUrl;
+    }
 
-  //   return authUser?.gender === "male"
-  //     ? "https://avatar.iran.liara.run/public/41"
-  //     : "https://avatar.iran.liara.run/public/88";
-  // };
+    if (authorDetails?.profileImage?.secureUrl)
+      return authorDetails?.profileImage?.secureUrl;
+    return authorDetails?.gender === "male"
+      ? "https://avatar.iran.liara.run/public/41"
+      : "https://avatar.iran.liara.run/public/88";
+
+    // return authUser?.gender === "male"
+    //   ? "https://avatar.iran.liara.run/public/41"
+    //   : "https://avatar.iran.liara.run/public/88";
+  };
 
   const handleLogout = async () => {
     const isLogout = await logout(authUser?._id!);
@@ -80,14 +87,15 @@ export default function UserDetailSection({
 
   return (
     <>
-      <CropModal
-        imageSrc={imageSrc}
-        setImageSrc={setImageSrc}
-        setIsUploading={setIsUploading}
-        croppedUrl={croppedUrl}
-        setCroppedUrl={setCroppedUrl}
-      />
-
+      {isAuthor && (
+        <CropModal
+          imageSrc={imageSrc}
+          setImageSrc={setImageSrc}
+          setIsUploading={setIsUploading}
+          croppedUrl={croppedUrl}
+          setCroppedUrl={setCroppedUrl}
+        />
+      )}
       <div className="min-h-[70vh] w-full bg-white rounded-2xl">
         <div className="user-profile&details w-full h-40 sm:h-56 md:h-74 sm:rounded-2xl bg-center bg-cover bg-[url(https://images.unsplash.com/photo-1508780709619-79562169bc64?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]"></div>
 
@@ -96,13 +104,7 @@ export default function UserDetailSection({
             <div className="photo w-44 h-32 sm:w-52 sm:h-48 absolute sm:relative">
               <div className="absolute bg-white left-4 top-[-40%] border-2 border-black rounded-full">
                 <img
-                  src={
-                    authUser?.profileImage?.secureUrl
-                      ? authUser?.profileImage.secureUrl
-                      : authUser?.gender === "male"
-                      ? "https://avatar.iran.liara.run/public/41"
-                      : "https://avatar.iran.liara.run/public/88"
-                  }
+                  src={getProfileImage()}
                   alt=""
                   className={`size-32 sm:size-44 object-cover rounded-full ${
                     isUploading ? "opacity-60" : ""
@@ -185,14 +187,15 @@ export default function UserDetailSection({
                 </div>
               </div>
             ) : (
-              <div className="w-full text-end">
-                <button
-                  onClick={handleLogout}
-                  className="px-3 py-1 shaodw-lg rounded bg-red-400 text-white cursor-pointer hover:bg-red-500 hover:scale-105">
-                  {" "}
-                  <LogOut className="inline" /> Log out
-                </button>
-              </div>
+              ""
+              // <div className="w-full text-end">
+              //   <button
+              //     onClick={handleLogout}
+              //     className="px-3 py-1 shaodw-lg rounded bg-red-400 text-white cursor-pointer hover:bg-red-500 hover:scale-105">
+              //     {" "}
+              //     <LogOut className="inline" /> Log out
+              //   </button>
+              // </div>
             )}
           </div>
         </div>

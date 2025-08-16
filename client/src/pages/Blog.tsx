@@ -220,7 +220,7 @@ export default function Blog() {
         </div>
 
         {/* Recent blogs component */}
-        <RecentBlogs />
+        <RecentBlogs pageBlogId={blogId!} />
       </div>
     </div>
   );

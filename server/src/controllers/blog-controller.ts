@@ -673,3 +673,33 @@ export const likeComment = async (req: Request, res: Response) => {
     return;
   }
 };
+
+export const getRecentBlogs = async (req: Request, res: Response) => {
+  try {
+    const excludeBlogId = req.params.excludeBlodId;
+    const filter: Record<string, any> = {};
+
+    if (mongoose.isValidObjectId(excludeBlogId)) {
+      filter._id = { $ne: excludeBlogId };
+    }
+
+    const blogs = await Post.find(filter)
+      .select("title createdAt featuredImage")
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .lean();
+    res.status(200).json({
+      status: 200,
+      success: true,
+      message: "Operation succeeded",
+      blogs,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      status: 500,
+      success: false,
+      message: "Unexpected server error while fetching recent blogs",
+    });
+    console.log(error);
+  }
+};

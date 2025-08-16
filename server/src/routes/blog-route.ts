@@ -10,6 +10,7 @@ import {
   createComment,
   getCommentsForBlog,
   likeComment,
+  getRecentBlogs,
 } from "../controllers/blog-controller";
 import { authMiddleware } from "../middleswares/authMiddleware";
 import { upload } from "../middleswares/multer";
@@ -18,6 +19,8 @@ const blogRouter = Router();
 
 // GET all blog posts
 blogRouter.get("/", getAllBlogs);
+// Get most recent blogs
+blogRouter.get("/recent/:excludeBlodId", getRecentBlogs);
 
 // GET a single blog post
 blogRouter.get("/:id", getBlog);

@@ -26,7 +26,7 @@ function App() {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (!authUser) navigate("/login");
+    // if (!authUser) navigate("/login");
   }, [pathname]);
   useEffect(() => {
     (async () => {
@@ -34,7 +34,7 @@ function App() {
         if (!authUser?._id) {
           localStorage.removeItem("blog-app-user");
           setAuthUser(null);
-          navigate("/login");
+          // navigate("/login");
           return;
         }
         const url = `${

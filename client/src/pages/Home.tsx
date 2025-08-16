@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 
 // Import Swiper styles
 import "swiper/css";
@@ -62,11 +62,13 @@ const Home: React.FC = () => {
         </h3>
         <div className="blog-container pt-6 flex items-center justify-center gap-8 flex-wrap">
           {blogPosts?.length! > 0 ? (
-            blogPosts?.map((post) => (
+            blogPosts?.map((post, i) => (
               <PostCard
+                key={i}
                 authorId={post.author}
                 postData={post}
                 isAuthor={authUser?._id === post.author}
+                setRefreshQuery={() => null}
               />
             ))
           ) : (
