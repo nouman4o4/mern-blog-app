@@ -37,7 +37,7 @@ export default function Navbar() {
             <NavLink className="largeMenulink" to="/about">
               About
             </NavLink>
-            <NavLink className="largeMenulink" to="/">
+            <NavLink className="largeMenulink" to="/contact">
               Contact
             </NavLink>
           </div>
