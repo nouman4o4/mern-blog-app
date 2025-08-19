@@ -33,17 +33,15 @@ export default function Signup() {
     gender: "",
   });
   const navigate = useNavigate();
-  // clear error field
+
   const clearErrorField = (field: keyof FieldErrorsI) => {
     setFieldErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
-  // submit form
   const submitForm = async (
     state: FormState,
     formData: FormData
   ): Promise<FormState> => {
-    // Form submission logic here
     const formDataObj = {
       firstname: formData.get("firstname") as string,
       lastname: formData.get("lastname") as string,
@@ -69,13 +67,10 @@ export default function Signup() {
         return { ...formDataObj, error: "" };
       }
 
-      // api call
       const url = "http://localhost:3000/api/v1/auth/register";
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formDataObj),
         credentials: "include",
       });
@@ -107,257 +102,270 @@ export default function Signup() {
   });
 
   return (
-    <div className="w-full flex itemscenter justify-start text-white">
-      <div className="container w-full md:w-[700px] px-4 md:px-6 md:pb-0">
-        <h1 className="text-2xl md:text-3xl font-bold my-2">
-          Create new account
-          <span className="text-red-500">.</span>
-        </h1>{" "}
-        <div className="text-gray-300 my-1">
-          Already a member?{" "}
-          <NavLink to={"/login"} className="text-red-400 underline">
-            Login
-          </NavLink>
-        </div>
-        {/* Form */}
-        <div>
-          <form
-            action={formAction}
-            className="w-full mt-5 flex flex-col justify-center gap-1 md:gap-3">
-            {/* nameInputs */}
-            <div className="name-inputs w-full flex gap-4 flex-wrap">
-              <div className="grow">
-                <div
-                  className={`input group focus-within:ring-2 ${
-                    fieldErrors.firstname
-                      ? "focus-within:ring-red-400"
-                      : "focus-within:ring-blue-400"
-                  } p-1 px-3 md:px-4 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3 ${
-                    fieldErrors.firstname ? "ring-2 ring-red-400" : ""
-                  }`}>
-                  <div>
-                    <label
-                      htmlFor="firstname"
-                      className="text-[12px] text-lg font-semibold block text-gray-300 my-1">
-                      Firstname
-                    </label>
-                    <input
-                      type="text"
-                      name="firstname"
-                      id="firstname"
-                      placeholder="Jhon"
-                      defaultValue={state.firstname}
-                      onChange={() => clearErrorField("firstname")}
-                      className="md:text-lg tracking-wider text-white p-1 font-semibold ring-0 outline-none"
-                    />
-                  </div>
-                  <div>
-                    <User />
-                  </div>
-                </div>
-                <p className="text-sm text-red-400 h-5 pl-2 p-1 w-fit">
-                  {fieldErrors.firstname}
-                </p>
-              </div>
-              <div className="grow">
-                <div
-                  className={`input group focus-within:ring-2 ${
-                    fieldErrors.lastname
-                      ? "focus-within:ring-red-400"
-                      : "focus-within:ring-blue-400"
-                  } p-1 px-3 md:px-4 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3 ${
-                    fieldErrors.lastname ? "ring-2 ring-red-400" : ""
-                  }`}>
-                  <div>
-                    <label
-                      htmlFor="lastname"
-                      className="text-[12px] font-semibold block text-gray-300 my-1">
-                      Lastname
-                    </label>
-                    <input
-                      type="text"
-                      name="lastname"
-                      id="lastname"
-                      placeholder="Doe"
-                      defaultValue={state.lastname}
-                      onChange={() => clearErrorField("lastname")}
-                      className=" md:text-lg text-white p-1 font-semibold tracking-wider ring-0 outline-none"
-                    />
-                  </div>
-                  <div>
-                    <User />
-                  </div>
-                </div>
-                <p className="text-sm text-red-400 h-5 pl-2 p-1 w-fit">
-                  {fieldErrors.lastname}
-                </p>
-              </div>
-            </div>
-            {/* email and gender */}
-            <div className="email&gender-inputs w-full flex gap-4 flex-wrap mt-2 md:mt-2">
-              <div className="grow">
-                <div
-                  className={`input group focus-within:ring-2 ${
-                    fieldErrors.email
-                      ? "focus-within:ring-red-400"
-                      : "focus-within:ring-blue-400"
-                  } p-1 px-3 md:px-4 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3 ${
-                    fieldErrors.email ? "ring-2 ring-red-400" : ""
-                  }`}>
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="text-[12px] text-lg font-semibold block text-gray-300 my-1">
-                      Email
-                    </label>
-                    <input
-                      type="text"
-                      name="email"
-                      id="email"
-                      autoComplete="true"
-                      defaultValue={state.email}
-                      placeholder="Jhon@example.com"
-                      onChange={() => clearErrorField("email")}
-                      className="md:text-lg tracking-wider text-white p-1 font-semibold ring-0 outline-none"
-                    />
-                  </div>
-                  <div>
-                    <Mail />
-                  </div>
-                </div>
-                <p className="text-sm text-red-400 h-5 pl-2 p-1">
-                  {fieldErrors.email}
-                </p>
-              </div>
-              <div className="grow">
-                <div
-                  className={`input group focus-within:ring-2  ${
-                    fieldErrors.gender
-                      ? "focus-within:ring-red-400"
-                      : "focus-within:ring-blue-400"
-                  } p-1 px-3 md:px-4 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3 ${
-                    fieldErrors.gender ? "ring-2 ring-red-400" : ""
-                  } py-[9px] md:py-[14px]`}>
-                  <div className="grow">
-                    <div className="text-[12px] font-semibold block text-gray-300 my-1">
-                      Gender
-                    </div>
-                    <div className="flex justify-around items-center">
-                      <div className="flex items-center gap-1">
-                        <input
-                          type="radio"
-                          id="male"
-                          name="gender"
-                          value="male"
-                          className="size-5"
-                          defaultChecked={state.gender === "male"}
-                          onChange={() => clearErrorField("gender")}
-                        />
-                        <label htmlFor="male">Male</label>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <input
-                          type="radio"
-                          id="female"
-                          name="gender"
-                          value="female"
-                          className="size-5"
-                          defaultChecked={state.gender === "female"}
-                          onChange={() => clearErrorField("gender")}
-                        />
-                        <label htmlFor="female">Female</label>
-                      </div>
-                    </div>
-                  </div>
+    <div className="h-[calc(100svh-80px)] bg-gradient-to-br from-gray-50 to-white relative overflow-hidden flex items-center">
+      <div className="hidden md:block absolute top-0 left-0 w-80 h-80 bg-red-600/5 rounded-full blur-3xl" />
+      <div className="hidden md:block absolute top-20 right-20 w-56 h-56 bg-red-600/10 rounded-full blur-2xl" />
+      <div className="hidden md:block absolute bottom-20 left-20 w-64 h-64 bg-gray-900/5 rounded-full blur-3xl" />
+      <div className="hidden md:block absolute top-40 right-10 w-3 h-3 bg-red-600 rotate-45 opacity-20" />
+      <div className="hidden md:block absolute bottom-40 left-10 w-4 h-4 bg-gray-900 rotate-45 opacity-10" />
 
-                  <div>
-                    <UserCog2 />
-                  </div>
-                </div>
-                <p className="text-sm text-red-400 h-4 md:h pl-2 p-1">
-                  {fieldErrors.gender}
-                </p>
-              </div>
+      <div className="w-full flex items-center justify-center py-4 px-4 relative z-10">
+        <div className="container w-full max-w-xl">
+          {/* Header (tighter) */}
+          <div className="text-center mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
+              Create new account
+              <span className="text-red-600">.</span>
+            </h1>
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <div className="h-px bg-gradient-to-r from-transparent via-red-600 to-transparent w-16" />
+              <div className="w-1.5 h-1.5 bg-red-600 rounded-full" />
+              <div className="h-px bg-gradient-to-r from-transparent via-red-600 to-transparent w-16" />
             </div>
-
-            {/* password */}
-            <div className="passoword-input w-full mt-2 md:mt-2">
-              <div
-                className={`input group focus-within:ring-2 ${
-                  fieldErrors.password
-                    ? "focus-within:ring-red-400"
-                    : "focus-within:ring-blue-400"
-                } p-1 px-3 md:px-4 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3 ${
-                  fieldErrors.password ? "ring-2 ring-red-400" : ""
-                }`}>
-                <div className="grow ">
-                  <label
-                    htmlFor="password"
-                    className="text-[12px] font-semibold block text-gray-300 my-1">
-                    Password
-                  </label>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    id="password"
-                    placeholder="•••••••"
-                    defaultValue={state.password}
-                    onClick={() => clearErrorField("password")}
-                    className="w-full tracking-wider md:text-lg text-white p-1 font-semibold ring-0 outline-none"
-                  />
-                </div>
-                <div
-                  className="text-gray-200 py-3 cursor-pointer"
-                  onClick={() => setShowPassword(!showPassword)}>
-                  {showPassword ? <Eye /> : <EyeOff />}
-                </div>
-              </div>
-              <p className="text-red-400 h-4 md:h pl-2 p-1">
-                {fieldErrors.password}
-              </p>
+            <div className="text-gray-600 text-sm">
+              Already a member?{" "}
+              <NavLink
+                to={"/login"}
+                className="text-red-600 hover:text-red-700 font-semibold underline">
+                Login
+              </NavLink>
             </div>
+          </div>
 
-            {/* confirm password */}
-            <div className="confirmPassword-input w-full gap-4 mt-2 md:mt-2">
-              <div
-                className={`input group focus-within:ring-2 ${
-                  fieldErrors.confirmPassword
-                    ? "focus-within:ring-red-400"
-                    : "focus-within:ring-blue-400"
-                } p-1 px-3 md:px-4 md:p-2 pr-4 bg-gray-600 rounded-xl grow flex items-center justify-between gap-3 ${
-                  fieldErrors.confirmPassword
-                    ? "ring-2 ring-red-400"
-                    : ""
-                }`}>
-                <div className="grow ">
-                  <label
-                    htmlFor="confrimPassword"
-                    className="text-[12px] font-semibold block text-gray-300 my-1">
-                    Confirmt Password
-                  </label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    id="confrimPassword"
-                    placeholder="•••••••"
-                    defaultValue={state.confirmPassword}
-                    className="w-full  md:text-lg text-white p-1 font-semibold ring-0 outline-none"
-                  />
-                </div>
+          {/* Form card (compact) */}
+          <div className="bg-white p-4 md:p-6 rounded-2xl border border-gray-100 shadow-xl shadow-gray-900/5 backdrop-blur-sm">
+            <form
+              action={formAction}
+              className="w-full flex flex-col gap-4">
+              {/* Name inputs */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <EyeOff className="text-gray-400" />
+                  <div
+                    className={`group ${
+                      fieldErrors.firstname
+                        ? "ring-2 ring-red-500"
+                        : ""
+                    } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}>
+                    <div className="flex-grow leading-tight">
+                      <label
+                        htmlFor="firstname"
+                        className="text-xs font-semibold block text-gray-700 mb-1">
+                        Firstname
+                      </label>
+                      <input
+                        type="text"
+                        name="firstname"
+                        id="firstname"
+                        placeholder="John"
+                        defaultValue={state.firstname}
+                        onChange={() => clearErrorField("firstname")}
+                        className="text-base text-gray-900 font-medium bg-transparent w-full outline-none placeholder-gray-400"
+                      />
+                    </div>
+                    <User className="w-4 h-4 text-gray-400" />
+                  </div>
+                  <p className="text-xs text-red-500 min-h-4 pl-1 pt-0.5">
+                    {fieldErrors.firstname}
+                  </p>
+                </div>
+
+                <div>
+                  <div
+                    className={`group ${
+                      fieldErrors.lastname
+                        ? "ring-2 ring-red-500"
+                        : ""
+                    } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}>
+                    <div className="flex-grow leading-tight">
+                      <label
+                        htmlFor="lastname"
+                        className="text-xs font-semibold block text-gray-700 mb-1">
+                        Lastname
+                      </label>
+                      <input
+                        type="text"
+                        name="lastname"
+                        id="lastname"
+                        placeholder="Doe"
+                        defaultValue={state.lastname}
+                        onChange={() => clearErrorField("lastname")}
+                        className="text-base text-gray-900 font-medium bg-transparent w-full outline-none placeholder-gray-400"
+                      />
+                    </div>
+                    <User className="w-4 h-4 text-gray-400" />
+                  </div>
+                  <p className="text-xs text-red-500 min-h-4 pl-1 pt-0.5">
+                    {fieldErrors.lastname}
+                  </p>
                 </div>
               </div>
-              <p className="text-sm text-red-400 h-4 md:h pl-2 p-1">
-                {fieldErrors.confirmPassword}
-              </p>
-            </div>
-            <button
-              type="submit"
-              className="w-full text-white bg-blue-500 rounded-3xl py-2 md:py-3 text-lg md:text-xl font-semibold mt-3">
-              {isPending ? "Account Creating..." : "Create Account"}
-            </button>
-          </form>
+
+              {/* Email and Gender */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <div
+                    className={`group ${
+                      fieldErrors.email ? "ring-2 ring-red-500" : ""
+                    } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}>
+                    <div className="flex-grow leading-tight">
+                      <label
+                        htmlFor="email"
+                        className="text-xs font-semibold block text-gray-700 mb-1">
+                        Email
+                      </label>
+                      <input
+                        type="text"
+                        name="email"
+                        id="email"
+                        autoComplete="true"
+                        defaultValue={state.email}
+                        placeholder="john@example.com"
+                        onChange={() => clearErrorField("email")}
+                        className="text-base text-gray-900 font-medium bg-transparent w-full outline-none placeholder-gray-400"
+                      />
+                    </div>
+                    <Mail className="w-4 h-4 text-gray-400" />
+                  </div>
+                  <p className="text-xs text-red-500 min-h-4 pl-1 pt-0.5">
+                    {fieldErrors.email}
+                  </p>
+                </div>
+
+                <div>
+                  <div
+                    className={`group ${
+                      fieldErrors.gender ? "ring-2 ring-red-500" : ""
+                    } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}>
+                    <div className="flex-grow">
+                      <div className="text-xs font-semibold block text-gray-700 mb-2">
+                        Gender
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <label className="flex items-center gap-1.5">
+                          <input
+                            type="radio"
+                            id="male"
+                            name="gender"
+                            value="male"
+                            className="w-4 h-4 text-red-600 accent-red-600 cursor-pointer"
+                            defaultChecked={state.gender === "male"}
+                            onChange={() => clearErrorField("gender")}
+                          />
+                          <span className="text-sm text-gray-700 font-medium">
+                            Male
+                          </span>
+                        </label>
+                        <label className="flex items-center gap-1.5">
+                          <input
+                            type="radio"
+                            id="female"
+                            name="gender"
+                            value="female"
+                            className="w-4 h-4 text-red-600 accent-red-600 cursor-pointer"
+                            defaultChecked={state.gender === "female"}
+                            onChange={() => clearErrorField("gender")}
+                          />
+                          <span className="text-sm text-gray-700 font-medium">
+                            Female
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    <UserCog2 className="w-4 h-4 text-gray-400" />
+                  </div>
+                  <p className="text-xs text-red-500 min-h-4 pl-1 pt-0.5">
+                    {fieldErrors.gender}
+                  </p>
+                </div>
+              </div>
+
+              {/* Password */}
+              <div>
+                <div
+                  className={`group ${
+                    fieldErrors.password ? "ring-2 ring-red-500" : ""
+                  } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}>
+                  <div className="flex-grow leading-tight">
+                    <label
+                      htmlFor="password"
+                      className="text-xs font-semibold block text-gray-700 mb-1">
+                      Password
+                    </label>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      id="password"
+                      placeholder="•••••••"
+                      defaultValue={state.password}
+                      onClick={() => clearErrorField("password")}
+                      className="text-base text-gray-900 font-medium bg-transparent w-full outline-none placeholder-gray-400"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className="text-gray-400 hover:text-gray-600 p-1"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }>
+                    {showPassword ? (
+                      <Eye className="w-4 h-4 cursor-pointer" />
+                    ) : (
+                      <EyeOff className="w-4 h-4 cursor-pointer" />
+                    )}
+                  </button>
+                </div>
+                <p className="text-xs text-red-500 min-h-4 pl-1 pt-0.5">
+                  {fieldErrors.password}
+                </p>
+              </div>
+
+              {/* Confirm Password */}
+              <div>
+                <div
+                  className={`group ${
+                    fieldErrors.confirmPassword
+                      ? "ring-2 ring-red-500"
+                      : ""
+                  } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}>
+                  <div className="flex-grow leading-tight">
+                    <label
+                      htmlFor="confirmPassword"
+                      className="text-xs font-semibold block text-gray-700 mb-1">
+                      Confirm Password
+                    </label>
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      id="confirmPassword"
+                      placeholder="•••••••"
+                      defaultValue={state.confirmPassword}
+                      className="text-base text-gray-900 font-medium bg-transparent w-full outline-none placeholder-gray-400"
+                    />
+                  </div>
+
+                  <EyeOff className="w-4 h-4 text-gray-400" />
+                </div>
+                <p className="text-xs text-red-500 min-h-4 pl-1 pt-0.5">
+                  {fieldErrors.confirmPassword}
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isPending}
+                className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-red-400 disabled:to-red-500 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-red-600/25 hover:shadow-xl hover:shadow-red-600/40 hover:-translate-y-0.5 disabled:hover:translate-y-0 disabled:hover:shadow-lg text-base mt-1">
+                {isPending ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                    Account Creating...
+                  </>
+                ) : (
+                  "Create Account"
+                )}
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
