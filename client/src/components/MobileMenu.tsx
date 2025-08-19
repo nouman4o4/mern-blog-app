@@ -3,19 +3,39 @@ import useGlobalStore from "../store/globalStore.ts";
 import { cn } from "../utils/clsx";
 import { NavLink } from "react-router";
 import useUserStore from "../store/userStore.ts";
+import { useEffect, useRef } from "react";
 
 export default function MobileMenu() {
   const { isMobileMenu, turnMobileMenuOff, turnSeachOn } =
     useGlobalStore((state) => state);
   const { authUser: authUserInStore } = useUserStore();
+  const menuRef = useRef<HTMLDivElement>(null);
   const authUser =
     JSON.parse(localStorage.getItem("blog-app-user")!) ||
     authUserInStore;
 
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target as Node)
+      ) {
+        turnMobileMenuOff();
+      }
+    }
+
+    isMobileMenu &&
+      document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMobileMenu]);
+
   return (
     <>
       <div
-        className={`md:hidden absolute inset-0 z-10 h-screen bg-black/40 overflow-hidden transition-all duration-50 ${
+        className={`md:hidden absolute inset-0 z-40 h-screen bg-black/40 overflow-hidden transition-all duration-50 ${
           isMobileMenu ? "block" : "invisible"
         } `}></div>
       <div>
@@ -28,6 +48,7 @@ export default function MobileMenu() {
             className="empty grow-1 z-20"></div>
           {/* devide */}
           <div
+            ref={menuRef}
             className={`relative z-50 duration-600 ease ${cn(
               isMobileMenu ? "translate-x-[0]" : "translate-x-[100%]"
             )} menu grow-1 sm:grow-2 sm:max-w-[350px] bg-white py-3 px-2`}>
