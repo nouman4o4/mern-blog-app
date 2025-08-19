@@ -1,4 +1,4 @@
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import {
   Mail,
   Github,
@@ -8,6 +8,8 @@ import {
   User,
   MessageSquare,
 } from "lucide-react";
+import emailjs from "@emailjs/browser";
+import toast from "react-hot-toast";
 
 interface FormData {
   name: string;
@@ -31,6 +33,8 @@ export default function Contact(): JSX.Element {
     subject: "",
     message: "",
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const env = import.meta.env;
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -42,33 +46,79 @@ export default function Contact(): JSX.Element {
     }));
   };
 
-  const handleSubmit = (
+  const handleSubmit = async (
     e: React.MouseEvent<HTMLButtonElement>
-  ): void => {
+  ): Promise<void> => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Handle form submission here
+
+    try {
+      setIsLoading(true);
+      if (
+        !formData.name ||
+        !formData.email ||
+        !formData.subject ||
+        !formData.message
+      ) {
+        toast("Please fill in all the fields", {
+          icon: "⚠️",
+          style: {
+            padding: "5px",
+            color: "white",
+            background: "red",
+          },
+          iconTheme: {
+            primary: "#713200",
+            secondary: "#FFFAEE",
+          },
+        });
+        return;
+      }
+      const resultOfSendingEmail = await emailjs.send(
+        env.VITE_EMAILJS_SERVICE_ID,
+        env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        },
+        { publicKey: env.VITE_EMAILJS_PUBLIC_KEY }
+      );
+
+      if (resultOfSendingEmail.text !== "OK") {
+        toast.error("Error sending email, try again!");
+        setIsLoading(false);
+        return;
+      }
+      toast.success("Email sent successfully!");
+      setFormData({ name: "", subject: "", email: "", message: "" });
+    } catch (error) {
+      toast.error("Error sending email, try again!");
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const socialLinks: SocialLink[] = [
     {
       name: "GitHub",
       icon: Github,
-      url: "https://github.com/yourusername",
+      url: "https://github.com/nouman4o4",
       color: "hover:bg-gray-900",
       description: "View my code",
     },
     {
       name: "LinkedIn",
       icon: Linkedin,
-      url: "https://linkedin.com/in/yourusername",
+      url: "https://linkedin.com/in/yourusernamenouman-khan-68372228b/",
       color: "hover:bg-blue-600",
       description: "Professional network",
     },
     {
       name: "Twitter",
       icon: Twitter,
-      url: "https://twitter.com/yourusername",
+      url: "https://twitter.com",
       color: "hover:bg-blue-500",
       description: "Follow updates",
     },
@@ -197,9 +247,19 @@ export default function Contact(): JSX.Element {
                   <button
                     type="submit"
                     onClick={handleSubmit}
-                    className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg shadow-red-600/25 hover:shadow-xl hover:shadow-red-600/40 hover:-translate-y-0.5 group">
-                    <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    Send Message
+                    disabled={isLoading}
+                    className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-red-400 disabled:to-red-500 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg shadow-red-600/25 hover:shadow-xl hover:shadow-red-600/40 hover:-translate-y-0.5 disabled:hover:translate-y-0 disabled:hover:shadow-lg group">
+                    {isLoading ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        Send Message
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
