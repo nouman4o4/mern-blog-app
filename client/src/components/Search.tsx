@@ -1,21 +1,34 @@
 import { SearchIcon, X } from "lucide-react";
 import useGlobalStore from "../store/globalStore.ts";
 
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const turnSearchOff = useGlobalStore((state) => state.turnSeachOff);
   const isSearch = useGlobalStore((state) => state.isSearch);
-  const { searchedBlogs, setSearchedBlogs } = useGlobalStore();
+  const { setSearchedBlogs } = useGlobalStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const rawHistory = localStorage.getItem("search-history");
+    try {
+      const parsedHistory = rawHistory ? JSON.parse(rawHistory) : [];
+      setSearchHistory(
+        Array.isArray(parsedHistory) ? parsedHistory : []
+      );
+    } catch (error) {
+      setSearchHistory([]);
+    }
+  }, []);
 
   const submitSearch = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!searchQuery) return;
+    if (!searchQuery.trim()) return;
     console.log("here is search query: ", searchQuery);
     const url = `${
       import.meta.env.VITE_BASE_SERVER_URL
@@ -32,24 +45,40 @@ export default function Search() {
       if (!jsonResponse.success) {
         toast("No matched data found");
       }
-      setSearchedBlogs(jsonResponse.data);
-      console.log({ searchedBlogs });
-      turnSearchOff();
 
+      addToHistory(searchQuery);
+      setSearchedBlogs(jsonResponse.data);
+      turnSearchOff();
       navigate(`/search?query=${searchQuery}`);
     } catch (error) {
       console.log("Error while serching : ", error);
     }
   };
 
-  const searchHistory = [
-    "React best practices",
-    "TypeScript tutorial",
-    "Web development trends",
-    "Node.js performance",
-    "Node.js performance",
-    "Node.js performance",
-  ];
+  const saveHistory = (list: string[]) => {
+    setSearchHistory(list);
+    localStorage.setItem("search-history", JSON.stringify(list));
+  };
+
+  const addToHistory = (raw: string) => {
+    const q = raw.trim();
+    if (!q) return;
+    const withoutQ = searchHistory.filter(
+      (item) => item.toLowerCase() !== q.toLowerCase()
+    );
+    const next = [q, ...withoutQ];
+    saveHistory(next);
+  };
+
+  const clearHistory = () => {
+    setSearchHistory([]);
+    localStorage.removeItem("search-history");
+  };
+
+  const deleteSingleSearch = (index: number) => {
+    const next = searchHistory.filter((_, i) => i !== index);
+    saveHistory(next);
+  };
 
   return (
     <div
@@ -101,19 +130,33 @@ export default function Search() {
         </h1>
         <ul className="history mx-9 text-xl text-gray-300">
           <div className="space-y-3 h-[36vh] overflow-y-auto">
-            {searchHistory.map((item, index) => (
+            {searchHistory?.map((item, index) => (
               <div
+                onClick={() => setSearchQuery(item)}
                 key={index}
                 className="flex items-center justify-between gap-3 p-3 rounded-xl hover:bg-white/10 transition-colors cursor-pointer group">
                 <span className="text-gray-300 group-hover:text-white transition-colors">
                   {item}
                 </span>
 
-                <X />
+                <button
+                  onClick={() => deleteSingleSearch(index)}
+                  className="cursor-pointer hover:text-red-500 transition-colors">
+                  <X />
+                </button>
               </div>
             ))}
+            {!searchHistory ? (
+              <span className="text-sm text-gray-300">
+                No history yet
+              </span>
+            ) : (
+              ""
+            )}
           </div>
-          <button className="text-sm text-red-400 mt-3 cursor-pointer hover:underline">
+          <button
+            onClick={clearHistory}
+            className="text-sm text-red-400 mt-3 cursor-pointer hover:underline">
             Clear all history
           </button>
         </ul>
