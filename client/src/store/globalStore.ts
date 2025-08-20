@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { IPost } from "../types/Post";
 
 interface storeState {
   isSearch: boolean;
@@ -9,11 +10,14 @@ interface storeState {
   turnSeachOff: () => void;
   turnMobileMenuOn: () => void;
   turnMobileMenuOff: () => void;
+  searchedBlogs: IPost[];
+  setSearchedBlogs: (data: IPost[]) => void;
 }
 const useGlobalStore = create<storeState>((set) => ({
   isSearch: false,
   isMobileMenu: false,
   isLoading: false,
+  searchedBlogs: [],
 
   setIsLoading: (value) => {
     set({ isLoading: value });
@@ -30,6 +34,10 @@ const useGlobalStore = create<storeState>((set) => ({
   },
   turnMobileMenuOff: () => {
     set({ isMobileMenu: false });
+  },
+  setSearchedBlogs: (data) => {
+    set({ searchedBlogs: data });
+    console.log("serachedblogs set to: ", data);
   },
 }));
 

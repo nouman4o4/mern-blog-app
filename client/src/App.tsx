@@ -18,6 +18,7 @@ import Contact from "./pages/Contact";
 import { useEffect } from "react";
 import UpdateBlog from "./pages/UpdateBlog";
 import { logout } from "./utils/logout";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   const { authUser, setAuthUser } = useUserStore();
@@ -116,6 +117,12 @@ function App() {
             path="/contact"
             element={
               !authUser ? <Navigate to={"/login"} /> : <Contact />
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              !authUser ? <Navigate to={"/login"} /> : <SearchPage />
             }
           />
         </Route>
