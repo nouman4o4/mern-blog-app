@@ -2,7 +2,7 @@ import { useEffect, useId, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router";
 import { IUser } from "../types/User";
 import { IPost } from "../types/Post";
-import { Edit, Trash } from "lucide-react";
+import { Edit, Trash, Calendar, User, Eye } from "lucide-react";
 import AlerDialog from "./AlerDialog";
 import noImage from "/noImage.png";
 
@@ -11,25 +11,26 @@ interface PostDetails {
   authorDetails?: IUser | undefined;
   isAuthor: boolean;
   authorId: string;
-  setRefreshQuery: () => void;
+  setRefreshQuery?: () => void;
 }
 
 export default function PostCard({
   postData,
-  // authorDetails,
   authorId,
   isAuthor,
   setRefreshQuery,
 }: PostDetails) {
-  const newId = useId();
   const [authorDetails, setAuthorDetails] = useState<IUser>();
   const location = useLocation();
   const [isHomePage] = useState<boolean>(location.pathname === "/");
   const [isAlert, setIsAlert] = useState(false);
+
   // Getting authorDetails
   useEffect(() => {
     (async () => {
-      const url = `http://localhost:3000/api/v1/users/${authorId}`;
+      const url = `${
+        import.meta.env.VITE_BASE_SERVER_URL
+      }/users/${authorId}`;
       try {
         const response = await fetch(url, {
           method: "GET",
@@ -50,113 +51,142 @@ export default function PostCard({
     })();
   }, []);
 
+  // Function to strip HTML tags and get plain text
+  const getPlainText = (html: any, maxLength: number = 150) => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    const text = div.textContent || div.innerText || "";
+    return text.length > maxLength
+      ? text.substring(0, maxLength) + "..."
+      : text;
+  };
+
   return (
-    <div
-      key={newId}
-      className="card w-full md:h-64  shadow-xl rounded">
-      <div className="w-full h-full flex items-center flex-col md:flex-row md:flew-row gap-4">
-        {/* image */}
-        <div
-          className={`photo w-full h-1/4 md:h-64 md:w-1/3 flex-shrink-0`}>
+    <div className="group bg-white rounded md:rounded-3xl border border-gray-100 shadow-lg shadow-gray-900/5 hover:shadow-2xl hover:shadow-gray-900/10 transition-all duration-500 overflow-hidden backdrop-blur-sm">
+      <div className="flex flex-col lg:flex-row h-full">
+        {/* Image Section */}
+        <div className="relative w-full lg:w-80 h-64 lg:h-auto flex-shrink-0 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <img
             src={
               (postData?.featuredImage?.secureUrl &&
                 postData.featuredImage.secureUrl) ||
               noImage
             }
-            alt="photo"
-            className="w-full h-full object-cover hover:scale-105 duration-200"
+            alt={postData.title}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
-        </div>
-
-        <div className="h-full flex flex-col justify-between grow md:py-3">
-          <div className="content p-2 py-3 mb-3 h-52 overflow-hidden">
-            <NavLink to={`/blog/${postData._id}`}>
-              <h2 className="heading text-xl font-semibold mb-3">
-                {postData.title}
-              </h2>
-              <p
-                dangerouslySetInnerHTML={{ __html: postData.content }}
-                className="desc text-sm leading-tight pb-2 text-gray-600"></p>
-            </NavLink>
-          </div>
-          <div
-            className={`userDetails flex gap-2 p-2 justify-between ${
-              isHomePage ? "flex-row" : "flex-col md:flex-row"
-            } md:items-center `}>
-            <div>
-              <img
-                src={`${
-                  authorDetails?.profileImage?.secureUrl
-                    ? authorDetails?.profileImage.secureUrl
-                    : authorDetails?.gender === "male"
-                    ? "https://avatar.iran.liara.run/public/41"
-                    : "https://avatar.iran.liara.run/public/88"
-                } `}
-                alt=""
-                className="size-8 rounded-full inline mr-2"
-              />
-              {!isAuthor ? (
-                <Link
-                  className="name text-[14px] font-semibold inline"
-                  to={`/profile/${postData.author}`}>
-                  {authorDetails?.firstname} {authorDetails?.lastname}{" "}
-                </Link>
-              ) : (
-                <p className="name text-[14px] font-semibold inline">
-                  {authorDetails?.firstname} {authorDetails?.lastname}{" "}
-                  (you)
-                </p>
+          <div className="absolute top-4 right-4 z-20">
+            <div className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-semibold text-gray-700 shadow-lg">
+              <Calendar className="w-3 h-3 inline mr-1" />
+              {new Date(postData.createdAt!).toLocaleDateString(
+                "en-US",
+                {
+                  month: "short",
+                  day: "numeric",
+                }
               )}
             </div>
-            <div
-              className={` ${
-                !isHomePage ? "w-full md:w-1/2 " : ""
-              }  flex justify-between mt-3 mx-3`}>
-              <span className="date text-[13px] font-semibold">
-                {new Date(postData.createdAt!).toLocaleDateString()}
-              </span>
+          </div>
+        </div>
+
+        {/* Content Section */}
+        <div className="flex-1 flex flex-col justify-between p-8 lg:p-10">
+          <div className="flex-1">
+            <NavLink
+              to={`/blog/${postData._id}`}
+              className="block group/link">
+              <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4 line-clamp-2 group-hover/link:text-red-600 transition-colors duration-300">
+                {postData.title}
+              </h2>
+              <p className="text-gray-600 text-lg leading-relaxed mb-6 line-clamp-3">
+                {getPlainText(postData.content, 200)}
+              </p>
+            </NavLink>
+
+            <div className="flex items-center gap-2 mb-6">
+              <div className="h-px bg-gradient-to-r from-red-600 to-transparent w-12"></div>
+              <div className="w-1.5 h-1.5 bg-red-600 rounded-full"></div>
+            </div>
+          </div>
+
+          {/* Author and Action Section */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <img
+                  src={
+                    authorDetails?.profileImage?.secureUrl ||
+                    (authorDetails?.gender === "male"
+                      ? "https://avatar.iran.liara.run/public/41"
+                      : "https://avatar.iran.liara.run/public/88")
+                  }
+                  alt={`${authorDetails?.firstname} ${authorDetails?.lastname}`}
+                  className="w-12 h-12 rounded-full border-2 border-gray-200 shadow-md"
+                />
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+              </div>
+
+              <div>
+                {!isAuthor ? (
+                  <Link
+                    className="text-gray-900 font-semibold hover:text-red-600 transition-colors duration-300"
+                    to={`/profile/${postData.author}`}>
+                    {authorDetails?.firstname}{" "}
+                    {authorDetails?.lastname}
+                  </Link>
+                ) : (
+                  <p className="text-gray-900 font-semibold">
+                    {authorDetails?.firstname}{" "}
+                    {authorDetails?.lastname}
+                    <span className="text-red-600 text-sm ml-2">
+                      (You)
+                    </span>
+                  </p>
+                )}
+                <p className="text-sm text-gray-500 flex items-center gap-1">
+                  <User className="w-3 h-3" />
+                  Author
+                </p>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3">
               {isAuthor && !isHomePage ? (
                 <>
-                  {" "}
-                  <div className=" hidden md:block">
-                    <Link to={`/update-blog/${postData._id}`}>
-                      <button className="edit px-3 py-1 mx-3 bg-blue-400 text-white rounded hover:shadow cursor-pointer hover:bg-blue-500">
-                        {" "}
-                        Edit
-                      </button>
-                    </Link>
-                    <button
-                      onClick={() => setIsAlert(true)}
-                      className="dlt px-3 py-1 bg-red-400 text-white rounded hover:shadow cursor-pointer hover:bg-red-500">
-                      Delete
+                  <Link to={`/update-blog/${postData._id}`}>
+                    <button className="group/btn flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-md hover:shadow-lg">
+                      <Edit className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
+                      <span className="hidden sm:inline">Edit</span>
                     </button>
-                  </div>
-                  <div className="block md:hidden">
-                    <button className="edit text-gray-500 mx-3 rounded hover:shadow cursor-pointer ">
-                      <Edit />
-                    </button>
-                    <button
-                      onClick={() => setIsAlert(true)}
-                      className="dlt text-red-400 rounded hover:shadow cursor-pointer ">
-                      <Trash />
-                    </button>
-                  </div>
+                  </Link>
+                  <button
+                    onClick={() => setIsAlert(true)}
+                    className="group/btn flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all duration-300 shadow-md hover:shadow-lg">
+                    <Trash className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
+                    <span className="hidden sm:inline">Delete</span>
+                  </button>
                 </>
               ) : (
-                ""
+                <NavLink to={`/blog/${postData._id}`}>
+                  <button className="group/btn flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 shadow-lg shadow-red-600/25 hover:shadow-xl hover:shadow-red-600/40 hover:-translate-y-0.5">
+                    <Eye className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
+                    Read More
+                  </button>
+                </NavLink>
               )}
             </div>
           </div>
         </div>
       </div>
-      {!isAlert ? (
-        ""
-      ) : (
+
+      {/* Alert Dialog */}
+      {isAlert && (
         <AlerDialog
           setIsAlert={setIsAlert}
           blogId={postData._id}
-          setRefreshQuery={setRefreshQuery}
+          setRefreshQuery={setRefreshQuery!}
         />
       )}
     </div>
