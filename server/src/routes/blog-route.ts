@@ -11,6 +11,7 @@ import {
   getCommentsForBlog,
   likeComment,
   getRecentBlogs,
+  getSearchedBlogs,
 } from "../controllers/blog-controller";
 import { authMiddleware } from "../middleswares/authMiddleware";
 import { upload } from "../middleswares/multer";
@@ -57,5 +58,8 @@ blogRouter.patch(
   authMiddleware,
   likeComment
 );
+
+// get blogs for search
+blogRouter.post("/search", getSearchedBlogs);
 
 export default blogRouter;

@@ -703,3 +703,71 @@ export const getRecentBlogs = async (req: Request, res: Response) => {
     console.log(error);
   }
 };
+
+// helper to escape regex-special chars from user input
+function escapeRegex(text: string) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+export const getSearchedBlogs = async (
+  req: Request,
+  res: Response
+) => {
+  const rawQuery = req.query.searchQuery;
+  if (!rawQuery) {
+    res.status(400).json({
+      status: 400,
+      success: false,
+      message: "No search query is provided",
+    });
+    return;
+  }
+
+  const q = String(rawQuery).trim();
+  if (!q) {
+    res.status(400).json({
+      status: 400,
+      success: false,
+      message: "Empty search query",
+    });
+    return;
+  }
+
+  try {
+    const safe = escapeRegex(q);
+    const regex = new RegExp(safe, "i");
+
+    const blogs = await Post.find({
+      $or: [
+        { category: { $regex: regex } },
+        { title: { $regex: regex } },
+      ],
+    }).lean();
+
+    if (!blogs || blogs.length === 0) {
+      res.status(404).json({
+        status: 404,
+        success: false,
+        message: "No matched data found",
+        data: [],
+      });
+      return;
+    }
+
+    res.status(200).json({
+      status: 200,
+      success: true,
+      message: "Operation succeeded",
+      data: blogs,
+    });
+    return;
+  } catch (error) {
+    console.error("Search error:", error);
+    res.status(500).json({
+      status: 500,
+      success: false,
+      message: "Internal server error while searching for blogs",
+    });
+  }
+  return;
+};
