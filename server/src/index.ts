@@ -8,12 +8,13 @@ import blogRouter from "./routes/blog-route";
 import userRouter from "./routes/user-route";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 8080;
+
 configDotenv();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [process.env.CLIENT_ORIGIN!],
     methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
     credentials: true,
   })
