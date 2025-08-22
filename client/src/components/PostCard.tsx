@@ -62,7 +62,7 @@ export default function PostCard({
   };
 
   return (
-    <div className="group bg-white rounded md:rounded-3xl border border-gray-100 shadow-lg shadow-gray-900/5 hover:shadow-2xl hover:shadow-gray-900/10 transition-all duration-500 overflow-hidden backdrop-blur-sm">
+    <div className="group w-full bg-white rounded md:rounded-3xl border border-gray-100 shadow-lg shadow-gray-900/5 hover:shadow-2xl hover:shadow-gray-900/10 transition-all duration-500 overflow-hidden backdrop-blur-sm">
       <div className="flex flex-col lg:flex-row h-full">
         {/* Image Section */}
         <div className="relative w-full lg:w-80 h-64 lg:h-auto flex-shrink-0 overflow-hidden">
@@ -124,7 +124,6 @@ export default function PostCard({
                   alt={`${authorDetails?.firstname} ${authorDetails?.lastname}`}
                   className="w-12 h-12 rounded-full border-2 border-gray-200 shadow-md"
                 />
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
               </div>
 
               <div>
