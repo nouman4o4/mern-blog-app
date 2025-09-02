@@ -1,4 +1,3 @@
-````markdown
 # Blog App 📝 (MERN + TypeScript)
 
 A **full-featured blog application** built with the **MERN stack + TypeScript**.  
@@ -175,7 +174,6 @@ Users can create, update, delete, and read blogs; interact via likes and comment
 git clone https://github.com/your-username/blog-app.git
 cd blog-app
 ```
-````
 
 ### 2. Backend Setup
 
@@ -319,7 +317,7 @@ VITE_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
 
 ## Contributing
 
-Contributions, issues, and feature requests are welcome!
+Contributions, issues, and feature requests are welcome!  
 Feel free to open a PR or issue.
 
 ---
@@ -330,7 +328,3 @@ Feel free to open a PR or issue.
 
 - GitHub: [@nouman4o4](https://github.com/nouman4o4)
 - LinkedIn: [Nouman Khan](https://www.linkedin.com/in/nouman-khan-68372228b/)
-
-```
-
-```
