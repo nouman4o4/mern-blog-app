@@ -1,7 +1,6 @@
-import React from "react";
 import useGlobalStore from "../store/globalStore";
 import PostCard from "../components/PostCard";
-import { useParams, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import { Search } from "lucide-react";
 
 export default function SearchPage() {

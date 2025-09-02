@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router";
 
 export default function Footer() {
@@ -16,11 +15,9 @@ export default function Footer() {
         </button>
       </div>
       <div className="links w-full mx-auto flex justify-center gap-7 lg:gap-13 my-3 p-2 bg-gray-200/0">
-        <Link to={""}>Home</Link>
-        <Link to={""}>About</Link>
-        <Link to={""}>Contact Us</Link>
-        <Link to={""}>Settings</Link>
-        <Link to={""}>Author</Link>
+        <Link to={"/"}>Home</Link>
+        <Link to={"/about"}>About</Link>
+        <Link to={"/contact"}>Contact Us</Link>
       </div>
       <div className="w-full ">
         <p className="text-center py-2 text-sm text-gray-300 bordert bg-gray-800 border-t-gray-400/40">

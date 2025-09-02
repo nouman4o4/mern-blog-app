@@ -83,13 +83,14 @@ export default function Search() {
   return (
     <div
       className={`fixed z-50 left-0 min-w-screen bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-800/90 text-white transition-all ease h-screen duration-500 ${
-        isSearch ? "top-0" : "-top-[100%]"
+        isSearch ? "top-0 opacity-100" : "-top-[100%] opacity-0"
       }`}>
       <div className="max-w-[1400px] h-full mx-auto">
         <div className="w-full flex justify-between items-center px-6 py-8">
           <div className="text-white">
             <h1 className="text-3xl md:text-4xl font-bold">
-              Search <span className="text-red-500">Everything</span>
+              Search{" "}
+              <span className="text-red-500/90">Everything</span>
             </h1>
             <p className="text-gray-400 mt-2">
               Discover amazing content
