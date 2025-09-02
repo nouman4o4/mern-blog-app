@@ -1,7 +1,7 @@
 import { Search, X } from "lucide-react";
 import useGlobalStore from "../store/globalStore.ts";
 import { cn } from "../utils/clsx";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import useUserStore from "../store/userStore.ts";
 import { useEffect, useRef } from "react";
 
@@ -117,33 +117,25 @@ export default function MobileMenu() {
                   className="mblMenuLink">
                   About
                 </NavLink>
+
                 <NavLink
                   onClick={turnMobileMenuOff}
-                  to={"/services"}
-                  className="mblMenuLink">
-                  Services
-                </NavLink>
-                <NavLink
-                  onClick={turnMobileMenuOff}
-                  to={"contact"}
+                  to={"/contact"}
                   className="mblMenuLink">
                   Contact
-                </NavLink>
-                <NavLink
-                  onClick={turnMobileMenuOff}
-                  to={"socials"}
-                  className="mblMenuLink">
-                  Socials
                 </NavLink>
               </ul>
             </div>
             <div className="logo w-full p-4 my-4 text-center">
-              <button className="text-3xl font-extrabold px-4 text-black h-full">
+              <Link
+                onClick={turnMobileMenuOff}
+                to={"/"}
+                className="text-3xl font-extrabold px-4 text-black h-full">
                 <span className="p-1 bg-red-500 text-white px-3">
                   V
                 </span>{" "}
                 blog
-              </button>
+              </Link>
             </div>
             <div className="footer w-full absolute left-0 bottom-0 bg-gray-100 p-3 text-center">
               www.vblog.com All right reserved

@@ -1,7 +1,6 @@
 import { Menu, Search } from "lucide-react";
 
 import useGlobalStore from "../store/globalStore.ts";
-import UpperNav from "./UpperNav";
 import { NavLink } from "react-router";
 import useUserStore from "../store/userStore.ts";
 
@@ -20,7 +19,6 @@ export default function Navbar() {
 
   return (
     <div>
-      <UpperNav />
       <div className="flex flex-wrap w-full  justify-between items-center bg-black h-[70px] md:h-24">
         <div className="logo h-full">
           <NavLink to="/" className={""}>
