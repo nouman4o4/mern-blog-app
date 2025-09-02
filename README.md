@@ -199,7 +199,7 @@ npm run dev
 ### 4. Run
 
 - Frontend (Vite): `http://localhost:5173`
-- Backend (Express): `http://localhost:5000`
+- Backend (Express): `http://localhost:3000`
 
 ---
 
@@ -208,12 +208,10 @@ npm run dev
 ### Backend `.env`
 
 ```env
-PORT=5000
+PORT=3000
 MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_super_secret_jwt_key
 
 # Cloudinary
-CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 ```
@@ -222,9 +220,9 @@ CLOUDINARY_API_SECRET=your_api_secret
 
 ```env
 # Point client to API
-VITE_API_BASE_URL=http://localhost:5000
+VITE_API_BASE_URL=http://localhost:3000
 
-# If you use EmailJS on the client
+
 VITE_EMAILJS_PUBLIC_KEY=your_emailjs_public_key
 VITE_EMAILJS_SERVICE_ID=your_emailjs_service_id
 VITE_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
@@ -251,45 +249,7 @@ VITE_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
 
 ---
 
-## API Overview (High Level)
-
-> Endpoints may vary; this is a typical layout.
-
-**Auth**
-
-- `POST /api/auth/signup` — Create account
-- `POST /api/auth/login` — Login & set auth cookie
-- `POST /api/auth/logout` — Clear cookie
-
-**Users**
-
-- `GET /api/users/:id` — Public profile & posts
-- `PATCH /api/users/me` — Update profile (name, photo, etc.) _(auth)_
-- `GET /api/users/me` — Current user _(auth)_
-
-**Posts**
-
-- `GET /api/posts` — List posts (optionally by user, pagination)
-- `POST /api/posts` — Create post _(auth)_
-- `GET /api/posts/:id` — Get one
-- `PATCH /api/posts/:id` — Update _(auth & owner)_
-- `DELETE /api/posts/:id` — Delete _(auth & owner)_
-
-**Interactions**
-
-- `POST /api/posts/:id/like` — Toggle like _(auth)_
-- `POST /api/posts/:id/comments` — Add comment _(auth)_
-- `DELETE /api/posts/:id/comments/:commentId` — Delete own comment _(auth)_
-
-**Uploads**
-
-- `POST /api/uploads/image` — Upload image via Multer → Cloudinary _(auth)_
-
----
-
 ## Screenshots / Demo
-
-> Replace placeholders with your images or a GIF demo.
 
 | Home (Hero Slider)              | Editor (TipTap)                     |
 | ------------------------------- | ----------------------------------- |
