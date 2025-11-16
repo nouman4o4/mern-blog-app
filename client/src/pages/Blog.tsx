@@ -5,111 +5,102 @@ import {
   MessageCircle,
   ThumbsDown,
   ThumbsUp,
-} from "lucide-react";
-import RecentBlogs from "../components/RecentBlogs";
-import { useParams } from "react-router";
-import { useEffect, useState } from "react";
-import { IPost } from "../types/Post";
-import toast from "react-hot-toast";
-import { IUser } from "../types/User";
-import getSingleUser from "../utils/getUser";
-import useGlobalStore from "../store/globalStore";
-import useUserStore from "../store/userStore";
-import CommentsSection from "../components/CommentsSection";
+} from "lucide-react"
+import RecentBlogs from "../components/RecentBlogs"
+import { useParams } from "react-router"
+import { useEffect, useState } from "react"
+import { IPost } from "../types/Post"
+import toast from "react-hot-toast"
+import { IUser } from "../types/User"
+import getSingleUser from "../utils/getUser"
+import useGlobalStore from "../store/globalStore"
+import useUserStore from "../store/userStore"
+import CommentsSection from "../components/CommentsSection"
 // import 'dotenv/config'
 export default function Blog() {
-  const [blogData, setBlogData] = useState<IPost>();
-  const [authorDetails, setAuthorDetails] = useState<IUser>();
-  const { isLoading, setIsLoading } = useGlobalStore();
-  const [alreadyLiked, setAlreadyLiked] = useState(false);
-  const [disliked, setDisliked] = useState(false);
-  const params = useParams();
-  const { blogId } = params;
-  const { authUser } = useUserStore();
+  const [blogData, setBlogData] = useState<IPost>()
+  const [authorDetails, setAuthorDetails] = useState<IUser>()
+  const { isLoading, setIsLoading } = useGlobalStore()
+  const [alreadyLiked, setAlreadyLiked] = useState(false)
+  const [disliked, setDisliked] = useState(false)
+  const params = useParams()
+  const { blogId } = params
+  const { authUser } = useUserStore()
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       // get blog data
-      const url = `http://localhost:3000/api/v1/blogs/${blogId}`;
+      const baseUrl = import.meta.env.VITE_BASE_SERVER_URL
+      const url = `${baseUrl}/${blogId}`
       try {
-        setIsLoading(true);
+        setIsLoading(true)
         const response = await fetch(url, {
           method: "GET",
           credentials: "include",
-        });
+        })
         if (!response.ok) {
-          console.log("Error, Something went wrong..");
-          return;
+          console.log("Error, Something went wrong..")
+          return
         }
-        const jsonResponse = await response.json();
+        const jsonResponse = await response.json()
 
         if (!jsonResponse.success) {
-          console.log(
-            jsonResponse.message || "Can't fetch post data..."
-          );
+          console.log(jsonResponse.message || "Can't fetch post data...")
 
-          return;
+          return
         }
 
-        setBlogData(jsonResponse.post);
+        setBlogData(jsonResponse.post)
       } catch (error) {
-        console.log(error);
-        toast.error("Something went wrong while fetching post data");
+        console.log(error)
+        toast.error("Something went wrong while fetching post data")
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    })();
-  }, [blogId, alreadyLiked]);
+    })()
+  }, [blogId, alreadyLiked])
 
   // get author details
   useEffect(() => {
-    if (!blogData?.author) return;
-    (async () => {
-      const authorData: IUser = await getSingleUser(
-        blogData?.author!
-      );
+    if (!blogData?.author) return
+    ;(async () => {
+      const authorData: IUser = await getSingleUser(blogData?.author!)
 
-      setAuthorDetails(authorData);
-    })();
+      setAuthorDetails(authorData)
+    })()
     // cheack already liked
     const alreadyLiked = blogData?.likes.some(
       (id) => id.toString() === authUser?._id.toString()
-    );
-    setAlreadyLiked(alreadyLiked!);
-  }, [blogData]);
+    )
+    setAlreadyLiked(alreadyLiked!)
+  }, [blogData])
 
   // like post
   const handleLike = async () => {
-    disliked && setDisliked(false);
+    disliked && setDisliked(false)
 
-    const uri = `${
-      import.meta.env.VITE_BASE_SERVER_URL
-    }/blogs/${blogId}/like`;
+    const uri = `${import.meta.env.VITE_BASE_SERVER_URL}/blogs/${blogId}/like`
     try {
       const response = await fetch(uri, {
         method: "PATCH",
         credentials: "include",
-      });
+      })
       if (!response.ok) {
-        console.log("Couldn't like a post");
-        toast.error("Failed to like, please try again.");
-        return;
+        console.log("Couldn't like a post")
+        toast.error("Failed to like, please try again.")
+        return
       }
-      const jsonResponse = await response.json();
-      if (
-        jsonResponse?.message === "Blog post unliked successfully"
-      ) {
-        setAlreadyLiked(false);
-      } else if (
-        jsonResponse?.message === "Blog post liked successfully"
-      ) {
-        setAlreadyLiked(true);
+      const jsonResponse = await response.json()
+      if (jsonResponse?.message === "Blog post unliked successfully") {
+        setAlreadyLiked(false)
+      } else if (jsonResponse?.message === "Blog post liked successfully") {
+        setAlreadyLiked(true)
       }
     } catch (error) {
-      console.log("Couldn't like a post,error:", error);
-      return;
+      console.log("Couldn't like a post,error:", error)
+      return
     }
-  };
+  }
 
   return (
     <div className="w-full md:my-11">
@@ -132,17 +123,13 @@ export default function Blog() {
               <div className="date text-sm text-gray-500">
                 <Calendar className="inline size-[16px] mb-1" />{" "}
                 <span className="">
-                  {new Date(
-                    blogData?.createdAt!
-                  ).toLocaleDateString()}
+                  {new Date(blogData?.createdAt!).toLocaleDateString()}
                 </span>
               </div>
             </div>
             {/* blog Title */}
             <h1 className="text-2xl md:text-4xl font-bold py-3 my-4 [font-family:var(--font-roboto-condensed)] uppercase">
-              {!blogData && isLoading
-                ? "Loading data..."
-                : blogData?.title}
+              {!blogData && isLoading ? "Loading data..." : blogData?.title}
             </h1>
             {/* author details */}
             <div className="interactions flex gap-5 items-center my-7">
@@ -164,9 +151,7 @@ export default function Blog() {
               </div>
               <div className="likes">
                 <Heart
-                  className={`inline ${
-                    alreadyLiked ? "text-red-600" : ""
-                  }`}
+                  className={`inline ${alreadyLiked ? "text-red-600" : ""}`}
                 />{" "}
                 <span>{blogData?.likes.length}</span>
               </div>
@@ -185,7 +170,8 @@ export default function Blog() {
                     ? "Loading data..."
                     : blogData?.content!,
               }}
-              className="text-lg text-gray-600"></p>
+              className="text-lg text-gray-600"
+            ></p>
           </div>
           <div className="w-full h-[1px] bg-gray-500"></div>
           <div className="buttons w-full md:w-3/4 mx-auto flex gap-6 my-9 px-2 md:px-0">
@@ -196,20 +182,22 @@ export default function Blog() {
               alreadyLiked
                 ? "text-white border-blue-600 bg-blue-600 hover:bg-blue-700"
                 : "text-blue-400 hover:text-blue-600 border-blue-400 hover:bg-blue-200"
-            }`}>
+            }`}
+            >
               <ThumbsUp className="inline" />{" "}
               <span>{blogData?.likes.length}</span>
             </button>
             <button
               onClick={() => {
-                setDisliked(true);
-                alreadyLiked && handleLike();
+                setDisliked(true)
+                alreadyLiked && handleLike()
               }}
               className={` grow  hover:bg-red-200 text-red-400 hover:text-red-600 border-2 border-red-600 font-bold  px-4 rounded flex items-center py-3 justify-center gap-3 cursor-pointer ${
                 disliked
                   ? "bg-red-600 text-white hover:bg-red-500"
                   : " hover:bg-red-200 text-red-400 hover:text-red-600"
-              }`}>
+              }`}
+            >
               <ThumbsDown />
             </button>
           </div>
@@ -223,5 +211,5 @@ export default function Blog() {
         <RecentBlogs pageBlogId={blogId!} />
       </div>
     </div>
-  );
+  )
 }

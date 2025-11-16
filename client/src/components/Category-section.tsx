@@ -1,11 +1,11 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
-import { useNavigate } from "react-router";
+import React, { useState } from "react"
+import { useNavigate } from "react-router"
 
 // Define a type for the category
 interface Category {
-  id: number; // A unique identifier for each category
-  name: string; // The name of the category
-  imageUrl: string; // The URL of the category image
+  id: number // A unique identifier for each category
+  name: string // The name of the category
+  imageUrl: string // The URL of the category image
 }
 
 // Dummy data for favorite categories
@@ -52,22 +52,19 @@ const categories: Category[] = [
     imageUrl:
       "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=800&q=80",
   },
-];
+]
 
 const Categories: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] =
-    useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("")
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const handleSelctCategory = (selectedCategory: string) => {
-    setSelectedCategory(selectedCategory);
+    setSelectedCategory(selectedCategory)
 
     navigate(
-      selectedCategory === "recent"
-        ? "/"
-        : `/?category=${selectedCategory}`
-    );
-  };
+      selectedCategory === "recent" ? "/" : `/?category=${selectedCategory}`
+    )
+  }
   return (
     <div className="w-full min-h- bg-gray-50 p-6 px-1 md:p-12">
       <h3 className="text-xl font-bold my-1 text-black p-3">
@@ -77,14 +74,13 @@ const Categories: React.FC = () => {
         {categories.map((category) => (
           <div
             key={category.id}
-            onClick={() =>
-              handleSelctCategory(category.name.toLowerCase())
-            }
+            onClick={() => handleSelctCategory(category.name.toLowerCase())}
             className={`box w-25 h-30 p-1 m-2 cursor-pointer border-b-4 ${
               category.name.toLocaleLowerCase() === selectedCategory
                 ? "border-red-300"
                 : " border-transparent"
-            }`}>
+            }`}
+          >
             <div className="photo w-full h-21 overflow-hidden">
               <img
                 className="w-full h-full object-cover"
@@ -97,7 +93,7 @@ const Categories: React.FC = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Categories;
+export default Categories

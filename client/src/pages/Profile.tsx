@@ -1,71 +1,71 @@
-import PostCard from "../components/PostCard";
-import { Link, useNavigate, useParams } from "react-router";
-import "react-image-crop/dist/ReactCrop.css";
-import UserDetailSection from "../components/UserDetailSection";
-import useUserStore from "../store/userStore";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { IPost } from "../types/Post";
+import PostCard from "../components/PostCard"
+import { Link, useNavigate, useParams } from "react-router"
+import "react-image-crop/dist/ReactCrop.css"
+import UserDetailSection from "../components/UserDetailSection"
+import useUserStore from "../store/userStore"
+import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
+import { IPost } from "../types/Post"
 
-import { Edit2 } from "lucide-react";
-import getSingleUser from "../utils/getUser";
-import { IUser } from "../types/User";
+import { Edit2 } from "lucide-react"
+import getSingleUser from "../utils/getUser"
+import { IUser } from "../types/User"
 
 export default function Profile() {
-  const [authorDetails, setAuthorDetails] = useState<IUser>();
-  const [posts, setPosts] = useState<IPost[]>([]);
-  const [likes, setLikes] = useState<string[]>([]);
-  const { authUser } = useUserStore();
-  const [refreshQuery, setRefreshQuery] = useState(false);
-  const params = useParams();
-  const authorId = params.id;
-  const navigate = useNavigate();
+  const [authorDetails, setAuthorDetails] = useState<IUser>()
+  const [posts, setPosts] = useState<IPost[]>([])
+  const [likes, setLikes] = useState<string[]>([])
+  const { authUser } = useUserStore()
+  const [refreshQuery, setRefreshQuery] = useState(false)
+  const params = useParams()
+  const authorId = params.id
+  const navigate = useNavigate()
   // fetch posts and author's data
   useEffect(() => {
-    (async () => {
-      const url = `http://localhost:3000/api/v1/blogs/user/${authorId}`;
+    ;(async () => {
+      const baseUrl = import.meta.env.VITE_BASE_SERVER_URL
+      const url = `${baseUrl}/blogs/user/${authorId}`
       try {
         const response = await fetch(url, {
           method: "GET",
           credentials: "include",
-        });
-        const jsonResponse = await response.json();
+        })
+        const jsonResponse = await response.json()
 
         if (!jsonResponse.success) {
-          toast.error(
-            "Something went wrong while fetching blogs data!"
-          );
-          return;
+          toast.error("Something went wrong while fetching blogs data!")
+          return
         }
-        setPosts(jsonResponse.data);
+        setPosts(jsonResponse.data)
       } catch (error) {
-        console.log(error);
-        toast.error("Opps! something went wrong");
+        console.log(error)
+        toast.error("Opps! something went wrong")
       }
-    })();
+    })()
 
     // get author data ;
-    (async () => {
-      const userData: IUser = await getSingleUser(authorId!);
-      setAuthorDetails(userData);
-    })();
-    (async () => {
-      const url = `http://localhost:3000/api/v1/users/${authorId}/total-likes`;
+    ;(async () => {
+      const userData: IUser = await getSingleUser(authorId!)
+      setAuthorDetails(userData)
+    })()
+    ;(async () => {
+      const baseUrl = import.meta.env.VITE_BASE_SERVER_URL
+      const url = `${baseUrl}/users/${authorId}/total-likes`
       try {
         const response = await fetch(url, {
           method: "GET",
           credentials: "include",
-        });
-        const jsonResponse = await response.json();
+        })
+        const jsonResponse = await response.json()
         if (!jsonResponse.success) {
-          return;
+          return
         }
-        setLikes(jsonResponse.data);
+        setLikes(jsonResponse.data)
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
-    })();
-  }, [params.id, refreshQuery]);
+    })()
+  }, [params.id, refreshQuery])
 
   return (
     <div>
@@ -81,7 +81,8 @@ export default function Profile() {
           {authorId === authUser?._id && (
             <Link
               to={"/create-blog"}
-              className="text-sm md:text-xl font-semibold bg-white text-black py-2 px-4 rounded-lg cursor-pointer shadow-lg">
+              className="text-sm md:text-xl font-semibold bg-white text-black py-2 px-4 rounded-lg cursor-pointer shadow-lg"
+            >
               Create a new post{" "}
               <span>
                 <Edit2 className="inline size-4 md:size-6 ml-2" />
@@ -105,12 +106,13 @@ export default function Profile() {
                       No Blogs Yet
                     </h2>
                     <p className="text-gray-500 mb-4">
-                      Looks like you haven't created any blogs. Start
-                      writing your first one!
+                      Looks like you haven't created any blogs. Start writing
+                      your first one!
                     </p>
                     <button
                       onClick={() => navigate("/create-blog")}
-                      className="px-6 py-2 bg-red-400 hover:bg-red-500 text-white rounded-md transition-all">
+                      className="px-6 py-2 bg-red-400 hover:bg-red-500 text-white rounded-md transition-all"
+                    >
                       Create Blog
                     </button>
                   </div>
@@ -121,9 +123,7 @@ export default function Profile() {
                       postData={post}
                       authorId={post.author}
                       isAuthor={authorId === authUser?._id}
-                      setRefreshQuery={() =>
-                        setRefreshQuery(!refreshQuery)
-                      }
+                      setRefreshQuery={() => setRefreshQuery(!refreshQuery)}
                     />
                   ))
                 )}
@@ -133,5 +133,5 @@ export default function Profile() {
         </div>
       </div>
     </div>
-  );
+  )
 }

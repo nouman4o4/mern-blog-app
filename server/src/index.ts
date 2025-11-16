@@ -1,16 +1,16 @@
-import express from "express";
-import connectDb from "./utils/db";
-import authRouter from "./routes/auth-route";
-import { configDotenv } from "dotenv";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import blogRouter from "./routes/blog-route";
-import userRouter from "./routes/user-route";
+import express from "express"
+import connectDb from "./utils/db"
+import authRouter from "./routes/auth-route"
+import { configDotenv } from "dotenv"
+import cookieParser from "cookie-parser"
+import cors from "cors"
+import blogRouter from "./routes/blog-route"
+import userRouter from "./routes/user-route"
 
-const app = express();
-const port = process.env.PORT || 8080;
+const app = express()
+const port = process.env.PORT || 8080
 
-configDotenv();
+configDotenv()
 
 app.use(
   cors({
@@ -18,26 +18,26 @@ app.use(
     methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
     credentials: true,
   })
-);
+)
 
-app.use(cookieParser());
-app.use(express.json());
+app.use(cookieParser())
+app.use(express.json())
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+  res.send("Hello World!")
+})
 
 // auth router
-app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/auth", authRouter)
 
 // users-router
 
-app.use("/api/v1/users", userRouter);
+app.use("/api/v1/users", userRouter)
 
 // blog router
-app.use("/api/v1/blogs", blogRouter);
+app.use("/api/v1/blogs", blogRouter)
 
 app.listen(port, async () => {
-  await connectDb();
-  console.log("app is running on port: " + port);
-});
+  await connectDb()
+  console.log("app is running on port: " + port)
+})

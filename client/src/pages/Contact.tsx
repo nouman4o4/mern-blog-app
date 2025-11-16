@@ -1,4 +1,4 @@
-import { JSX, useEffect, useState } from "react";
+import { JSX, useState } from "react"
 import {
   Mail,
   Github,
@@ -7,23 +7,23 @@ import {
   Send,
   User,
   MessageSquare,
-} from "lucide-react";
-import emailjs from "@emailjs/browser";
-import toast from "react-hot-toast";
+} from "lucide-react"
+import emailjs from "@emailjs/browser"
+import toast from "react-hot-toast"
 
 interface FormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
+  name: string
+  email: string
+  subject: string
+  message: string
 }
 
 interface SocialLink {
-  name: string;
-  icon: React.ComponentType<{ className?: string }>;
-  url: string;
-  color: string;
-  description: string;
+  name: string
+  icon: React.ComponentType<{ className?: string }>
+  url: string
+  color: string
+  description: string
 }
 
 export default function Contact(): JSX.Element {
@@ -32,27 +32,27 @@ export default function Contact(): JSX.Element {
     email: "",
     subject: "",
     message: "",
-  });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const env = import.meta.env;
+  })
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const env = import.meta.env
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   const handleSubmit = async (
     e: React.MouseEvent<HTMLButtonElement>
   ): Promise<void> => {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       if (
         !formData.name ||
         !formData.email ||
@@ -70,8 +70,8 @@ export default function Contact(): JSX.Element {
             primary: "#713200",
             secondary: "#FFFAEE",
           },
-        });
-        return;
+        })
+        return
       }
       const resultOfSendingEmail = await emailjs.send(
         env.VITE_EMAILJS_SERVICE_ID,
@@ -83,22 +83,22 @@ export default function Contact(): JSX.Element {
           message: formData.message,
         },
         { publicKey: env.VITE_EMAILJS_PUBLIC_KEY }
-      );
+      )
 
       if (resultOfSendingEmail.text !== "OK") {
-        toast.error("Error sending email, try again!");
-        setIsLoading(false);
-        return;
+        toast.error("Error sending email, try again!")
+        setIsLoading(false)
+        return
       }
-      toast.success("Email sent successfully!");
-      setFormData({ name: "", subject: "", email: "", message: "" });
+      toast.success("Email sent successfully!")
+      setFormData({ name: "", subject: "", email: "", message: "" })
     } catch (error) {
-      toast.error("Error sending email, try again!");
-      console.log(error);
+      toast.error("Error sending email, try again!")
+      console.log(error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const socialLinks: SocialLink[] = [
     {
@@ -129,7 +129,7 @@ export default function Contact(): JSX.Element {
       color: "hover:bg-red-600",
       description: "Send direct email",
     },
-  ];
+  ]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
@@ -158,8 +158,8 @@ export default function Contact(): JSX.Element {
               <div className="h-px bg-gradient-to-r from-transparent via-red-600 to-transparent w-20"></div>
             </div>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              Have an exciting project in mind? I'd love to hear about
-              it. Let's collaborate and bring your ideas to life.
+              Have an exciting project in mind? I'd love to hear about it. Let's
+              collaborate and bring your ideas to life.
             </p>
           </div>
 
@@ -172,7 +172,8 @@ export default function Contact(): JSX.Element {
                     <div className="group">
                       <label
                         htmlFor="name"
-                        className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors">
+                        className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors"
+                      >
                         <User className="inline w-4 h-4 mr-2" />
                         Full Name
                       </label>
@@ -191,7 +192,8 @@ export default function Contact(): JSX.Element {
                     <div className="group">
                       <label
                         htmlFor="email"
-                        className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors">
+                        className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors"
+                      >
                         <Mail className="inline w-4 h-4 mr-2" />
                         Email Address
                       </label>
@@ -211,7 +213,8 @@ export default function Contact(): JSX.Element {
                   <div className="group">
                     <label
                       htmlFor="subject"
-                      className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors">
+                      className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors"
+                    >
                       Subject
                     </label>
                     <input
@@ -229,7 +232,8 @@ export default function Contact(): JSX.Element {
                   <div className="group">
                     <label
                       htmlFor="message"
-                      className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors">
+                      className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors"
+                    >
                       Message
                     </label>
                     <textarea
@@ -248,7 +252,8 @@ export default function Contact(): JSX.Element {
                     type="submit"
                     onClick={handleSubmit}
                     disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-red-400 disabled:to-red-500 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg shadow-red-600/25 hover:shadow-xl hover:shadow-red-600/40 hover:-translate-y-0.5 disabled:hover:translate-y-0 disabled:hover:shadow-lg group">
+                    className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-red-400 disabled:to-red-500 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg shadow-red-600/25 hover:shadow-xl hover:shadow-red-600/40 hover:-translate-y-0.5 disabled:hover:translate-y-0 disabled:hover:shadow-lg group"
+                  >
                     {isLoading ? (
                       <>
                         <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
@@ -273,14 +278,15 @@ export default function Contact(): JSX.Element {
                 </h3>
                 <div className="space-y-4">
                   {socialLinks.map((social: SocialLink) => {
-                    const Icon = social.icon;
+                    const Icon = social.icon
                     return (
                       <a
                         key={social.name}
                         href={social.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`group flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-transparent transition-all duration-300 ${social.color} hover:text-white hover:shadow-lg hover:-translate-y-1`}>
+                        className={`group flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-transparent transition-all duration-300 ${social.color} hover:text-white hover:shadow-lg hover:-translate-y-1`}
+                      >
                         <div className="flex-shrink-0">
                           <Icon className="w-6 h-6" />
                         </div>
@@ -293,7 +299,7 @@ export default function Contact(): JSX.Element {
                           </div>
                         </div>
                       </a>
-                    );
+                    )
                   })}
                 </div>
 
@@ -335,5 +341,5 @@ export default function Contact(): JSX.Element {
         </div>
       </div>
     </div>
-  );
+  )
 }

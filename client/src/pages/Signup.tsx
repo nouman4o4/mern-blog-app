@@ -1,29 +1,29 @@
-import { Eye, EyeOff, Mail, User, UserCog2 } from "lucide-react";
-import { useActionState, useState } from "react";
-import { NavLink, useNavigate } from "react-router";
-import { signUpSchema } from "../schemas/signUpSchema";
-import toast from "react-hot-toast";
+import { Eye, EyeOff, Mail, User, UserCog2 } from "lucide-react"
+import { useActionState, useState } from "react"
+import { NavLink, useNavigate } from "react-router"
+import { signUpSchema } from "../schemas/signUpSchema"
+import toast from "react-hot-toast"
 
 type FormState = {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  gender: string;
-  error?: string;
-};
+  firstname: string
+  lastname: string
+  email: string
+  password: string
+  confirmPassword: string
+  gender: string
+  error?: string
+}
 interface FieldErrorsI {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  gender: string;
+  firstname: string
+  lastname: string
+  email: string
+  password: string
+  confirmPassword: string
+  gender: string
 }
 
 export default function Signup() {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false)
   const [fieldErrors, setFieldErrors] = useState<FieldErrorsI>({
     firstname: "",
     lastname: "",
@@ -31,15 +31,15 @@ export default function Signup() {
     password: "",
     confirmPassword: "",
     gender: "",
-  });
-  const navigate = useNavigate();
+  })
+  const navigate = useNavigate()
 
   const clearErrorField = (field: keyof FieldErrorsI) => {
-    setFieldErrors((prev) => ({ ...prev, [field]: "" }));
-  };
+    setFieldErrors((prev) => ({ ...prev, [field]: "" }))
+  }
 
   const submitForm = async (
-    state: FormState,
+    _: FormState,
     formData: FormData
   ): Promise<FormState> => {
     const formDataObj = {
@@ -49,10 +49,10 @@ export default function Signup() {
       password: formData.get("password") as string,
       confirmPassword: formData.get("confirmPassword") as string,
       gender: formData.get("gender") as string,
-    };
+    }
     try {
-      const zodResult = signUpSchema.safeParse(formDataObj);
-      const validatonError = zodResult.error?.format();
+      const zodResult = signUpSchema.safeParse(formDataObj)
+      const validatonError = zodResult.error?.format()
 
       if (!zodResult.success) {
         setFieldErrors({
@@ -63,33 +63,33 @@ export default function Signup() {
           confirmPassword: validatonError?.confirmPassword
             ?._errors[0] as string,
           gender: validatonError?.gender?._errors[0] as string,
-        });
-        return { ...formDataObj, error: "" };
+        })
+        return { ...formDataObj, error: "" }
       }
-
-      const url = "http://localhost:3000/api/v1/auth/register";
+      const baseUrl = import.meta.env.VITE_BASE_SERVER_URL
+      const url = `${baseUrl}/auth/register`
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formDataObj),
         credentials: "include",
-      });
-      const jsonResponse = await response.json();
+      })
+      const jsonResponse = await response.json()
 
       if (!jsonResponse.success) {
-        toast.error(jsonResponse.message);
-        return { ...formDataObj, error: "Server error" };
+        toast.error(jsonResponse.message)
+        return { ...formDataObj, error: "Server error" }
       }
 
-      toast.success("User Registerd successfully");
-      navigate("/login");
-      return formDataObj;
+      toast.success("User Registerd successfully")
+      navigate("/login")
+      return formDataObj
     } catch (error: any) {
-      console.log(error.message);
-      toast.error("An unexpected error occured, Please try again.");
-      return { ...formDataObj, error: "An unexpected error occured" };
+      console.log(error.message)
+      toast.error("An unexpected error occured, Please try again.")
+      return { ...formDataObj, error: "An unexpected error occured" }
     }
-  };
+  }
 
   const [state, formAction, isPending] = useActionState(submitForm, {
     firstname: "",
@@ -99,7 +99,7 @@ export default function Signup() {
     confirmPassword: "",
     gender: "",
     error: undefined,
-  });
+  })
 
   return (
     <div className="h-[calc(100svh-80px)] bg-gradient-to-br from-gray-50 to-white relative overflow-hidden flex items-center">
@@ -126,7 +126,8 @@ export default function Signup() {
               Already a member?{" "}
               <NavLink
                 to={"/login"}
-                className="text-red-600 hover:text-red-700 font-semibold underline">
+                className="text-red-600 hover:text-red-700 font-semibold underline"
+              >
                 Login
               </NavLink>
             </div>
@@ -134,22 +135,20 @@ export default function Signup() {
 
           {/* Form card (compact) */}
           <div className="bg-white p-4 md:p-6 rounded-2xl border border-gray-100 shadow-xl shadow-gray-900/5 backdrop-blur-sm">
-            <form
-              action={formAction}
-              className="w-full flex flex-col gap-4">
+            <form action={formAction} className="w-full flex flex-col gap-4">
               {/* Name inputs */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <div
                     className={`group ${
-                      fieldErrors.firstname
-                        ? "ring-2 ring-red-500"
-                        : ""
-                    } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}>
+                      fieldErrors.firstname ? "ring-2 ring-red-500" : ""
+                    } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}
+                  >
                     <div className="flex-grow leading-tight">
                       <label
                         htmlFor="firstname"
-                        className="text-xs font-semibold block text-gray-700 mb-1">
+                        className="text-xs font-semibold block text-gray-700 mb-1"
+                      >
                         Firstname
                       </label>
                       <input
@@ -172,14 +171,14 @@ export default function Signup() {
                 <div>
                   <div
                     className={`group ${
-                      fieldErrors.lastname
-                        ? "ring-2 ring-red-500"
-                        : ""
-                    } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}>
+                      fieldErrors.lastname ? "ring-2 ring-red-500" : ""
+                    } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}
+                  >
                     <div className="flex-grow leading-tight">
                       <label
                         htmlFor="lastname"
-                        className="text-xs font-semibold block text-gray-700 mb-1">
+                        className="text-xs font-semibold block text-gray-700 mb-1"
+                      >
                         Lastname
                       </label>
                       <input
@@ -206,11 +205,13 @@ export default function Signup() {
                   <div
                     className={`group ${
                       fieldErrors.email ? "ring-2 ring-red-500" : ""
-                    } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}>
+                    } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}
+                  >
                     <div className="flex-grow leading-tight">
                       <label
                         htmlFor="email"
-                        className="text-xs font-semibold block text-gray-700 mb-1">
+                        className="text-xs font-semibold block text-gray-700 mb-1"
+                      >
                         Email
                       </label>
                       <input
@@ -235,7 +236,8 @@ export default function Signup() {
                   <div
                     className={`group ${
                       fieldErrors.gender ? "ring-2 ring-red-500" : ""
-                    } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}>
+                    } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}
+                  >
                     <div className="flex-grow">
                       <div className="text-xs font-semibold block text-gray-700 mb-2">
                         Gender
@@ -284,11 +286,13 @@ export default function Signup() {
                 <div
                   className={`group ${
                     fieldErrors.password ? "ring-2 ring-red-500" : ""
-                  } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}>
+                  } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}
+                >
                   <div className="flex-grow leading-tight">
                     <label
                       htmlFor="password"
-                      className="text-xs font-semibold block text-gray-700 mb-1">
+                      className="text-xs font-semibold block text-gray-700 mb-1"
+                    >
                       Password
                     </label>
                     <input
@@ -307,7 +311,8 @@ export default function Signup() {
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
-                    }>
+                    }
+                  >
                     {showPassword ? (
                       <Eye className="w-4 h-4 cursor-pointer" />
                     ) : (
@@ -324,14 +329,14 @@ export default function Signup() {
               <div>
                 <div
                   className={`group ${
-                    fieldErrors.confirmPassword
-                      ? "ring-2 ring-red-500"
-                      : ""
-                  } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}>
+                    fieldErrors.confirmPassword ? "ring-2 ring-red-500" : ""
+                  } focus-within:ring-2 focus-within:ring-red-500 p-3 bg-gray-50 rounded-lg flex items-center justify-between gap-2 border border-gray-200 transition-all duration-300`}
+                >
                   <div className="flex-grow leading-tight">
                     <label
                       htmlFor="confirmPassword"
-                      className="text-xs font-semibold block text-gray-700 mb-1">
+                      className="text-xs font-semibold block text-gray-700 mb-1"
+                    >
                       Confirm Password
                     </label>
                     <input
@@ -354,7 +359,8 @@ export default function Signup() {
               <button
                 type="submit"
                 disabled={isPending}
-                className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-red-400 disabled:to-red-500 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-red-600/25 hover:shadow-xl hover:shadow-red-600/40 hover:-translate-y-0.5 disabled:hover:translate-y-0 disabled:hover:shadow-lg text-base mt-1">
+                className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-red-400 disabled:to-red-500 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-red-600/25 hover:shadow-xl hover:shadow-red-600/40 hover:-translate-y-0.5 disabled:hover:translate-y-0 disabled:hover:shadow-lg text-base mt-1"
+              >
                 {isPending ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
@@ -369,5 +375,5 @@ export default function Signup() {
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,33 +1,33 @@
 const getSingleUser = async (authorId: string) => {
   if (!authorId) {
-    console.log("Couldn't find the provided user id");
+    console.log("Couldn't find the provided user id")
 
-    return null;
+    return null
   }
-
-  const url = `http://localhost:3000/api/v1/users/${authorId}`;
+  const baseUrl = import.meta.env.VITE_BASE_SERVER_URL
+  const url = `${baseUrl}/users/${authorId}`
 
   try {
     const response = await fetch(url, {
       method: "GET",
       credentials: "include",
-    });
-    const jsonResponse = await response.json();
+    })
+    const jsonResponse = await response.json()
 
     if (!jsonResponse.success) {
       console.log(
         jsonResponse?.message ||
           "Something went wrong while fetching the author data!"
-      );
+      )
 
-      return null;
+      return null
     }
-    return jsonResponse.data;
+    return jsonResponse.data
   } catch (error) {
-    console.log(error);
+    console.log(error)
 
-    return null;
+    return null
   }
-};
+}
 
-export default getSingleUser;
+export default getSingleUser

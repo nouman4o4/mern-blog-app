@@ -1,49 +1,45 @@
-import React, { useEffect, useState } from "react";
-import { IPost } from "../types/Post";
-import { ThumbsDown, ThumbsUp } from "lucide-react";
-import { motion } from "framer-motion";
-import useUserStore from "../store/userStore";
-import toast from "react-hot-toast";
+import { useEffect, useState } from "react"
+import { IPost } from "../types/Post"
+import { ThumbsUp } from "lucide-react"
+import { motion } from "framer-motion"
+import useUserStore from "../store/userStore"
+import toast from "react-hot-toast"
 
 interface IComment {
-  text: string;
+  text: string
   user: {
-    firstname: string;
-    lastname: string;
+    firstname: string
+    lastname: string
     profileImage: {
-      secureUrl: string;
-    };
-    gender: string;
-  };
-  likes: string[];
-  createdAt: Date;
-  _id: string;
+      secureUrl: string
+    }
+    gender: string
+  }
+  likes: string[]
+  createdAt: Date
+  _id: string
 }
 
-export default function CommentsSection({
-  blogData,
-}: {
-  blogData: IPost;
-}) {
-  const [comment, setComment] = useState<string>("");
-  const [isLoading, setIsloading] = useState(false);
-  const [comments, setComments] = useState<IComment[] | null>(null);
-  const [isliked, setIsliked] = useState<boolean>();
+export default function CommentsSection({ blogData }: { blogData: IPost }) {
+  const [comment, setComment] = useState<string>("")
+  const [isLoading, setIsloading] = useState(false)
+  const [comments, setComments] = useState<IComment[] | null>(null)
+  const [isliked, setIsliked] = useState<boolean>()
 
-  const { authUser } = useUserStore();
+  const { authUser } = useUserStore()
 
   // submit create comment
   const handleSubmit = async () => {
     if (comment?.trim().length < 3) {
-      return;
+      return
     }
     // call api
 
     const uri = `${import.meta.env.VITE_BASE_SERVER_URL}/blogs/${
       blogData._id
-    }/comments`;
+    }/comments`
     try {
-      setIsloading(true);
+      setIsloading(true)
       const response = await fetch(uri, {
         method: "POST",
         credentials: "include",
@@ -51,83 +47,79 @@ export default function CommentsSection({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ comment }),
-      });
+      })
 
-      const jsonResponse = await response.json();
+      const jsonResponse = await response.json()
       if (!response.ok) {
-        console.log("Error posting comment");
-        return;
+        console.log("Error posting comment")
+        return
       }
       if (!jsonResponse.success) {
-        console.log(
-          jsonResponse.message || "Can't post comment data..."
-        );
-        return;
+        console.log(jsonResponse.message || "Can't post comment data...")
+        return
       }
-      toast.success("Comment added successfully");
+      toast.success("Comment added successfully")
     } catch (error) {
-      console.log(error);
+      console.log(error)
     } finally {
-      setIsloading(false);
-      setComment("");
+      setIsloading(false)
+      setComment("")
     }
-  };
+  }
 
   useEffect(() => {
     blogData &&
       (async () => {
-        if (!blogData._id) return;
+        if (!blogData._id) return
         // get all comments for the blog post
         try {
-          const uri = `${
-            import.meta.env.VITE_BASE_SERVER_URL
-          }/blogs/${blogData._id}/comments`;
+          const uri = `${import.meta.env.VITE_BASE_SERVER_URL}/blogs/${
+            blogData._id
+          }/comments`
           const response = await fetch(uri, {
             method: "GET",
             credentials: "include",
-          });
+          })
           if (!response.ok) {
-            console.log("Error fetching comments");
-            return;
+            console.log("Error fetching comments")
+            return
           }
-          const jsonResponse = await response.json();
+          const jsonResponse = await response.json()
           if (!jsonResponse.success) {
-            console.log(
-              jsonResponse.message || "Can't fetch comments data..."
-            );
-            return;
+            console.log(jsonResponse.message || "Can't fetch comments data...")
+            return
           }
 
-          setComments(jsonResponse.data);
+          setComments(jsonResponse.data)
         } catch (error) {
-          console.log(error);
+          console.log(error)
         }
-      })();
-  }, [isLoading, blogData, isliked]);
+      })()
+  }, [isLoading, blogData, isliked])
 
   const handleLikeComment = async (commentId: string) => {
     const uri = `${import.meta.env.VITE_BASE_SERVER_URL}/blogs/${
       blogData._id
-    }/comments/${commentId}/like`;
+    }/comments/${commentId}/like`
     try {
       const response = await fetch(uri, {
         method: "PATCH",
         credentials: "include",
-      });
+      })
       if (!response.ok) {
-        console.log("Error liking a comment");
-        return;
+        console.log("Error liking a comment")
+        return
       }
 
-      const jsonResonse = await response.json();
+      const jsonResonse = await response.json()
       if (!jsonResonse.success) {
-        toast.error(jsonResonse.message || "Error liking a comment");
-        return;
+        toast.error(jsonResonse.message || "Error liking a comment")
+        return
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   return (
     <div className="comment-section w-full mx-auto mt-10 p-3 md:p-6 bg-white ">
@@ -152,7 +144,8 @@ export default function CommentsSection({
             comment.trim().length < 3
               ? "bg-black/40 text-gray-200 hover:bg-black/40 cursor-not-allowed"
               : "bg-black text-white hover:bg-gray-800  cursor-pointer"
-          } font-medium transition-all duration-300`}>
+          } font-medium transition-all duration-300`}
+        >
           {isLoading ? "Posting..." : "Post"}
         </button>
       </div>
@@ -160,9 +153,7 @@ export default function CommentsSection({
       {/* comments container*/}
 
       <div className="cmnts-container my-6 text-gray-800">
-        <h4 className="text-lg font-bold border-b pb-2 my-3">
-          Comments
-        </h4>
+        <h4 className="text-lg font-bold border-b pb-2 my-3">Comments</h4>
 
         {/* comment */}
 
@@ -170,9 +161,9 @@ export default function CommentsSection({
           comments.map((comment, i) => {
             const isLikedByCurrentUser = comment.likes.some(
               (id) => id.toString() === authUser?._id
-            );
-            const isNew = i === 0;
-            const CommentWrapper = isNew ? motion.div : "div";
+            )
+            const isNew = i === 0
+            const CommentWrapper = isNew ? motion.div : "div"
             // animation not wokring properly. fix it later
             return (
               <CommentWrapper
@@ -181,11 +172,10 @@ export default function CommentsSection({
                 initial={isNew ? { opacity: 0, y: -20 } : false}
                 animate={isNew ? { opacity: 1, y: 0 } : false}
                 transition={
-                  isNew
-                    ? { duration: 0.4, ease: "easeInOut" }
-                    : undefined
+                  isNew ? { duration: 0.4, ease: "easeInOut" } : undefined
                 }
-                className="comment max-w-2xl flex gap-2 my-8 p-2 shadow-lg rounded-xl">
+                className="comment max-w-2xl flex gap-2 my-8 p-2 shadow-lg rounded-xl"
+              >
                 <div className="profile-img w-10 h-10 shrink-0">
                   <img
                     className="rounded-full w-full h-full"
@@ -204,18 +194,11 @@ export default function CommentsSection({
                   <div>
                     <div className="flex justify-between gap-8 items-center">
                       <h3 className="font-bold ">
-                        {comment.user.firstname +
-                          " " +
-                          comment.user.lastname}
+                        {comment.user.firstname + " " + comment.user.lastname}
                       </h3>{" "}
                       <span className="text-[12px] text-gray-400 ">
-                        {new Date(
-                          comment.createdAt
-                        ).toLocaleDateString()}
-                        ,{" "}
-                        {new Date(
-                          comment.createdAt
-                        ).toLocaleTimeString([], {
+                        {new Date(comment.createdAt).toLocaleDateString()},{" "}
+                        {new Date(comment.createdAt).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}{" "}
@@ -227,12 +210,10 @@ export default function CommentsSection({
                     <div className="">
                       {" "}
                       <ThumbsUp
-                        fill={
-                          isLikedByCurrentUser ? "black" : "white"
-                        }
+                        fill={isLikedByCurrentUser ? "black" : "white"}
                         onClick={() => {
-                          handleLikeComment(comment._id);
-                          setIsliked(!isliked);
+                          handleLikeComment(comment._id)
+                          setIsliked(!isliked)
                         }}
                         className="size-6 inline mr-1 cursor-pointer"
                       />
@@ -243,7 +224,7 @@ export default function CommentsSection({
                   </div>
                 </div>
               </CommentWrapper>
-            );
+            )
           })
         ) : (
           <div className="text-center text-sm font-semibold">
@@ -252,5 +233,5 @@ export default function CommentsSection({
         )}
       </div>
     </div>
-  );
+  )
 }
