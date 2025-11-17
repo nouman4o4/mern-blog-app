@@ -1,77 +1,71 @@
-import {
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router";
-import { About, Blog, Home, Profile } from "./pages";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router"
+import { About, Blog, Home, Profile } from "./pages"
 
-import MainLayout from "./layouts/mainLayout";
-import AuthLayout from "./layouts/authLayout";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import { Toaster } from "react-hot-toast";
-import useUserStore from "./store/userStore";
-import CreateBlog from "./pages/CreateBlog";
-import Contact from "./pages/Contact";
-import { useEffect } from "react";
-import UpdateBlog from "./pages/UpdateBlog";
-import { logout } from "./utils/logout";
-import SearchPage from "./pages/SearchPage";
+import MainLayout from "./layouts/mainLayout"
+import AuthLayout from "./layouts/authLayout"
+import Login from "./pages/Login"
+import Signup from "./pages/Signup"
+import { Toaster } from "react-hot-toast"
+import useUserStore from "./store/userStore"
+import CreateBlog from "./pages/CreateBlog"
+import Contact from "./pages/Contact"
+import { useEffect } from "react"
+import UpdateBlog from "./pages/UpdateBlog"
+import { logout } from "./utils/logout"
+import SearchPage from "./pages/SearchPage"
 
 function App() {
-  const { authUser, setAuthUser } = useUserStore();
-  const navigate = useNavigate();
+  const { authUser, setAuthUser } = useUserStore()
+  const navigate = useNavigate()
 
-  const { pathname } = useLocation();
+  const { pathname } = useLocation()
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo(0, 0)
     // if (!authUser) navigate("/login");
-  }, [pathname]);
+  }, [pathname])
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
         if (!authUser?._id) {
-          localStorage.removeItem("blog-app-user");
-          setAuthUser(null);
-          // navigate("/login");
-          return;
+          localStorage.removeItem("blog-app-user")
+          setAuthUser(null)
+          navigate("/login")
+          return
         }
-        const url = `${
-          import.meta.env.VITE_BASE_SERVER_URL
-        }/auth/verify/${authUser?._id}`;
+        const url = `${import.meta.env.VITE_BASE_SERVER_URL}/auth/verify/${
+          authUser?._id
+        }`
         const response = await fetch(url, {
           method: "GET",
           credentials: "include",
-        });
-        // if (!response.ok) {
-        //   console.log(
-        //     "something went wrong while verifying auth user, response: ",
-        //     response
-        //   );
-        //   logout(userId);
-        //   return;
-        // }
-        const jsonResponse = await response.json();
-        if (jsonResponse.success) {
-          console.log("User is verified");
-          return;
+        })
+        if (!response.ok) {
+          console.log(
+            "something went wrong while verifying auth user, response: ",
+            response
+          )
+          logout(authUser._id)
+          return
         }
-        logout(authUser._id);
-        setAuthUser(null);
-        navigate("/login");
+        const jsonResponse = await response.json()
+        if (jsonResponse.success) {
+          console.log("User is verified")
+          return
+        }
+        logout(authUser._id)
+        setAuthUser(null)
+        navigate("/login")
       } catch (error) {
         console.log(
           "Something went wrong while verifying the user, error: ",
           error
-        );
-        logout(authUser?._id!);
-        setAuthUser(null);
-        navigate("/login");
+        )
+        logout(authUser?._id!)
+        setAuthUser(null)
+        navigate("/login")
       }
-    })();
-  }, [pathname, authUser]);
+    })()
+  }, [pathname, authUser])
   return (
     <>
       <Toaster />
@@ -79,51 +73,35 @@ function App() {
         <Route element={<MainLayout />}>
           <Route
             path="/"
-            element={
-              !authUser ? <Navigate to={"/login"} /> : <Home />
-            }
+            element={!authUser ? <Navigate to={"/login"} /> : <Home />}
           />
           <Route
             path="/blog/:blogId"
-            element={
-              !authUser ? <Navigate to={"/login"} /> : <Blog />
-            }
+            element={!authUser ? <Navigate to={"/login"} /> : <Blog />}
           />
           <Route
             path="/about"
-            element={
-              !authUser ? <Navigate to={"/login"} /> : <About />
-            }
+            element={!authUser ? <Navigate to={"/login"} /> : <About />}
           />
           <Route
             path="/profile/:id"
-            element={
-              !authUser ? <Navigate to={"/login"} /> : <Profile />
-            }
+            element={!authUser ? <Navigate to={"/login"} /> : <Profile />}
           />
           <Route
             path="/create-blog"
-            element={
-              !authUser ? <Navigate to={"/login"} /> : <CreateBlog />
-            }
+            element={!authUser ? <Navigate to={"/login"} /> : <CreateBlog />}
           />
           <Route
             path="/update-blog/:id"
-            element={
-              !authUser ? <Navigate to={"/login"} /> : <UpdateBlog />
-            }
+            element={!authUser ? <Navigate to={"/login"} /> : <UpdateBlog />}
           />
           <Route
             path="/contact"
-            element={
-              !authUser ? <Navigate to={"/login"} /> : <Contact />
-            }
+            element={!authUser ? <Navigate to={"/login"} /> : <Contact />}
           />
           <Route
             path="/search"
-            element={
-              !authUser ? <Navigate to={"/login"} /> : <SearchPage />
-            }
+            element={!authUser ? <Navigate to={"/login"} /> : <SearchPage />}
           />
         </Route>
 
@@ -139,7 +117,7 @@ function App() {
         </Route>
       </Routes>
     </>
-  );
+  )
 }
 
-export default App;
+export default App

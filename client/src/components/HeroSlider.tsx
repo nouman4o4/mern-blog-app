@@ -1,31 +1,31 @@
-import { useEffect, useRef, useState } from "react";
-import { NavLink } from "react-router";
+import { useEffect, useRef, useState } from "react"
+import { NavLink } from "react-router"
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react"
+import { Autoplay } from "swiper/modules"
 // Import Swiper styles
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-import { Swiper as SwiperClass } from "swiper";
-import HeroSliderSkeleton from "./HeroSliderSkeleton";
+import "swiper/css"
+import "swiper/css/pagination"
+import "swiper/css/navigation"
+import { Swiper as SwiperClass } from "swiper"
+import HeroSliderSkeleton from "./HeroSliderSkeleton"
 
 interface sliderBlog {
-  author: string;
-  content: string;
-  publishedAt: Date;
-  title: string;
-  url: string;
-  urlToImage: string;
-  description: string;
+  author: string
+  content: string
+  publishedAt: Date
+  title: string
+  url: string
+  urlToImage: string
+  description: string
   source: {
-    name: string;
-  };
+    name: string
+  }
 }
 
 export default function HeroSlider() {
-  const swiperRef = useRef<SwiperClass | null>(null);
-  const [blogs, setBlogs] = useState<sliderBlog[]>([]);
+  const swiperRef = useRef<SwiperClass | null>(null)
+  const [blogs, setBlogs] = useState<sliderBlog[]>([])
 
   const getCategoryForBlogs = function () {
     const categories = [
@@ -35,41 +35,40 @@ export default function HeroSlider() {
       "LifeStyle",
       "Business",
       "Health",
-    ];
-    const randomNumber = Math.ceil(
-      Math.random() * categories.length - 1
-    );
+    ]
+    const randomNumber = Math.ceil(Math.random() * categories.length - 1)
 
-    return categories[randomNumber];
-  };
+    return categories[randomNumber]
+  }
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
-        const url = `https://newsapi.org/v2/everything?q=${getCategoryForBlogs()}s&pageSize=10&apiKey=1e8d9b47d3f346cb9ad64d03efbbaa21`;
+        const url = `https://newsapi.org/v2/everything?q=${getCategoryForBlogs()}s&pageSize=10&apiKey=1e8d9b47d3f346cb9ad64d03efbbaa21`
 
         const response = await fetch(url, {
           method: "GET",
-        });
+        })
 
-        const jsonResponse = await response.json();
+        const jsonResponse = await response.json()
 
         if (!jsonResponse) {
-          return;
+          return
         }
-        setBlogs(jsonResponse.articles);
+        setBlogs(jsonResponse.articles)
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
   return (
     <div
       className="w-full h-[70vh] md:h-[90vh] p-1 md:p-6 relative flex overflow-hidden rounded-xl md:rounded-3xl
-        ">
+        "
+    >
       {/* Next arrow button */}
-      {blogs.length > 0 ? (
+      {blogs && blogs.length > 0 ? (
         <Swiper
           onSwiper={(swiper) => (swiperRef.current = swiper)}
           slidesPerView={1}
@@ -78,7 +77,8 @@ export default function HeroSlider() {
           speed={2500}
           loop={true}
           autoplay={{ delay: 3500, disableOnInteraction: false }}
-          modules={[Autoplay]}>
+          modules={[Autoplay]}
+        >
           {blogs.map((item, i) => (
             <SwiperSlide key={i}>
               <NavLink
@@ -124,5 +124,5 @@ export default function HeroSlider() {
         <HeroSliderSkeleton />
       )}
     </div>
-  );
+  )
 }
