@@ -31,7 +31,7 @@ export default function Blog() {
     ;(async () => {
       // get blog data
       const baseUrl = import.meta.env.VITE_BASE_SERVER_URL
-      const url = `${baseUrl}/${blogId}`
+      const url = `${baseUrl}/blogs/${blogId}`
       try {
         setIsLoading(true)
         const response = await fetch(url, {
@@ -39,7 +39,8 @@ export default function Blog() {
           credentials: "include",
         })
         if (!response.ok) {
-          console.log("Error, Something went wrong..")
+          console.log("Error, Something went wrong..", response)
+          toast.error("Something went wrong while fetching post data")
           return
         }
         const jsonResponse = await response.json()
