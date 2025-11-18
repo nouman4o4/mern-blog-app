@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { Request, Response, Router } from "express"
 import {
   updateBlog,
   createBlog,
@@ -12,54 +12,49 @@ import {
   likeComment,
   getRecentBlogs,
   getSearchedBlogs,
-} from "../controllers/blog-controller";
-import { authMiddleware } from "../middleswares/authMiddleware";
-import { upload } from "../middleswares/multer";
+  getNews,
+} from "../controllers/blog-controller"
+import { authMiddleware } from "../middleswares/authMiddleware"
+import { upload } from "../middleswares/multer"
 
-const blogRouter = Router();
+const blogRouter = Router()
 
 // GET all blog posts
-blogRouter.get("/", getAllBlogs);
+blogRouter.get("/", getAllBlogs)
 // Get most recent blogs
-blogRouter.get("/recent/:excludeBlodId", getRecentBlogs);
+blogRouter.get("/recent/:excludeBlodId", getRecentBlogs)
 
 // GET a single blog post
-blogRouter.get("/:id", getBlog);
+blogRouter.get("/:id", getBlog)
 
 // CREATE a blog post
-blogRouter.post("/", upload.single("file"), createBlog);
+blogRouter.post("/", upload.single("file"), createBlog)
 
 // UPDATE a blog post
-blogRouter.put(
-  "/:id",
-  authMiddleware,
-  upload.single("file"),
-  updateBlog
-);
+blogRouter.put("/:id", authMiddleware, upload.single("file"), updateBlog)
 
 // DELETE a blog post
-blogRouter.delete("/:id", authMiddleware, deleteBlog);
+blogRouter.delete("/:id", authMiddleware, deleteBlog)
 
 // Like a post
-blogRouter.patch("/:id/like", authMiddleware, likeBlog);
+blogRouter.patch("/:id/like", authMiddleware, likeBlog)
 
 // Get all blog posts fo a user
-blogRouter.get("/user/:userid", getAllBlogsForUser);
+blogRouter.get("/user/:userid", getAllBlogsForUser)
 
 // Create a comment
-blogRouter.post("/:id/comments", authMiddleware, createComment);
+blogRouter.post("/:id/comments", authMiddleware, createComment)
 
 // get all comments for a blog post
-blogRouter.get("/:id/comments", authMiddleware, getCommentsForBlog);
+blogRouter.get("/:id/comments", authMiddleware, getCommentsForBlog)
 
 // like a comment
-blogRouter.patch(
-  "/:id/comments/:commentId/like",
-  authMiddleware,
-  likeComment
-);
+blogRouter.patch("/:id/comments/:commentId/like", authMiddleware, likeComment)
 
 // get blogs for search
-blogRouter.post("/search", getSearchedBlogs);
+blogRouter.post("/search", getSearchedBlogs)
 
-export default blogRouter;
+// news router
+blogRouter.get("/news/:category", getNews)
+
+export default blogRouter

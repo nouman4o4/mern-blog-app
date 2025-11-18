@@ -1,24 +1,24 @@
-import { Request, response, Response } from "express";
+import { Request, response, Response } from "express"
 import {
   deleteFileFromCloudinary,
   uploadFileToCloudinary,
-} from "../lib/cloundinary";
-import { IComment, Post } from "../models/posts.model";
-import { createBlogShcema } from "../schemas/blog-schema";
-import fs from "fs";
-import mongoose from "mongoose";
+} from "../lib/cloundinary"
+import { IComment, Post } from "../models/posts.model"
+import { createBlogShcema } from "../schemas/blog-schema"
+import fs from "fs"
+import mongoose from "mongoose"
 
 // Create blog post
 export const createBlog = async (req: Request, res: Response) => {
   try {
-    const { title, content, author, category } = req.body;
+    const { title, content, author, category } = req.body
 
     const zodResult = createBlogShcema.safeParse({
       title,
       content,
       author,
       category,
-    });
+    })
 
     if (!zodResult.success) {
       res.status(400).json({
@@ -27,28 +27,28 @@ export const createBlog = async (req: Request, res: Response) => {
         message:
           "Please provide all the required fields: title, content, author, and category.",
         error: zodResult.error.errors,
-      });
-      return;
+      })
+      return
     }
 
-    const featuredImageFile = req.file;
+    const featuredImageFile = req.file
     let uploadedImageData: { secureUrl: string; publicId: string } = {
       secureUrl: "",
       publicId: "",
-    };
+    }
 
     if (featuredImageFile) {
       try {
         const imageUploadResult = await uploadFileToCloudinary(
           featuredImageFile.path
-        );
+        )
         if (imageUploadResult) {
-          uploadedImageData.secureUrl = imageUploadResult.secure_url;
-          uploadedImageData.publicId = imageUploadResult.public_id;
+          uploadedImageData.secureUrl = imageUploadResult.secure_url
+          uploadedImageData.publicId = imageUploadResult.public_id
 
           fs.unlink(featuredImageFile.path, (err) => {
-            if (err) console.error("Error deleting file:", err);
-          });
+            if (err) console.error("Error deleting file:", err)
+          })
         }
       } catch (error) {
         res.status(500).json({
@@ -56,8 +56,8 @@ export const createBlog = async (req: Request, res: Response) => {
           status: 500,
           message: "Image upload failed",
           error,
-        });
-        return;
+        })
+        return
       }
     }
 
@@ -67,67 +67,63 @@ export const createBlog = async (req: Request, res: Response) => {
       author,
       category,
       featuredImage: uploadedImageData,
-    });
+    })
 
     res.status(201).json({
       success: true,
       status: 201,
       message: "New blog post created successfully!",
       post: newPost,
-    });
+    })
   } catch (error: any) {
     res.status(500).json({
       success: false,
       status: 500,
       message: "Something went wrong while creating a new blog post",
       error: error.message || error,
-    });
+    })
   }
-};
+}
 
 // Get all blog posts
 export const getAllBlogs = async (req: Request, res: Response) => {
   try {
-    const { category } = req.query;
+    const { category } = req.query
 
     const allBlogPosts = await Post.find(
       category && typeof category === "string"
         ? {
-            category:
-              category.charAt(0).toUpperCase() + category.slice(1),
+            category: category.charAt(0).toUpperCase() + category.slice(1),
           }
         : {}
-    ).sort({ createdAt: -1 });
+    ).sort({ createdAt: -1 })
     if (!allBlogPosts) {
       res.status(404).json({
         success: false,
         status: 404,
         message: "No blog posts found",
-      });
-      return;
+      })
+      return
     }
     res.status(200).json({
       success: true,
       status: 200,
       message: "All blog posts retrieved successfully",
       posts: allBlogPosts,
-    });
+    })
   } catch (error: any) {
     res.status(500).json({
       success: false,
       status: 500,
       message: "Failed to retrieved blog posts",
       error: error.message || error,
-    });
+    })
   }
-};
+}
 
 // Get all blog posts of single user
-export const getAllBlogsForUser = async (
-  req: Request,
-  res: Response
-) => {
-  const userId = req.params.userid;
+export const getAllBlogsForUser = async (req: Request, res: Response) => {
+  const userId = req.params.userid
 
   try {
     if (!mongoose.isValidObjectId(userId)) {
@@ -135,114 +131,107 @@ export const getAllBlogsForUser = async (
         success: false,
         status: 400,
         message: "Invalid user ID",
-      });
-      return;
+      })
+      return
     }
     const blogs = await Post.find({ author: userId }).sort({
       createdAt: -1,
-    });
+    })
 
     res.status(200).json({
       success: true,
       status: 200,
       message: "Data retrieved successfully",
       data: blogs,
-    });
-    return;
+    })
+    return
   } catch (error) {
-    console.error(error);
+    console.error(error)
     res.status(500).json({
       success: false,
       status: 500,
       message: "Internal server error",
-    });
-    return;
+    })
+    return
   }
-};
+}
 
 // Get a blog post
 export const getBlog = async (req: Request, res: Response) => {
   try {
-    const postId = req.params.id;
+    const postId = req.params.id
 
-    const isValidPostId = mongoose.isValidObjectId(postId);
+    const isValidPostId = mongoose.isValidObjectId(postId)
     if (!isValidPostId) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Invalid post ID",
-      });
-      return;
+      })
+      return
     }
 
-    const blogPost = await Post.findOne({ _id: postId });
+    const blogPost = await Post.findOne({ _id: postId })
 
     if (!blogPost) {
       res.status(404).json({
         success: false,
         status: 404,
         message: "Blog post not found",
-      });
-      return;
+      })
+      return
     }
     res.status(200).json({
       success: true,
       status: 200,
       message: "Blog post retrieved successfully",
       post: blogPost,
-    });
+    })
   } catch (error: any) {
     res.status(500).json({
       success: false,
       status: 500,
       message: "Failed to retrieved blog post",
       error: error.message || error,
-    });
+    })
   }
-};
+}
 
 // Update a blog post
 export const updateBlog = async (req: Request, res: Response) => {
   try {
-    const postId = req.params.id;
-    const { title, content, category } = req.body;
-    if (
-      !title ||
-      title.length < 5 ||
-      !content ||
-      content.length < 8
-    ) {
+    const postId = req.params.id
+    const { title, content, category } = req.body
+    if (!title || title.length < 5 || !content || content.length < 8) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Invalid request body",
-      });
+      })
     }
-    const isValidPostId = mongoose.isValidObjectId(postId);
+    const isValidPostId = mongoose.isValidObjectId(postId)
     if (!isValidPostId) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Invalid post ID",
-      });
-      return;
+      })
+      return
     }
-    const postToUpdate = await Post.findById(postId).select(
-      "featuredImage"
-    );
-    const featuredImageFile = req.file;
+    const postToUpdate = await Post.findById(postId).select("featuredImage")
+    const featuredImageFile = req.file
     let uploadedImageData: { secureUrl: string; publicId: string } = {
       secureUrl: "",
       publicId: "",
-    };
+    }
     if (featuredImageFile) {
       try {
-        const deletePrevFeaturedImageResult = postToUpdate
-          ?.featuredImage?.publicId
+        const deletePrevFeaturedImageResult = postToUpdate?.featuredImage
+          ?.publicId
           ? await deleteFileFromCloudinary(
               postToUpdate?.featuredImage?.publicId!
             )
-          : undefined;
+          : undefined
 
         if (
           postToUpdate?.featuredImage?.secureUrl === "" ||
@@ -250,16 +239,15 @@ export const updateBlog = async (req: Request, res: Response) => {
         ) {
           const imageUploadResult = await uploadFileToCloudinary(
             featuredImageFile.path
-          );
+          )
 
           if (imageUploadResult) {
-            uploadedImageData.secureUrl =
-              imageUploadResult.secure_url;
-            uploadedImageData.publicId = imageUploadResult.public_id;
+            uploadedImageData.secureUrl = imageUploadResult.secure_url
+            uploadedImageData.publicId = imageUploadResult.public_id
 
             fs.unlink(featuredImageFile.path, (err) => {
-              if (err) console.error("Error deleting file:", err);
-            });
+              if (err) console.error("Error deleting file:", err)
+            })
           }
         }
       } catch (error) {
@@ -268,8 +256,8 @@ export const updateBlog = async (req: Request, res: Response) => {
           status: 500,
           message: "Error, couldn't update the blog. try again.",
           error,
-        });
-        return;
+        })
+        return
       }
     }
 
@@ -282,14 +270,14 @@ export const updateBlog = async (req: Request, res: Response) => {
         featuredImage: uploadedImageData,
       },
       { new: true, runValidators: true }
-    );
+    )
     if (!updatedPost) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Couldn't update the post",
-      });
-      return;
+      })
+      return
     }
 
     res.status(200).json({
@@ -297,99 +285,99 @@ export const updateBlog = async (req: Request, res: Response) => {
       status: 200,
       message: "Blog post updated successfully",
       updatedPost,
-    });
+    })
   } catch (error: any) {
-    console.error(error);
+    console.error(error)
     res.status(500).json({
       success: false,
       status: 500,
       message: "Internal Server Error while update the post",
       error: error.stack || error,
-    });
+    })
   }
-};
+}
 
 // Delete blog post
 export const deleteBlog = async (req: Request, res: Response) => {
-  const postId = req.params.id;
+  const postId = req.params.id
   try {
-    const isValidPostId = mongoose.isValidObjectId(postId);
+    const isValidPostId = mongoose.isValidObjectId(postId)
     if (!isValidPostId) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Invalid post ID",
-      });
-      return;
+      })
+      return
     }
-    const post = await Post.findByIdAndDelete(postId);
+    const post = await Post.findByIdAndDelete(postId)
     if (!post) {
       res.status(404).json({
         success: false,
         status: 404,
         message: "Post not found",
-      });
-      return;
+      })
+      return
     }
     res.status(200).json({
       success: true,
       status: 200,
       message: "Blog post deleted successfully",
-    });
+    })
   } catch (error: any) {
-    console.error(error);
+    console.error(error)
     res.status(500).json({
       success: false,
       status: 500,
       message: "Internal Server Error while deleting the post",
       error: error.message || error,
-    });
+    })
   }
-};
+}
 
 // Like a Blog
 export const likeBlog = async (req: Request, res: Response) => {
-  const postId = req.params.id;
-  const userId = req.userId;
+  const postId = req.params.id
+  const userId = req.userId
   try {
     if (!mongoose.isValidObjectId(postId)) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Invalid post ID",
-      });
-      return;
+      })
+      return
     }
     if (!mongoose.isValidObjectId(userId)) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Invalid user ID",
-      });
-      return;
+      })
+      return
     }
-    const post = await Post.findById(postId).select("likes");
+    const post = await Post.findById(postId).select("likes")
     if (!post) {
       res.status(404).json({
         success: false,
         status: 404,
         message: "Post not found",
-      });
-      return;
+      })
+      return
     }
     const alreadyLiked = post.likes.some(
       (id) => id.toString() === userId?.toString()
-    );
+    )
     if (alreadyLiked) {
       post.likes = post.likes.filter(
         (id) => id.toString() !== userId?.toString()
-      );
+      )
     } else {
-      post.likes.push(userId!);
+      post.likes.push(userId!)
     }
     // only get likes not entire post: for performance,
 
-    await post.save();
+    await post.save()
     res.status(200).json({
       success: true,
       status: 200,
@@ -397,39 +385,39 @@ export const likeBlog = async (req: Request, res: Response) => {
         ? "Blog post unliked successfully"
         : "Blog post liked successfully",
       data: post.likes.length,
-    });
+    })
   } catch (error: any) {
-    console.error(error);
+    console.error(error)
     res.status(500).json({
       success: false,
       status: 500,
       message: "Internal Server Error while liking the post",
       error: error.message || error,
-    });
+    })
   }
-};
+}
 
 // Create a comment
 export const createComment = async (req: Request, res: Response) => {
   try {
-    const userId = req.userId;
-    const postId = req.params.id;
-    const { comment } = req.body;
+    const userId = req.userId
+    const postId = req.params.id
+    const { comment } = req.body
     if (!mongoose.isValidObjectId(postId)) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Invalid post ID",
-      });
-      return;
+      })
+      return
     }
     if (!mongoose.isValidObjectId(userId)) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Invalid user Id",
-      });
-      return;
+      })
+      return
     }
     const blogPost = await Post.findByIdAndUpdate(
       postId,
@@ -444,15 +432,15 @@ export const createComment = async (req: Request, res: Response) => {
         },
       },
       { new: true }
-    );
+    )
 
     if (!blogPost) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "blog post not found",
-      });
-      return;
+      })
+      return
     }
     // await post.save();
     res.status(201).json({
@@ -460,7 +448,7 @@ export const createComment = async (req: Request, res: Response) => {
       status: 201,
       message: "comment created successfully",
       data: blogPost.comments,
-    });
+    })
   } catch (error) {
     // console.log(error);
     res.status(500).json({
@@ -468,106 +456,102 @@ export const createComment = async (req: Request, res: Response) => {
       status: 500,
       message: "Something went wrong",
       error,
-    });
-    return;
+    })
+    return
   }
-};
+}
 
 // get all comments for a blog post
-export const getCommentsForBlog = async (
-  req: Request,
-  res: Response
-) => {
-  const postId = req.params.id;
-  const userId = req.userId;
+export const getCommentsForBlog = async (req: Request, res: Response) => {
+  const postId = req.params.id
+  const userId = req.userId
   try {
-    const isValidPostId = mongoose.isValidObjectId(postId);
+    const isValidPostId = mongoose.isValidObjectId(postId)
     if (!isValidPostId) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Invalid post ID",
-      });
-      return;
+      })
+      return
     }
     if (!mongoose.isValidObjectId(userId)) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Invalid user Id",
-      });
-      return;
+      })
+      return
     }
     const blogPost = await Post.findById(postId)
       .populate({
         path: "comments.user",
         select: "firstname lastname profileImage gender",
       })
-      .select("comments");
+      .select("comments")
     if (!blogPost) {
       res.status(404).json({
         success: false,
         status: 404,
         message: "Comments not found",
-      });
-      return;
+      })
+      return
     }
     blogPost.comments.sort(
       (a, b) =>
-        new Date(b.createdAt!).getTime() -
-        new Date(a.createdAt!).getTime()
-    );
+        new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
+    )
 
     res.status(200).json({
       success: true,
       status: 200,
       message: "Comments retrieved successfully",
       data: blogPost.comments,
-    });
+    })
 
-    return;
+    return
   } catch (error: any) {
-    console.error(error);
+    console.error(error)
     res.status(500).json({
       success: false,
       status: 500,
       message: "Internal Server Error while retrieving comments",
       error: error.message || error,
-    });
-    return;
+    })
+    return
   }
-};
+}
 
 // Like a comment
 export const likeComment = async (req: Request, res: Response) => {
   try {
-    const userId = req.userId;
-    const blogId = req.params.id;
-    const commentId = req.params.commentId;
+    const userId = req.userId
+    const blogId = req.params.id
+    const commentId = req.params.commentId
 
     if (!mongoose.isValidObjectId(userId)) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Invalid user Id",
-      });
-      return;
+      })
+      return
     }
     if (!mongoose.isValidObjectId(blogId)) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Invalid blog Id",
-      });
-      return;
+      })
+      return
     }
     if (!mongoose.isValidObjectId(commentId)) {
       res.status(400).json({
         success: false,
         status: 400,
         message: "Invalid comment Id",
-      });
-      return;
+      })
+      return
     }
 
     // First approach JavaScript logic
@@ -624,125 +608,118 @@ export const likeComment = async (req: Request, res: Response) => {
     const blogPost = await Post.findOne(
       { _id: blogId, "comments._id": commentId },
       { "comments.$": 1 }
-    );
+    )
     if (!blogPost || !blogPost.comments[0]) {
       res.status(404).json({
         success: false,
         status: 404,
         message: "Comment not found",
-      });
-      return;
+      })
+      return
     }
     const alreadyLiked = blogPost.comments[0].likes?.some(
       (id) => id.toString() === userId?.toString()
-    );
+    )
     if (alreadyLiked) {
       await Post.updateOne(
         { _id: blogId, "comments._id": commentId },
         { $pull: { "comments.$.likes": userId } }
-      );
+      )
       res.status(200).json({
         success: true,
         status: 200,
         message: "Comment unliked successfully",
-      });
-      return;
+      })
+      return
     } else {
       await Post.updateOne(
         { _id: blogId, "comments._id": commentId },
         { $addToSet: { "comments.$.likes": userId } }
-      );
+      )
       res.status(200).json({
         success: true,
         status: 200,
         message: "Comment liked successfully",
-      });
-      return;
+      })
+      return
     }
   } catch (error: any) {
-    console.log(error);
+    console.log(error)
 
     res.status(500).json({
       success: false,
       status: 500,
       message:
-        error.message ||
-        "Internal Server Error while retrieving comments",
+        error.message || "Internal Server Error while retrieving comments",
       error: error.stack,
-    });
-    return;
+    })
+    return
   }
-};
+}
 
 export const getRecentBlogs = async (req: Request, res: Response) => {
   try {
-    const excludeBlogId = req.params.excludeBlodId;
-    const filter: Record<string, any> = {};
+    const excludeBlogId = req.params.excludeBlodId
+    const filter: Record<string, any> = {}
 
     if (mongoose.isValidObjectId(excludeBlogId)) {
-      filter._id = { $ne: excludeBlogId };
+      filter._id = { $ne: excludeBlogId }
     }
 
     const blogs = await Post.find(filter)
       .select("title createdAt featuredImage")
       .sort({ createdAt: -1 })
       .limit(5)
-      .lean();
+      .lean()
     res.status(200).json({
       status: 200,
       success: true,
       message: "Operation succeeded",
       blogs,
-    });
+    })
   } catch (error: any) {
     res.status(500).json({
       status: 500,
       success: false,
       message: "Unexpected server error while fetching recent blogs",
-    });
-    console.log(error);
+    })
+    console.log(error)
   }
-};
+}
 
 // helper to escape regex-special chars from user input
 function escapeRegex(text: string) {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }
 
-export const getSearchedBlogs = async (
-  req: Request,
-  res: Response
-) => {
-  const rawQuery = req.query.searchQuery;
+export const getSearchedBlogs = async (req: Request, res: Response) => {
+  const rawQuery = req.query.searchQuery
   if (!rawQuery) {
     res.status(400).json({
       status: 400,
       success: false,
       message: "No search query is provided",
-    });
-    return;
+    })
+    return
   }
 
-  const q = String(rawQuery).trim();
+  const q = String(rawQuery).trim()
   if (!q) {
     res.status(400).json({
       status: 400,
       success: false,
       message: "Empty search query",
-    });
-    return;
+    })
+    return
   }
 
   try {
-    const safe = escapeRegex(q);
-    const regex = new RegExp(safe, "i");
+    const safe = escapeRegex(q)
+    const regex = new RegExp(safe, "i")
 
     const blogs = await Post.find({
-      $or: [
-        { category: { $regex: regex } },
-        { title: { $regex: regex } },
-      ],
-    }).lean();
+      $or: [{ category: { $regex: regex } }, { title: { $regex: regex } }],
+    }).lean()
 
     if (!blogs || blogs.length === 0) {
       res.status(404).json({
@@ -750,8 +727,8 @@ export const getSearchedBlogs = async (
         success: false,
         message: "No matched data found",
         data: [],
-      });
-      return;
+      })
+      return
     }
 
     res.status(200).json({
@@ -759,15 +736,57 @@ export const getSearchedBlogs = async (
       success: true,
       message: "Operation succeeded",
       data: blogs,
-    });
-    return;
+    })
+    return
   } catch (error) {
-    console.error("Search error:", error);
+    console.error("Search error:", error)
     res.status(500).json({
       status: 500,
       success: false,
       message: "Internal server error while searching for blogs",
-    });
+    })
   }
-  return;
-};
+  return
+}
+
+export const getNews = async (req: Request, res: Response) => {
+  const category = req.params.category
+
+  try {
+    const uri = `https://newsapi.org/v2/everything?q=${category}&pageSize=10`
+
+    const response = await fetch(uri, {
+      headers: {
+        "X-Api-Key": process.env.NEWS_API_KEY!,
+        "User-Agent": "Mern-blog-app/1.0",
+      },
+    })
+
+    if (!response.ok) {
+      console.log("NewsAPI error:", await response.text())
+
+      res.status(response.status).json({
+        success: false,
+        status: response.status,
+        message: "Failed to fetch news",
+      })
+      return
+    }
+
+    const jsonData = await response.json()
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      articles: jsonData.articles,
+    })
+  } catch (err) {
+    console.error("Server error:", err)
+
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Internal server error",
+    })
+  }
+}
