@@ -44,17 +44,23 @@ export default function HeroSlider() {
   useEffect(() => {
     ;(async () => {
       try {
-        const url = `https://newsapi.org/v2/everything?q=${getCategoryForBlogs()}s&pageSize=10&apiKey=1e8d9b47d3f346cb9ad64d03efbbaa21`
+        const baseUrl = import.meta.env.VITE_BASE_SERVER_URL
+        const url = `${baseUrl}/blogs/news/${getCategoryForBlogs()}`
 
         const response = await fetch(url, {
           method: "GET",
         })
+        if (!response.ok) {
+          console.log("couldn't get latest news blogs")
+          return
+        }
 
         const jsonResponse = await response.json()
 
         if (!jsonResponse) {
           return
         }
+        console.log(jsonResponse)
         setBlogs(jsonResponse.articles)
       } catch (error) {
         console.log(error)
