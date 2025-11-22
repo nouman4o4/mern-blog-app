@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router"
+import { Navigate, Route, Routes, useLocation } from "react-router"
 import { About, Blog, Home, Profile } from "./pages"
 
 import MainLayout from "./layouts/mainLayout"
@@ -16,7 +16,6 @@ import SearchPage from "./pages/SearchPage"
 
 function App() {
   const { authUser, setAuthUser } = useUserStore()
-  const navigate = useNavigate()
 
   const { pathname } = useLocation()
   useEffect(() => {
