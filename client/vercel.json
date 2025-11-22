@@ -1,4 +1,3 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
-  "ignoreCommand": "echo 'Skipping ESLint'"
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
