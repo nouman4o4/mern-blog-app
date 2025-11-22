@@ -8,7 +8,7 @@ import {
 } from "lucide-react"
 import RecentBlogs from "../components/RecentBlogs"
 import { useParams } from "react-router"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { IPost } from "../types/Post"
 import toast from "react-hot-toast"
 import { IUser } from "../types/User"
@@ -16,7 +16,7 @@ import getSingleUser from "../utils/getUser"
 import useGlobalStore from "../store/globalStore"
 import useUserStore from "../store/userStore"
 import CommentsSection from "../components/CommentsSection"
-// import 'dotenv/config'
+
 export default function Blog() {
   const [blogData, setBlogData] = useState<IPost>()
   const [authorDetails, setAuthorDetails] = useState<IUser>()
@@ -27,31 +27,42 @@ export default function Blog() {
   const { blogId } = params
   const { authUser } = useUserStore()
 
+  // Fetch blog data
   useEffect(() => {
     ;(async () => {
-      // get blog data
+      if (!blogId) return
+
       const baseUrl = import.meta.env.VITE_BASE_SERVER_URL
       const url = `${baseUrl}/blogs/${blogId}`
+
       try {
         setIsLoading(true)
+
         const response = await fetch(url, {
           method: "GET",
           credentials: "include",
         })
+
         if (!response.ok) {
-          console.log("Error, Something went wrong..", response)
+          console.log("Error fetching blog:", response)
           toast.error("Something went wrong while fetching post data")
           return
         }
+
         const jsonResponse = await response.json()
 
         if (!jsonResponse.success) {
-          console.log(jsonResponse.message || "Can't fetch post data...")
-
+          console.log(jsonResponse.message || "Failed to fetch post data")
           return
         }
 
         setBlogData(jsonResponse.post)
+
+        // Determine if already liked
+        const liked = jsonResponse.post.likes.some(
+          (id: string) => id.toString() === authUser?._id?.toString()
+        )
+        setAlreadyLiked(liked)
       } catch (error) {
         console.log(error)
         toast.error("Something went wrong while fetching post data")
@@ -59,62 +70,78 @@ export default function Blog() {
         setIsLoading(false)
       }
     })()
-  }, [blogId, alreadyLiked])
+  }, [blogId]) // Only runs on route change
 
-  // get author details
+  // Fetch author details once blog data exists
   useEffect(() => {
     if (!blogData?.author) return
     ;(async () => {
-      const authorData: IUser = await getSingleUser(blogData?.author!)
-
+      const authorData: IUser = await getSingleUser(blogData.author)
       setAuthorDetails(authorData)
     })()
-    // cheack already liked
-    const alreadyLiked = blogData?.likes.some(
-      (id) => id.toString() === authUser?._id.toString()
-    )
-    setAlreadyLiked(alreadyLiked!)
-  }, [blogData])
+  }, [blogData?.author])
 
-  // like post
+  // Like / Unlike handler
   const handleLike = async () => {
     disliked && setDisliked(false)
 
     const uri = `${import.meta.env.VITE_BASE_SERVER_URL}/blogs/${blogId}/like`
+
     try {
       const response = await fetch(uri, {
         method: "PATCH",
         credentials: "include",
       })
+
       if (!response.ok) {
-        console.log("Couldn't like a post")
         toast.error("Failed to like, please try again.")
         return
       }
+
       const jsonResponse = await response.json()
+
       if (jsonResponse?.message === "Blog post unliked successfully") {
         setAlreadyLiked(false)
+
+        // update likes count locally
+        setBlogData((prev: any) => ({
+          ...prev,
+          likes: prev.likes.filter(
+            (id: string) => id.toString() !== authUser?._id.toString()
+          ),
+        }))
       } else if (jsonResponse?.message === "Blog post liked successfully") {
         setAlreadyLiked(true)
+
+        // update likes count locally
+        setBlogData((prev: any) => ({
+          ...prev,
+          likes: [...prev.likes, authUser?._id],
+        }))
       }
     } catch (error) {
-      console.log("Couldn't like a post,error:", error)
-      return
+      console.log("Couldn't like a post:", error)
     }
   }
+
+  // memoized blog HTML
+  const blogHTML = useMemo(() => {
+    return blogData?.content || ""
+  }, [blogData?.content])
 
   return (
     <div className="w-full md:my-11">
       <div className="w-full flex">
         {/* blog details */}
         <div className="blog-detail w-full md:w-3/4">
-          <div className="image bg-amber-400 w-full h-auto">
+          <div className="image bg-gray-400 w-full h-auto ml-3">
             <img
               className="w-full h-[350px] md:h-[450px] lg:h-[600px] object-cover"
-              src={`${blogData?.featuredImage?.secureUrl || null}`}
+              src={blogData?.featuredImage?.secureUrl || ""}
               alt=""
             />
           </div>
+
           {/* Blog content */}
           <div className="Blog-content p-1 md:p-8">
             <div className="flex gap-4 items-center">
@@ -123,39 +150,45 @@ export default function Blog() {
               </div>
               <div className="date text-sm text-gray-500">
                 <Calendar className="inline size-[16px] mb-1" />{" "}
-                <span className="">
-                  {new Date(blogData?.createdAt!).toLocaleDateString()}
+                <span>
+                  {blogData?.createdAt
+                    ? new Date(blogData.createdAt).toLocaleDateString()
+                    : ""}
                 </span>
               </div>
             </div>
-            {/* blog Title */}
-            <h1 className="text-2xl md:text-4xl font-bold py-3 my-4 [font-family:var(--font-roboto-condensed)] uppercase">
-              {!blogData && isLoading ? "Loading data..." : blogData?.title}
+
+            <h1 className="text-2xl md:text-4xl font-bold py-3 my-4 uppercase">
+              {isLoading ? "Loading..." : blogData?.title}
             </h1>
+
             {/* author details */}
             <div className="interactions flex gap-5 items-center my-7">
               <div className="author">
                 <img
-                  className="w-8 h-8"
-                  src={`${
+                  className="w-8 h-8 rounded-full"
+                  src={
                     authorDetails?.profileImage?.secureUrl
                       ? authorDetails.profileImage.secureUrl
                       : authorDetails?.gender === "male"
                       ? "https://avatar.iran.liara.run/public/41"
                       : "https://avatar.iran.liara.run/public/88"
-                  }`}
+                  }
                   alt=""
                 />
               </div>
+
               <div className="likes">
                 <Eye className="inline" /> <span>--</span>
               </div>
+
               <div className="likes">
                 <Heart
                   className={`inline ${alreadyLiked ? "text-red-600" : ""}`}
                 />{" "}
                 <span>{blogData?.likes.length}</span>
               </div>
+
               <div className="messages">
                 <MessageCircle className="inline" />{" "}
                 <span>{blogData?.comments.length}</span>
@@ -163,52 +196,48 @@ export default function Blog() {
             </div>
 
             {/* blog text */}
-
             <p
-              dangerouslySetInnerHTML={{
-                __html:
-                  !blogData && isLoading
-                    ? "Loading data..."
-                    : blogData?.content!,
-              }}
+              dangerouslySetInnerHTML={{ __html: blogHTML }}
               className="text-lg text-gray-600"
             ></p>
           </div>
+
           <div className="w-full h-[1px] bg-gray-500"></div>
+
+          {/* like + dislike buttons */}
           <div className="buttons w-full md:w-3/4 mx-auto flex gap-6 my-9 px-2 md:px-0">
             <button
               onClick={handleLike}
-              className={`border-2 grow font-bold px-4 rounded flex items-center py-3 justify-center gap-3 cursor-pointer transition-all duration-100 ease-linear
-            ${
-              alreadyLiked
-                ? "text-white border-blue-600 bg-blue-600 hover:bg-blue-700"
-                : "text-blue-400 hover:text-blue-600 border-blue-400 hover:bg-blue-200"
-            }`}
+              className={`border-2 grow font-bold px-4 rounded flex items-center py-3 justify-center gap-3 cursor-pointer
+              ${
+                alreadyLiked
+                  ? "text-white border-blue-600 bg-blue-600 hover:bg-blue-700"
+                  : "text-blue-400 hover:text-blue-600 border-blue-400 hover:bg-blue-200"
+              }`}
             >
               <ThumbsUp className="inline" />{" "}
               <span>{blogData?.likes.length}</span>
             </button>
+
             <button
               onClick={() => {
                 setDisliked(true)
                 alreadyLiked && handleLike()
               }}
-              className={` grow  hover:bg-red-200 text-red-400 hover:text-red-600 border-2 border-red-600 font-bold  px-4 rounded flex items-center py-3 justify-center gap-3 cursor-pointer ${
+              className={`grow border-2 border-red-600 font-bold px-4 rounded flex items-center py-3 justify-center gap-3 cursor-pointer
+              ${
                 disliked
                   ? "bg-red-600 text-white hover:bg-red-500"
-                  : " hover:bg-red-200 text-red-400 hover:text-red-600"
+                  : "hover:bg-red-200 text-red-400 hover:text-red-600"
               }`}
             >
               <ThumbsDown />
             </button>
           </div>
 
-          {/* comment-section */}
-
           <CommentsSection blogData={blogData!} />
         </div>
 
-        {/* Recent blogs component */}
         <RecentBlogs pageBlogId={blogId!} />
       </div>
     </div>

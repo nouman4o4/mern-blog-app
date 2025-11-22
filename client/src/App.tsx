@@ -21,7 +21,6 @@ function App() {
   const { pathname } = useLocation()
   useEffect(() => {
     window.scrollTo(0, 0)
-    // if (!authUser) navigate("/login");
   }, [pathname])
   useEffect(() => {
     ;(async () => {
@@ -29,7 +28,6 @@ function App() {
         if (!authUser?._id) {
           localStorage.removeItem("blog-app-user")
           setAuthUser(null)
-          navigate("/login")
           return
         }
         const url = `${import.meta.env.VITE_BASE_SERVER_URL}/auth/verify/${
@@ -54,7 +52,6 @@ function App() {
         }
         logout(authUser._id)
         setAuthUser(null)
-        navigate("/login")
       } catch (error) {
         console.log(
           "Something went wrong while verifying the user, error: ",
@@ -62,7 +59,6 @@ function App() {
         )
         logout(authUser?._id!)
         setAuthUser(null)
-        navigate("/login")
       }
     })()
   }, [pathname, authUser])
@@ -70,7 +66,7 @@ function App() {
     <>
       <Toaster />
       <Routes>
-        <Route element={<MainLayout />}>
+        <Route element={!authUser ? <AuthLayout /> : <MainLayout />}>
           <Route
             path="/"
             element={!authUser ? <Navigate to={"/login"} /> : <Home />}
@@ -110,10 +106,7 @@ function App() {
             path="/login"
             element={authUser ? <Navigate to="/" /> : <Login />}
           />
-          <Route
-            path="/signup"
-            element={authUser ? <Navigate to="/" /> : <Signup />}
-          />
+          <Route path="/signup" element={<Signup />} />
         </Route>
       </Routes>
     </>
